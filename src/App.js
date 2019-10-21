@@ -1,7 +1,47 @@
 import React, { useState } from "react"
 import "./App.css"
 
-function StartScreen({ theDeckCountValue, otherPlayersValue, yourMoneyValue }) {
+function LoadOrder({
+  startFlag,
+  theDeckCountValue,
+  otherPlayersValue,
+  yourMoneyValue,
+  playerDeal,
+  startFlagSwitch,
+  playerHit,
+  roundStartFlagSwitch,
+  roundStartFlag,
+  yourCards
+}) {
+  if (startFlag) {
+    return (
+      <StartScreen
+        theDeckCountValue={theDeckCountValue}
+        otherPlayersValue={otherPlayersValue}
+        yourMoneyValue={yourMoneyValue}
+        startFlagSwitch={startFlagSwitch}
+      ></StartScreen>
+    )
+  } else if (roundStartFlag) {
+    return (
+      <RoundStart
+        playerDeal={playerDeal}
+        roundStartFlagSwitch={roundStartFlagSwitch}
+      ></RoundStart>
+    )
+  } else {
+    return (
+      <TableOptions playerHit={playerHit} yourCards={yourCards}></TableOptions>
+    )
+  }
+}
+
+function StartScreen({
+  theDeckCountValue,
+  otherPlayersValue,
+  yourMoneyValue,
+  startFlagSwitch
+}) {
   const [deckCountValue, setDeckCountValue] = useState("")
 
   const [OtherPlayers, setOtherPlayers] = useState("")
@@ -60,15 +100,17 @@ function StartScreen({ theDeckCountValue, otherPlayersValue, yourMoneyValue }) {
           onChange={e => setYourMoney(e.target.value)}
         />
       </form>
+      <button onClick={startFlagSwitch}>Continue</button>
     </div>
   )
 }
 
-function Game({ playerDeal }) {
+function RoundStart({ playerDeal, roundStartFlagSwitch }) {
   // So it appears that even when thr function is called from the child it still executes in the location it was defined (the parent) and had access to everything it would normally.
   const test = e => {
     e.preventDefault()
     playerDeal()
+    roundStartFlagSwitch()
   }
   return (
     <form onSubmit={test}>
@@ -77,7 +119,22 @@ function Game({ playerDeal }) {
   )
 }
 
+function TableOptions({ playerHit, yourCards }) {
+  console.log(yourCards)
+  return <p>It has been delt.</p>
+}
+
+// later create a validation so that if the entered input is not acceptable it lets them know, but also prompts a button to continue with default options.
 function App() {
+  // Used to determine if the startScreen should load.
+  const [startFlag, setStartFlag] = useState(1)
+  const startFlagSwitch = () => {
+    setStartFlag(0)
+  }
+  const [roundStartFlag, setRoundStartFlag] = useState(1)
+  const roundStartFlagSwitch = () => {
+    setRoundStartFlag(0)
+  }
   // How many decks are being used.
   const [deckCount, setDeckCount] = useState(1)
 
@@ -330,14 +387,19 @@ function App() {
     thisDeck.splice(cardIndex2, 1)
     setDeck(thisDeck)
     setYourCards([card, card2])
-    console.log(yourCards)
     // An issue for seeing the results I had was that after setYourCards was finished viewing yourCards through the console wasn't correctly updated until the next update.
   }
 
   const [discardPile, setDiscardPile] = useState([])
 
-  const hit = () => {
-    // Pull random index from the deck and update proper hand.
+  const playerHit = () => {
+    let thisDeck = deck
+    let cardIndex = Math.floor(Math.random() * thisDeck.length)
+    let card = thisDeck[cardIndex]
+    thisDeck.splice(cardIndex, 1)
+    setDeck(thisDeck)
+    // Now update hand
+    setYourCards([...yourCards, card])
   }
 
   const doubleDown = () => {
@@ -364,14 +426,18 @@ function App() {
   const [pastResults, setPastResults] = useState([])
 
   return (
-    (
-      <StartScreen
-        theDeckCountValue={theDeckCountValue}
-        otherPlayersValue={otherPlayersValue}
-        yourMoneyValue={yourMoneyValue}
-      />
-    ),
-    <Game playerDeal={playerDeal} />
+    <LoadOrder
+      startFlagSwitch={startFlagSwitch}
+      startFlag={startFlag}
+      theDeckCountValue={theDeckCountValue}
+      otherPlayersValue={otherPlayersValue}
+      yourMoneyValue={yourMoneyValue}
+      playerDeal={playerDeal}
+      playerHit={playerHit}
+      roundStartFlagSwitch={roundStartFlagSwitch}
+      roundStartFlag={roundStartFlag}
+      yourCards={yourCards}
+    ></LoadOrder>
   )
 }
 
