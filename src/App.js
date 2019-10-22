@@ -11,7 +11,12 @@ function LoadOrder({
   playerHit,
   roundStartFlagSwitch,
   roundStartFlag,
-  yourCards
+  yourCards,
+  playerBet,
+  playerBetUpdate,
+  doubleDown,
+  splitting,
+  yourCards2
 }) {
   if (startFlag) {
     return (
@@ -27,11 +32,19 @@ function LoadOrder({
       <RoundStart
         playerDeal={playerDeal}
         roundStartFlagSwitch={roundStartFlagSwitch}
+        playerBet={playerBet}
+        playerBetUpdate={playerBetUpdate}
       ></RoundStart>
     )
   } else {
     return (
-      <TableOptions playerHit={playerHit} yourCards={yourCards}></TableOptions>
+      <TableOptions
+        playerHit={playerHit}
+        yourCards={yourCards}
+        doubleDown={doubleDown}
+        splitting={splitting}
+        yourCards2={yourCards2}
+      ></TableOptions>
     )
   }
 }
@@ -105,23 +118,68 @@ function StartScreen({
   )
 }
 
-function RoundStart({ playerDeal, roundStartFlagSwitch }) {
+function RoundStart({
+  playerDeal,
+  roundStartFlagSwitch,
+  playerBet,
+  playerBetUpdate
+}) {
   // So it appears that even when thr function is called from the child it still executes in the location it was defined (the parent) and had access to everything it would normally.
+  const [playerBetHandle, setPlayerBetHandle] = useState("")
+
   const test = e => {
     e.preventDefault()
     playerDeal()
     roundStartFlagSwitch()
   }
+
+  const betHandle = e => {
+    e.preventDefault()
+    if (!playerBetHandle) return
+    console.log(playerBetHandle)
+    playerBetUpdate(playerBetHandle)
+  }
   return (
-    <form onSubmit={test}>
-      <button>Deal</button>
-    </form>
+    <div>
+      <div>
+        <form onSubmit={betHandle}>
+          Enter bet
+          <input
+            type="text"
+            value={playerBetHandle}
+            onChange={e => setPlayerBetHandle(e.target.value)}
+          />{" "}
+          <br></br>
+        </form>
+      </div>
+      <div>
+        <form onSubmit={test}>
+          <button>Deal</button>
+        </form>
+      </div>
+    </div>
   )
 }
 
-function TableOptions({ playerHit, yourCards }) {
+function TableOptions({
+  playerHit,
+  yourCards,
+  doubleDown,
+  splitting,
+  yourCards2
+}) {
   console.log(yourCards)
-  return <p>It has been delt.</p>
+  console.log(yourCards2)
+
+  return (
+    <div>
+      <button onClick={playerHit}>Hit</button>
+      <br></br>
+      <button onClick={doubleDown}>Double Down</button>
+      <br></br>
+      <button onClick={splitting}>Split</button>
+    </div>
+  )
 }
 
 // later create a validation so that if the entered input is not acceptable it lets them know, but also prompts a button to continue with default options.
@@ -148,6 +206,9 @@ function App() {
   const [handCount, setHandCount] = useState(0)
 
   const [yourCards, setYourCards] = useState([])
+
+  // To be used when splitting cards
+  const [yourCards2, setYourCards2] = useState([])
 
   const [dealerCards, setDealerCards] = useState([])
   // The number of additional players
@@ -392,6 +453,12 @@ function App() {
 
   const [discardPile, setDiscardPile] = useState([])
 
+  const [playerBet, setPlayerBet] = useState(1)
+
+  const playerBetUpdate = value => {
+    setPlayerBet(value)
+  }
+
   const playerHit = () => {
     let thisDeck = deck
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
@@ -404,10 +471,23 @@ function App() {
 
   const doubleDown = () => {
     // hit one time, double the bet, then end player turn.
+    setPlayerBet(playerBet * 2)
+    playerHit()
+    //Turn end function
   }
 
   const splitting = () => {
-    // Research
+    setPlayerBet(playerBet * 2)
+    let splitCard1 = yourCards.slice(0, 1)
+    let splitCard2 = yourCards.slice(1)
+    setYourCards(splitCard1)
+    setYourCards2(splitCard2)
+  }
+
+  // Flag to indicate if standing should end the turn
+  const [splitFlag, setSplitFlag] = useState(1)
+  const splitFlagSwitch = () => {
+    setSplitFlag(0)
   }
 
   const shuffleDeck = () => {
@@ -437,6 +517,11 @@ function App() {
       roundStartFlagSwitch={roundStartFlagSwitch}
       roundStartFlag={roundStartFlag}
       yourCards={yourCards}
+      playerBet={playerBet}
+      playerBetUpdate={playerBetUpdate}
+      doubleDown={doubleDown}
+      splitting={splitting}
+      yourCards2={yourCards2}
     ></LoadOrder>
   )
 }
