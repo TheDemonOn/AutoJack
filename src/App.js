@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import "./App.css"
+import { defaultCoreCipherList } from "constants"
 
 function LoadOrder({
   startFlag,
@@ -16,7 +17,11 @@ function LoadOrder({
   playerBetUpdate,
   doubleDown,
   splitting,
-  yourCards2
+  yourCards2,
+  dealerCards,
+  dealerDeal,
+  stand,
+  dealerHit
 }) {
   if (startFlag) {
     return (
@@ -34,8 +39,11 @@ function LoadOrder({
         roundStartFlagSwitch={roundStartFlagSwitch}
         playerBet={playerBet}
         playerBetUpdate={playerBetUpdate}
+        dealerDeal={dealerDeal}
       ></RoundStart>
     )
+  } else if (dealerCards[0].value + dealerCards[1].value === 21) {
+    return <DealerBlackJack></DealerBlackJack>
   } else {
     return (
       <TableOptions
@@ -44,6 +52,10 @@ function LoadOrder({
         doubleDown={doubleDown}
         splitting={splitting}
         yourCards2={yourCards2}
+        playerBet={playerBet}
+        dealerCards={dealerCards}
+        stand={stand}
+        dealerHit={dealerHit}
       ></TableOptions>
     )
   }
@@ -122,7 +134,8 @@ function RoundStart({
   playerDeal,
   roundStartFlagSwitch,
   playerBet,
-  playerBetUpdate
+  playerBetUpdate,
+  dealerDeal
 }) {
   // So it appears that even when thr function is called from the child it still executes in the location it was defined (the parent) and had access to everything it would normally.
   const [playerBetHandle, setPlayerBetHandle] = useState("")
@@ -130,6 +143,7 @@ function RoundStart({
   const test = e => {
     e.preventDefault()
     playerDeal()
+    dealerDeal()
     roundStartFlagSwitch()
   }
 
@@ -166,7 +180,11 @@ function TableOptions({
   yourCards,
   doubleDown,
   splitting,
-  yourCards2
+  yourCards2,
+  playerBet,
+  dealerCards,
+  stand,
+  dealerHit
 }) {
   console.log(yourCards)
   console.log(yourCards2)
@@ -178,6 +196,32 @@ function TableOptions({
       <button onClick={doubleDown}>Double Down</button>
       <br></br>
       <button onClick={splitting}>Split</button>
+      <br></br>
+      <button onClick={stand}>Stand</button>
+      <br></br>
+      <br></br>
+      <p>Your Bet: {playerBet}</p>
+      <br></br>
+      <p>
+        Your Cards: {yourCards.map(x => x.name).join(", ")}
+        <br></br>
+        Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
+      </p>
+      <br></br>
+      <p>
+        Dealer Card: {dealerCards.map(x => x.name).join(", ")}
+        <br></br>
+        Value: {dealerCards.map(x => x.value).reduce((x, y) => x + y)}
+      </p>
+    </div>
+  )
+}
+
+function DealerBlackJack({}) {
+  return (
+    <div>
+      <p>Dealer has 21.</p>
+      <button>Continue</button>
     </div>
   )
 }
@@ -202,8 +246,8 @@ function App() {
     setDeckCount(count)
   }
 
-  // How many hands have been delt.
-  const [handCount, setHandCount] = useState(0)
+  //   // How many hands have been delt.
+  //   const [handCount, setHandCount] = useState(0)
 
   const [yourCards, setYourCards] = useState([])
 
@@ -211,6 +255,28 @@ function App() {
   const [yourCards2, setYourCards2] = useState([])
 
   const [dealerCards, setDealerCards] = useState([])
+
+  const dealerDeal = () => {
+    let thisDeck = deck
+    let cardIndex = Math.floor(Math.random() * thisDeck.length)
+    let card = thisDeck[cardIndex]
+    thisDeck.splice(cardIndex, 1)
+    let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
+    let card2 = thisDeck[cardIndex2]
+    thisDeck.splice(cardIndex2, 1)
+    setDeck(thisDeck)
+    setDealerCards([card, card2])
+  }
+
+  const dealerHit = () => {
+    let thisDeck = deck
+    let cardIndex = Math.floor(Math.random() * thisDeck.length)
+    let card = thisDeck[cardIndex]
+    thisDeck.splice(cardIndex, 1)
+    setDeck(thisDeck)
+    setDealerCards([...dealerCards, card])
+  }
+
   // The number of additional players
   const [otherPlayers, setOtherPlayers] = useState(0)
 
@@ -223,8 +289,8 @@ function App() {
 
   const [deck, setDeck] = useState([
     {
-      value: 1,
-      value2: 11,
+      value: 11,
+      value2: 1,
       name: "Ace of Clubs"
     },
     {
@@ -276,8 +342,8 @@ function App() {
       name: "King of Clubs"
     },
     {
-      value: 1,
-      value2: 11,
+      value: 11,
+      value2: 1,
       name: "Ace of Diamonds"
     },
     {
@@ -329,8 +395,8 @@ function App() {
       name: "King of Diamonds"
     },
     {
-      value: 1,
-      value2: 11,
+      value: 11,
+      value2: 1,
       name: "Ace of Hearts"
     },
     {
@@ -382,8 +448,8 @@ function App() {
       name: "King of Hearts"
     },
     {
-      value: 1,
-      value2: 11,
+      value: 11,
+      value2: 1,
       name: "Ace of Spades"
     },
     {
@@ -482,6 +548,7 @@ function App() {
     let splitCard2 = yourCards.slice(1)
     setYourCards(splitCard1)
     setYourCards2(splitCard2)
+    splitFlagSwitch()
   }
 
   // Flag to indicate if standing should end the turn
@@ -489,6 +556,27 @@ function App() {
   const splitFlagSwitch = () => {
     setSplitFlag(0)
   }
+
+  const stand = () => {
+    if (splitFlag) {
+      // Normal stand
+      // So you can't use a while here because from its perspective the dealerCards never change. It takes a cycle to catchup.
+      // while (dealerCards.map(x => x.value).reduce((x, y) => x + y) < 17) {
+      //   dealerHit()
+      // }
+        if (dealerCards.map(x => x.value).reduce((x, y) => x + y) < 17) {
+          dealerHit()
+        }
+        console.log(dealerCards.map(x => x.value).reduce((x, y) => x + y))
+      }
+
+      // setEndTurnFlag(0) // Takes you to screen with result of the play.
+    } // else {
+    //   // Handle second hand
+    // }
+  
+
+  const [endTurnFlag, setEndTurnFlag] = useState(1)
 
   const shuffleDeck = () => {
     let deck = [...discardPile, ...deck]
@@ -522,6 +610,10 @@ function App() {
       doubleDown={doubleDown}
       splitting={splitting}
       yourCards2={yourCards2}
+      dealerCards={dealerCards}
+      dealerDeal={dealerDeal}
+      stand={stand}
+      dealerHit={dealerHit}
     ></LoadOrder>
   )
 }
