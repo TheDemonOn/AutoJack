@@ -1,6 +1,5 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import "./App.css"
-import { defaultCoreCipherList } from "constants"
 
 function LoadOrder({
   startFlag,
@@ -20,8 +19,10 @@ function LoadOrder({
   yourCards2,
   dealerCards,
   dealerDeal,
-  stand,
-  dealerHit
+  splitFlag,
+  deck,
+  setDeck,
+  setDealerCards
 }) {
   if (startFlag) {
     return (
@@ -54,8 +55,10 @@ function LoadOrder({
         yourCards2={yourCards2}
         playerBet={playerBet}
         dealerCards={dealerCards}
-        stand={stand}
-        dealerHit={dealerHit}
+        splitFlag={splitFlag}
+        deck={deck}
+        setDeck={setDeck}
+        setDealerCards={setDealerCards}
       ></TableOptions>
     )
   }
@@ -183,11 +186,124 @@ function TableOptions({
   yourCards2,
   playerBet,
   dealerCards,
-  stand,
-  dealerHit
+  splitFlag,
+  deck,
+  setDeck,
+  setDealerCards
 }) {
-  console.log(yourCards)
-  console.log(yourCards2)
+  const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
+
+  const [effectFlag, setEffectFlag] = useState(0)
+
+  const dealerHit = () => {
+    // console.log(dealerCards.map(x => x.value).reduce((x, y) => x + y))
+
+    // console.log(localDealerCards.map(x => x.value).reduce((x, y) => x + y))
+    if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 17) {
+      let thisDeck = deck
+      let cardIndex = Math.floor(Math.random() * thisDeck.length)
+      let card = thisDeck[cardIndex]
+      thisDeck.splice(cardIndex, 1)
+      if (
+        localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
+          card.value <
+        17
+      ) {
+        let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
+        let card2 = thisDeck[cardIndex2]
+        thisDeck.splice(cardIndex2, 1)
+        if (
+          localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
+            card.value +
+            card2.value <
+          17
+        ) {
+          let cardIndex3 = Math.floor(Math.random() * thisDeck.length)
+          let card3 = thisDeck[cardIndex3]
+          thisDeck.splice(cardIndex3, 1)
+          if (
+            localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
+              card.value +
+              card2.value +
+              card3.value <
+            17
+          ) {
+            let cardIndex4 = Math.floor(Math.random() * thisDeck.length)
+            let card4 = thisDeck[cardIndex4]
+            thisDeck.splice(cardIndex4, 1)
+            if (
+              localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
+                card.value +
+                card2.value +
+                card3.value +
+                card4.value <
+              17
+            ) {
+              let cardIndex5 = Math.floor(Math.random() * thisDeck.length)
+              let card5 = thisDeck[cardIndex5]
+              thisDeck.splice(cardIndex5, 1)
+              setDeck(thisDeck)
+              setDealerCards([
+                ...localDealerCards,
+                card,
+                card2,
+                card3,
+                card4,
+                card5
+              ])
+              setLocalDealerCards([
+                ...localDealerCards,
+                card,
+                card2,
+                card3,
+                card4,
+                card5
+              ])
+              return
+            }
+            setDeck(thisDeck)
+            setDealerCards([...localDealerCards, card, card2, card3, card4])
+            setLocalDealerCards([
+              ...localDealerCards,
+              card,
+              card2,
+              card3,
+              card4
+            ])
+            return
+          }
+          setDeck(thisDeck)
+          setDealerCards([...localDealerCards, card, card2, card3])
+          setLocalDealerCards([...localDealerCards, card, card2, card3])
+          return
+        }
+        setDeck(thisDeck)
+        setDealerCards([...localDealerCards, card, card2])
+        setLocalDealerCards([...localDealerCards, card, card2])
+        return
+      }
+      setDeck(thisDeck)
+      setDealerCards([...localDealerCards, card])
+      setLocalDealerCards([...localDealerCards, card])
+    }
+  }
+
+  const stand = () => {
+    if (splitFlag) {
+      dealerHit()
+
+      // In other words dealerCards doesn't change from its perspective after dealerHit() operates.
+
+      // To fix don't use state from the main to make determinations about the future make its own local state to perform operations.
+
+      // It could be that the state stand has access to is freeze framed then brought into the component so when the state update occurs
+      // In the real state it changed but the freeze frame is now inaccurate for use.
+    }
+
+    // setEndTurnFlag(0) // Takes you to screen with result of the play.
+  } // else {
+  //   // Handle second hand
+  // }
 
   return (
     <div>
@@ -209,9 +325,9 @@ function TableOptions({
       </p>
       <br></br>
       <p>
-        Dealer Card: {dealerCards.map(x => x.name).join(", ")}
+        Dealer Card: {localDealerCards.map(x => x.name).join(", ")}
         <br></br>
-        Value: {dealerCards.map(x => x.value).reduce((x, y) => x + y)}
+        Value: {localDealerCards.map(x => x.value).reduce((x, y) => x + y)}
       </p>
     </div>
   )
@@ -266,15 +382,6 @@ function App() {
     thisDeck.splice(cardIndex2, 1)
     setDeck(thisDeck)
     setDealerCards([card, card2])
-  }
-
-  const dealerHit = () => {
-    let thisDeck = deck
-    let cardIndex = Math.floor(Math.random() * thisDeck.length)
-    let card = thisDeck[cardIndex]
-    thisDeck.splice(cardIndex, 1)
-    setDeck(thisDeck)
-    setDealerCards([...dealerCards, card])
   }
 
   // The number of additional players
@@ -557,25 +664,6 @@ function App() {
     setSplitFlag(0)
   }
 
-  const stand = () => {
-    if (splitFlag) {
-      // Normal stand
-      // So you can't use a while here because from its perspective the dealerCards never change. It takes a cycle to catchup.
-      // while (dealerCards.map(x => x.value).reduce((x, y) => x + y) < 17) {
-      //   dealerHit()
-      // }
-        if (dealerCards.map(x => x.value).reduce((x, y) => x + y) < 17) {
-          dealerHit()
-        }
-        console.log(dealerCards.map(x => x.value).reduce((x, y) => x + y))
-      }
-
-      // setEndTurnFlag(0) // Takes you to screen with result of the play.
-    } // else {
-    //   // Handle second hand
-    // }
-  
-
   const [endTurnFlag, setEndTurnFlag] = useState(1)
 
   const shuffleDeck = () => {
@@ -612,8 +700,10 @@ function App() {
       yourCards2={yourCards2}
       dealerCards={dealerCards}
       dealerDeal={dealerDeal}
-      stand={stand}
-      dealerHit={dealerHit}
+      splitFlag={splitFlag}
+      deck={deck}
+      setDeck={setDeck}
+      setDealerCards={setDealerCards}
     ></LoadOrder>
   )
 }
