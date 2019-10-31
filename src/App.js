@@ -22,7 +22,9 @@ function LoadOrder({
   splitFlag,
   deck,
   setDeck,
-  setDealerCards
+  setDealerCards,
+  endTurnFlagSwitch,
+  endTurnFlag
 }) {
   if (startFlag) {
     return (
@@ -59,6 +61,8 @@ function LoadOrder({
         deck={deck}
         setDeck={setDeck}
         setDealerCards={setDealerCards}
+        endTurnFlagSwitch={endTurnFlagSwitch}
+        endTurnFlag={endTurnFlag}
       ></TableOptions>
     )
   }
@@ -189,11 +193,13 @@ function TableOptions({
   splitFlag,
   deck,
   setDeck,
-  setDealerCards
+  setDealerCards,
+  endTurnFlagSwitch,
+  endTurnFlag
 }) {
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
 
-  const [effectFlag, setEffectFlag] = useState(0)
+  const [roundResult, setRoundResult] = useState()
 
   const dealerHit = () => {
     // console.log(dealerCards.map(x => x.value).reduce((x, y) => x + y))
@@ -291,6 +297,7 @@ function TableOptions({
   const stand = () => {
     if (splitFlag) {
       dealerHit()
+      endTurnFlagSwitch()
 
       // In other words dealerCards doesn't change from its perspective after dealerHit() operates.
 
@@ -301,36 +308,78 @@ function TableOptions({
     }
 
     // setEndTurnFlag(0) // Takes you to screen with result of the play.
-  } // else {
-  //   // Handle second hand
-  // }
+    else {
+      // Handle second hand
+    }
+  }
+  useEffect(() => {
+    if (
+      localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
+      yourCards.map(x => x.value).reduce((x, y) => x + y)
+    ) {
+      setRoundResult("You won")
+    } else if (
+      localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
+      yourCards.map(x => x.value).reduce((x, y) => x + y)
+    ) {
+      if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22) {
+        setRoundResult("You lost")
+      } else {
+        setRoundResult("Dealer Bust. You win")
+      }
+    } else setRoundResult("It's a tie")
+  })
 
-  return (
-    <div>
-      <button onClick={playerHit}>Hit</button>
-      <br></br>
-      <button onClick={doubleDown}>Double Down</button>
-      <br></br>
-      <button onClick={splitting}>Split</button>
-      <br></br>
-      <button onClick={stand}>Stand</button>
-      <br></br>
-      <br></br>
-      <p>Your Bet: {playerBet}</p>
-      <br></br>
-      <p>
-        Your Cards: {yourCards.map(x => x.name).join(", ")}
+  if (endTurnFlag) {
+    return (
+      <div>
+        <button onClick={playerHit}>Hit</button>
         <br></br>
-        Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
-      </p>
-      <br></br>
-      <p>
-        Dealer Card: {localDealerCards.map(x => x.name).join(", ")}
+        <button onClick={doubleDown}>Double Down</button>
         <br></br>
-        Value: {localDealerCards.map(x => x.value).reduce((x, y) => x + y)}
-      </p>
-    </div>
-  )
+        <button onClick={splitting}>Split</button>
+        <br></br>
+        <button onClick={stand}>Stand</button>
+        <br></br>
+        <br></br>
+        <p>Your Bet: {playerBet}</p>
+        <br></br>
+        <p>
+          Your Cards: {yourCards.map(x => x.name).join(", ")}
+          <br></br>
+          Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
+        </p>
+        <br></br>
+        <p>
+          Dealer Card: {localDealerCards[0].name}
+          <br></br>
+          Value: {localDealerCards[0].value}
+        </p>
+      </div>
+    )
+  } else {
+    return (
+      <div>
+        <button>Continue</button>
+        <br></br>
+        <br></br>
+        <p>Your Bet: {playerBet}</p>
+        <br></br>
+        <p>
+          Your Cards: {yourCards.map(x => x.name).join(", ")}
+          <br></br>
+          Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
+        </p>
+        <br></br>
+        <p>
+          Dealer Cards: {localDealerCards.map(x => x.name).join(", ")}
+          <br></br>
+          Value: {localDealerCards.map(x => x.value).reduce((x, y) => x + y)}
+        </p>
+        <h1>{roundResult}</h1>
+      </div>
+    )
+  }
 }
 
 function DealerBlackJack({}) {
@@ -665,6 +714,9 @@ function App() {
   }
 
   const [endTurnFlag, setEndTurnFlag] = useState(1)
+  const endTurnFlagSwitch = () => {
+    setEndTurnFlag(0)
+  }
 
   const shuffleDeck = () => {
     let deck = [...discardPile, ...deck]
@@ -704,6 +756,8 @@ function App() {
       deck={deck}
       setDeck={setDeck}
       setDealerCards={setDealerCards}
+      endTurnFlagSwitch={endTurnFlagSwitch}
+      endTurnFlag={endTurnFlag}
     ></LoadOrder>
   )
 }
