@@ -24,7 +24,9 @@ function LoadOrder({
   setDeck,
   setDealerCards,
   endTurnFlagSwitch,
-  endTurnFlag
+  endTurnFlag,
+  roundStartFlagReset,
+  yourMoney
 }) {
   if (startFlag) {
     return (
@@ -43,10 +45,16 @@ function LoadOrder({
         playerBet={playerBet}
         playerBetUpdate={playerBetUpdate}
         dealerDeal={dealerDeal}
+        yourMoney={yourMoney}
       ></RoundStart>
     )
   } else if (dealerCards[0].value + dealerCards[1].value === 21) {
-    return <DealerBlackJack></DealerBlackJack>
+    return (
+      <DealerBlackJack
+        roundStartFlagReset={roundStartFlagReset}
+        yourMoney={yourMoney}
+      ></DealerBlackJack>
+    )
   } else {
     return (
       <TableOptions
@@ -63,6 +71,8 @@ function LoadOrder({
         setDealerCards={setDealerCards}
         endTurnFlagSwitch={endTurnFlagSwitch}
         endTurnFlag={endTurnFlag}
+        roundStartFlagReset={roundStartFlagReset}
+        yourMoney={yourMoney}
       ></TableOptions>
     )
   }
@@ -142,12 +152,13 @@ function RoundStart({
   roundStartFlagSwitch,
   playerBet,
   playerBetUpdate,
-  dealerDeal
+  dealerDeal,
+  yourMoney
 }) {
   // So it appears that even when thr function is called from the child it still executes in the location it was defined (the parent) and had access to everything it would normally.
   const [playerBetHandle, setPlayerBetHandle] = useState("")
 
-  const test = e => {
+  const deal = e => {
     e.preventDefault()
     playerDeal()
     dealerDeal()
@@ -163,6 +174,7 @@ function RoundStart({
   return (
     <div>
       <div>
+        <p>Money: {yourMoney}</p>
         <form onSubmit={betHandle}>
           Enter bet
           <input
@@ -174,13 +186,15 @@ function RoundStart({
         </form>
       </div>
       <div>
-        <form onSubmit={test}>
+        <form onSubmit={deal}>
           <button>Deal</button>
         </form>
       </div>
     </div>
   )
 }
+
+// end turn flag issue
 
 function TableOptions({
   playerHit,
@@ -195,11 +209,15 @@ function TableOptions({
   setDeck,
   setDealerCards,
   endTurnFlagSwitch,
-  endTurnFlag
+  endTurnFlag,
+  roundStartFlagReset,
+  yourMoney
 }) {
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
 
   const [roundResult, setRoundResult] = useState()
+
+  const [bust, setBust] = useState(0)
 
   const dealerHit = () => {
     // console.log(dealerCards.map(x => x.value).reduce((x, y) => x + y))
@@ -330,7 +348,36 @@ function TableOptions({
     } else setRoundResult("It's a tie")
   })
 
-  if (endTurnFlag) {
+  useEffect(() => {
+    if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+      setBust(1)
+    }
+  }, [yourCards])
+
+  if (bust) {
+    return (
+      <div>
+        <button onClick={roundStartFlagReset}>Continue</button>
+        <br></br>
+        <br></br>
+        <p>Money: {yourMoney}</p>
+        <p>Your Bet: {playerBet}</p>
+        <br></br>
+        <p>
+          Your Cards: {yourCards.map(x => x.name).join(", ")}
+          <br></br>
+          Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
+        </p>
+        <br></br>
+        <p>
+          Dealer Card: {localDealerCards[0].name}
+          <br></br>
+          Value: {localDealerCards[0].value}
+        </p>
+        <h1>You bust</h1>
+      </div>
+    )
+  } else if (endTurnFlag) {
     return (
       <div>
         <button onClick={playerHit}>Hit</button>
@@ -342,6 +389,7 @@ function TableOptions({
         <button onClick={stand}>Stand</button>
         <br></br>
         <br></br>
+        <p>Money: {yourMoney}</p>
         <p>Your Bet: {playerBet}</p>
         <br></br>
         <p>
@@ -360,9 +408,10 @@ function TableOptions({
   } else {
     return (
       <div>
-        <button>Continue</button>
+        <button onClick={roundStartFlagReset}>Continue</button>
         <br></br>
         <br></br>
+        <p>Money: {yourMoney}</p>
         <p>Your Bet: {playerBet}</p>
         <br></br>
         <p>
@@ -382,11 +431,12 @@ function TableOptions({
   }
 }
 
-function DealerBlackJack({}) {
+function DealerBlackJack({ roundStartFlagReset, yourMoney }) {
   return (
     <div>
-      <p>Dealer has 21.</p>
-      <button>Continue</button>
+      <p>Money: {yourMoney}</p>
+      <p>Dealer blackjack</p>
+      <button onClick={roundStartFlagReset}>Continue</button>
     </div>
   )
 }
@@ -401,6 +451,10 @@ function App() {
   const [roundStartFlag, setRoundStartFlag] = useState(1)
   const roundStartFlagSwitch = () => {
     setRoundStartFlag(0)
+  }
+  const roundStartFlagReset = () => {
+    setRoundStartFlag(1)
+    setEndTurnFlag(1)
   }
   // How many decks are being used.
   const [deckCount, setDeckCount] = useState(1)
@@ -758,6 +812,8 @@ function App() {
       setDealerCards={setDealerCards}
       endTurnFlagSwitch={endTurnFlagSwitch}
       endTurnFlag={endTurnFlag}
+      roundStartFlagReset={roundStartFlagReset}
+      yourMoney={yourMoney}
     ></LoadOrder>
   )
 }
