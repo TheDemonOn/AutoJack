@@ -26,7 +26,8 @@ function LoadOrder({
   endTurnFlagSwitch,
   endTurnFlag,
   roundStartFlagReset,
-  yourMoney
+  yourMoney,
+  discardPileUpdate
 }) {
   if (startFlag) {
     return (
@@ -46,9 +47,11 @@ function LoadOrder({
         playerBetUpdate={playerBetUpdate}
         dealerDeal={dealerDeal}
         yourMoney={yourMoney}
+        yourMoneyValue={yourMoneyValue}
       ></RoundStart>
     )
   } else if (dealerCards[0].value + dealerCards[1].value === 21) {
+    // .value is undefined on continue press// Didn't deal to dealer// Ran out of cards
     return (
       <DealerBlackJack
         roundStartFlagReset={roundStartFlagReset}
@@ -73,6 +76,8 @@ function LoadOrder({
         endTurnFlag={endTurnFlag}
         roundStartFlagReset={roundStartFlagReset}
         yourMoney={yourMoney}
+        yourMoneyValue={yourMoneyValue}
+        discardPileUpdate={discardPileUpdate}
       ></TableOptions>
     )
   }
@@ -88,7 +93,7 @@ function StartScreen({
 
   const [OtherPlayers, setOtherPlayers] = useState("")
 
-  const [YourMoney, setYourMoney] = useState("")
+  const [YourMoneyLocal, setYourMoneyLocal] = useState("")
 
   const handleDeckCount = e => {
     e.preventDefault()
@@ -108,10 +113,10 @@ function StartScreen({
 
   const handleYourMoney = e => {
     e.preventDefault()
-    if (!YourMoney) return
-    console.log(YourMoney)
-    yourMoneyValue(YourMoney)
-    setYourMoney("")
+    if (!YourMoneyLocal) return
+    console.log(YourMoneyLocal)
+    yourMoneyValue(YourMoneyLocal)
+    setYourMoneyLocal("")
   }
 
   return (
@@ -138,8 +143,8 @@ function StartScreen({
         How much money do you want to start with?{" "}
         <input
           type="text"
-          value={YourMoney}
-          onChange={e => setYourMoney(e.target.value)}
+          value={YourMoneyLocal}
+          onChange={e => setYourMoneyLocal(e.target.value)}
         />
       </form>
       <button onClick={startFlagSwitch}>Continue</button>
@@ -153,13 +158,13 @@ function RoundStart({
   playerBet,
   playerBetUpdate,
   dealerDeal,
-  yourMoney
+  yourMoney,
+  yourMoneyValue
 }) {
   // So it appears that even when thr function is called from the child it still executes in the location it was defined (the parent) and had access to everything it would normally.
   const [playerBetHandle, setPlayerBetHandle] = useState("")
 
   const deal = e => {
-    e.preventDefault()
     playerDeal()
     dealerDeal()
     roundStartFlagSwitch()
@@ -170,6 +175,44 @@ function RoundStart({
     if (!playerBetHandle) return
     console.log(playerBetHandle)
     playerBetUpdate(playerBetHandle)
+    yourMoneyValue(yourMoney - playerBetHandle)
+    deal()
+  }
+
+  const betOne = () => {
+    playerBetUpdate(1)
+    yourMoneyValue(yourMoney - 1)
+    deal()
+  }
+  const betFive = () => {
+    playerBetUpdate(5)
+    yourMoneyValue(yourMoney - 5)
+    deal()
+  }
+  const betTen = () => {
+    playerBetUpdate(10)
+    yourMoneyValue(yourMoney - 10)
+    deal()
+  }
+  const betTwentyFive = () => {
+    playerBetUpdate(25)
+    yourMoneyValue(yourMoney - 25)
+    deal()
+  }
+  const betFifty = () => {
+    playerBetUpdate(50)
+    yourMoneyValue(yourMoney - 50)
+    deal()
+  }
+  const betOneHundred = () => {
+    playerBetUpdate(100)
+    yourMoneyValue(yourMoney - 100)
+    deal()
+  }
+  const betFiveHundred = () => {
+    playerBetUpdate(500)
+    yourMoneyValue(yourMoney - 500)
+    deal()
   }
   return (
     <div>
@@ -186,15 +229,23 @@ function RoundStart({
         </form>
       </div>
       <div>
-        <form onSubmit={deal}>
-          <button>Deal</button>
-        </form>
+        <button onClick={betOne}>Bet 1</button>
+        <br></br>
+        <button onClick={betFive}>Bet 5</button>
+        <br></br>
+        <button onClick={betTen}>Bet 10</button>
+        <br></br>
+        <button onClick={betTwentyFive}>Bet 25</button>
+        <br></br>
+        <button onClick={betFifty}>Bet 50</button>
+        <br></br>
+        <button onClick={betOneHundred}>Bet 100</button>
+        <br></br>
+        <button onClick={betFiveHundred}>Bet 500</button>
       </div>
     </div>
   )
 }
-
-// end turn flag issue
 
 function TableOptions({
   playerHit,
@@ -211,11 +262,13 @@ function TableOptions({
   endTurnFlagSwitch,
   endTurnFlag,
   roundStartFlagReset,
-  yourMoney
+  yourMoney,
+  yourMoneyValue,
+  discardPileUpdate
 }) {
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
 
-  const [roundResult, setRoundResult] = useState()
+  const [roundResult, setRoundResult] = useState("")
 
   const [bust, setBust] = useState(0)
 
@@ -228,6 +281,7 @@ function TableOptions({
       let cardIndex = Math.floor(Math.random() * thisDeck.length)
       let card = thisDeck[cardIndex]
       thisDeck.splice(cardIndex, 1)
+      discardPileUpdate(card)
       if (
         localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
           card.value <
@@ -236,6 +290,7 @@ function TableOptions({
         let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
         let card2 = thisDeck[cardIndex2]
         thisDeck.splice(cardIndex2, 1)
+        discardPileUpdate(card)
         if (
           localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
             card.value +
@@ -245,6 +300,7 @@ function TableOptions({
           let cardIndex3 = Math.floor(Math.random() * thisDeck.length)
           let card3 = thisDeck[cardIndex3]
           thisDeck.splice(cardIndex3, 1)
+          discardPileUpdate(card)
           if (
             localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
               card.value +
@@ -255,6 +311,7 @@ function TableOptions({
             let cardIndex4 = Math.floor(Math.random() * thisDeck.length)
             let card4 = thisDeck[cardIndex4]
             thisDeck.splice(cardIndex4, 1)
+            discardPileUpdate(card)
             if (
               localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
                 card.value +
@@ -266,6 +323,7 @@ function TableOptions({
               let cardIndex5 = Math.floor(Math.random() * thisDeck.length)
               let card5 = thisDeck[cardIndex5]
               thisDeck.splice(cardIndex5, 1)
+              discardPileUpdate(card)
               setDeck(thisDeck)
               setDealerCards([
                 ...localDealerCards,
@@ -330,29 +388,57 @@ function TableOptions({
       // Handle second hand
     }
   }
+  // useEffect(() => {
+  //   // This executes all the time but doesn't show until a flag has been triggered.
+  //   if (
+  //     localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
+  //     yourCards.map(x => x.value).reduce((x, y) => x + y)
+  //   ) {
+  //     setRoundResult("You won")
+  //   } else if (
+  //     localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
+  //     yourCards.map(x => x.value).reduce((x, y) => x + y)
+  //   ) {
+  //     if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22) {
+  //       setRoundResult("You lost")
+  //     } else {
+  //       setRoundResult("Dealer Bust. You win")
+  //     }
+  //   } else setRoundResult("It's a tie")
+  // })
+
   useEffect(() => {
-    if (
-      localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
-      yourCards.map(x => x.value).reduce((x, y) => x + y)
-    ) {
-      setRoundResult("You won")
-    } else if (
-      localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
-      yourCards.map(x => x.value).reduce((x, y) => x + y)
-    ) {
-      if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22) {
-        setRoundResult("You lost")
+    if (endTurnFlag === 0) {
+      if (
+        localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
+        yourCards.map(x => x.value).reduce((x, y) => x + y)
+      ) {
+        yourMoneyValue(yourMoney + playerBet * 2)
+        setRoundResult(`You won ${playerBet * 2}`)
+      } else if (
+        localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
+        yourCards.map(x => x.value).reduce((x, y) => x + y)
+      ) {
+        if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22) {
+          setRoundResult("You lost")
+        } else {
+          yourMoneyValue(yourMoney + playerBet * 2)
+          setRoundResult(`Dealer Bust. You win ${playerBet * 2}`)
+        }
       } else {
-        setRoundResult("Dealer Bust. You win")
+        yourMoneyValue(yourMoney + playerBet)
+        setRoundResult("It's a tie")
       }
-    } else setRoundResult("It's a tie")
-  })
+    }
+  }, [endTurnFlag])
 
   useEffect(() => {
     if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
       setBust(1)
     }
   }, [yourCards])
+
+  // }, [input])
 
   if (bust) {
     return (
@@ -480,9 +566,11 @@ function App() {
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
     let card = thisDeck[cardIndex]
     thisDeck.splice(cardIndex, 1)
+    discardPile.push(card)
     let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
     let card2 = thisDeck[cardIndex2]
     thisDeck.splice(cardIndex2, 1)
+    discardPile.push(card2)
     setDeck(thisDeck)
     setDealerCards([card, card2])
   }
@@ -712,6 +800,14 @@ function App() {
     }
   ])
 
+  if (deckCount != 1) {
+    let localDeck = deck
+    for (let i = 1; i < deckCount; i++) {
+      deck.push(...localDeck.slice(0, 52))
+    }
+  }
+  console.log(deck)
+
   // For starters only going to use 1 player then figure out how to simulate other hands.
   // Only deals once for now BTW
   const playerDeal = () => {
@@ -719,18 +815,26 @@ function App() {
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
     let card = thisDeck[cardIndex]
     thisDeck.splice(cardIndex, 1)
+    discardPile.push(card)
     let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
     let card2 = thisDeck[cardIndex2]
     thisDeck.splice(cardIndex2, 1)
+    discardPile.push(card2)
     setDeck(thisDeck)
     setYourCards([card, card2])
     // An issue for seeing the results I had was that after setYourCards was finished viewing yourCards through the console wasn't correctly updated until the next update.
   }
 
-  const [discardPile, setDiscardPile] = useState([])
+  const [discardPile, setDiscardPile] = useState([]) // discardPile is not iterable // Objects are outside the array
+  const discardPileUpdate = value => {
+    discardPile.push(value)
+  }
+
+  useEffect(() => {
+    console.log(discardPile)
+  }, [discardPile])
 
   const [playerBet, setPlayerBet] = useState(1)
-
   const playerBetUpdate = value => {
     setPlayerBet(value)
   }
@@ -740,6 +844,7 @@ function App() {
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
     let card = thisDeck[cardIndex]
     thisDeck.splice(cardIndex, 1)
+    setDiscardPile([...discardPile, card])
     setDeck(thisDeck)
     // Now update hand
     setYourCards([...yourCards, card])
@@ -773,6 +878,7 @@ function App() {
   }
 
   const shuffleDeck = () => {
+    // Shuffle percentage 1 player to 5 hands for 1 deck,
     let deck = [...discardPile, ...deck]
     setDeck(deck)
   }
@@ -814,6 +920,7 @@ function App() {
       endTurnFlag={endTurnFlag}
       roundStartFlagReset={roundStartFlagReset}
       yourMoney={yourMoney}
+      discardPileUpdate={discardPileUpdate}
     ></LoadOrder>
   )
 }
