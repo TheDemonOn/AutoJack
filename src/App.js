@@ -14,7 +14,6 @@ function LoadOrder({
   yourCards,
   playerBet,
   playerBetUpdate,
-  doubleDown,
   splitting,
   yourCards2,
   dealerCards,
@@ -63,7 +62,6 @@ function LoadOrder({
       <TableOptions
         playerHit={playerHit}
         yourCards={yourCards}
-        doubleDown={doubleDown}
         splitting={splitting}
         yourCards2={yourCards2}
         playerBet={playerBet}
@@ -78,6 +76,7 @@ function LoadOrder({
         yourMoney={yourMoney}
         yourMoneyValue={yourMoneyValue}
         discardPileUpdate={discardPileUpdate}
+        playerBetUpdate={playerBetUpdate}
       ></TableOptions>
     )
   }
@@ -250,10 +249,10 @@ function RoundStart({
 function TableOptions({
   playerHit,
   yourCards,
-  doubleDown,
   splitting,
   yourCards2,
   playerBet,
+  playerBetUpdate,
   dealerCards,
   splitFlag,
   deck,
@@ -271,6 +270,16 @@ function TableOptions({
   const [roundResult, setRoundResult] = useState("")
 
   const [bust, setBust] = useState(0)
+
+  const doubleDown = () => {
+    // hit one time, double the bet, then end player turn.
+    playerBetUpdate(playerBet * 2)
+    yourMoneyValue(yourMoney - playerBet)
+    playerHit()
+    console.log(yourCards)
+    //Turn end function
+    stand()
+  }
 
   const dealerHit = () => {
     // console.log(dealerCards.map(x => x.value).reduce((x, y) => x + y))
@@ -370,6 +379,7 @@ function TableOptions({
     }
   }
 
+  // If splitting the game should continue its normal flow then after stand switch your cards2 into your cards and play it out
   const stand = () => {
     if (splitFlag) {
       dealerHit()
@@ -386,26 +396,15 @@ function TableOptions({
     // setEndTurnFlag(0) // Takes you to screen with result of the play.
     else {
       // Handle second hand
+      // We need both hands to resolve before endTurnFlag can be switched
     }
   }
-  // useEffect(() => {
-  //   // This executes all the time but doesn't show until a flag has been triggered.
-  //   if (
-  //     localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
-  //     yourCards.map(x => x.value).reduce((x, y) => x + y)
-  //   ) {
-  //     setRoundResult("You won")
-  //   } else if (
-  //     localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
-  //     yourCards.map(x => x.value).reduce((x, y) => x + y)
-  //   ) {
-  //     if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22) {
-  //       setRoundResult("You lost")
-  //     } else {
-  //       setRoundResult("Dealer Bust. You win")
-  //     }
-  //   } else setRoundResult("It's a tie")
-  // })
+
+  useEffect(() => {
+    if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+      setBust(1)
+    }
+  }, [yourCards])
 
   useEffect(() => {
     if (endTurnFlag === 0) {
@@ -413,8 +412,12 @@ function TableOptions({
         localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
         yourCards.map(x => x.value).reduce((x, y) => x + y)
       ) {
-        yourMoneyValue(yourMoney + playerBet * 2)
-        setRoundResult(`You won ${playerBet * 2}`)
+        if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+          return
+        } else {
+          yourMoneyValue(yourMoney + playerBet * 2)
+          setRoundResult(`You won ${playerBet * 2}`)
+        }
       } else if (
         localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
         yourCards.map(x => x.value).reduce((x, y) => x + y)
@@ -432,15 +435,72 @@ function TableOptions({
     }
   }, [endTurnFlag])
 
-  useEffect(() => {
-    if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
-      setBust(1)
+  if (splitFlag === 0) {
+    if (endTurnFlag) {
+      return (
+        <div>
+          <button onClick={playerHit}>Hit</button>
+          <br></br>
+          <button onClick={doubleDown}>Double Down</button>
+          <br></br>
+          <button onClick={stand}>Stand</button>
+          <br></br>
+          <br></br>
+          <p>Money: {yourMoney}</p>
+          <p>Your Bet: {playerBet}</p>
+          <br></br>
+          <p>
+            Your First Hand: {yourCards.map(x => x.name).join(", ")}
+            <br></br>
+            Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
+          </p>
+          <br></br>
+          <p>
+            Your Second Hand: {yourCards2.map(x => x.name).join(", ")}
+            <br></br>
+            Total: {yourCards2.map(x => x.value).reduce((x, y) => x + y)}
+          </p>
+          <br></br>
+          <p>
+            Dealer Card: {localDealerCards[0].name}
+            <br></br>
+            Value: {localDealerCards[0].value}
+          </p>
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          <button onClick={roundStartFlagReset}>Continue</button>
+          <br></br>
+          <br></br>
+          <p>Money: {yourMoney}</p>
+          <p>Your Bet: {playerBet}</p>
+          <br></br>
+          <p>
+            Your First Hand: {yourCards.map(x => x.name).join(", ")}
+            <br></br>
+            Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
+          </p>
+          <br></br>
+          <p>
+            Your Second Hand: {yourCards2.map(x => x.name).join(", ")}
+            <br></br>
+            Total: {yourCards2.map(x => x.value).reduce((x, y) => x + y)}
+          </p>
+          <br></br>
+          <p>
+            Dealer Card: {localDealerCards[0].name}
+            <br></br>
+            Value: {localDealerCards[0].value}
+          </p>
+          <h1>
+            {handResult1} {handResult2}
+          </h1>
+        </div>
+      )
     }
-  }, [yourCards])
-
-  // }, [input])
-
-  if (bust) {
+  } else if (bust) {
     return (
       <div>
         <button onClick={roundStartFlagReset}>Continue</button>
@@ -800,13 +860,16 @@ function App() {
     }
   ])
 
-  if (deckCount != 1) {
-    let localDeck = deck
-    for (let i = 1; i < deckCount; i++) {
-      deck.push(...localDeck.slice(0, 52))
+  useEffect(() => {
+    // If deck is ever manually updated update the deck
+    if (deckCount != 1) {
+      let localDeck = deck
+      for (let i = 1; i < deckCount; i++) {
+        deck.push(...localDeck.slice(0, 52))
+      }
     }
-  }
-  console.log(deck)
+    console.log(deck)
+  }, [deckCount])
 
   // For starters only going to use 1 player then figure out how to simulate other hands.
   // Only deals once for now BTW
@@ -830,10 +893,6 @@ function App() {
     discardPile.push(value)
   }
 
-  useEffect(() => {
-    console.log(discardPile)
-  }, [discardPile])
-
   const [playerBet, setPlayerBet] = useState(1)
   const playerBetUpdate = value => {
     setPlayerBet(value)
@@ -850,14 +909,8 @@ function App() {
     setYourCards([...yourCards, card])
   }
 
-  const doubleDown = () => {
-    // hit one time, double the bet, then end player turn.
-    setPlayerBet(playerBet * 2)
-    playerHit()
-    //Turn end function
-  }
-
   const splitting = () => {
+    // splitting should only be available on the deal no other times
     setPlayerBet(playerBet * 2)
     let splitCard1 = yourCards.slice(0, 1)
     let splitCard2 = yourCards.slice(1)
@@ -893,6 +946,10 @@ function App() {
 
   const [pastResults, setPastResults] = useState([])
 
+  useEffect(() => {
+    console.log(discardPile)
+  }, [discardPile])
+
   return (
     <LoadOrder
       startFlagSwitch={startFlagSwitch}
@@ -907,7 +964,6 @@ function App() {
       yourCards={yourCards}
       playerBet={playerBet}
       playerBetUpdate={playerBetUpdate}
-      doubleDown={doubleDown}
       splitting={splitting}
       yourCards2={yourCards2}
       dealerCards={dealerCards}
