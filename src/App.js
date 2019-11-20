@@ -26,7 +26,11 @@ function LoadOrder({
   endTurnFlag,
   roundStartFlagReset,
   yourMoney,
-  discardPileUpdate
+  discardPileUpdate,
+  yourCardsValue,
+  setYourCards,
+  playerHit2,
+  setSplitFlag
 }) {
   if (startFlag) {
     return (
@@ -77,6 +81,10 @@ function LoadOrder({
         yourMoneyValue={yourMoneyValue}
         discardPileUpdate={discardPileUpdate}
         playerBetUpdate={playerBetUpdate}
+        yourCardsValue={yourCardsValue}
+        setYourCards={setYourCards}
+        playerHit2={playerHit2}
+        setSplitFlag={setSplitFlag}
       ></TableOptions>
     )
   }
@@ -263,20 +271,51 @@ function TableOptions({
   roundStartFlagReset,
   yourMoney,
   yourMoneyValue,
-  discardPileUpdate
+  discardPileUpdate,
+  yourCardsValue,
+  setYourCards,
+  playerHit2,
+  setSplitFlag
 }) {
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
 
   const [roundResult, setRoundResult] = useState("")
 
+  const [handResult1, setHandResult1] = useState("")
+
+  const [handResult2, setHandResult2] = useState("")
+
   const [bust, setBust] = useState(0)
+
+  const [bust2, setBust2] = useState(0)
+
+  const [playerBet2, setPlayerBet2] = useState(playerBet)
+
+  const [handOneEnd, setHandOneEnd] = useState(1)
+
+  const [swappedCards1, setSwappedCards1] = useState(yourCards)
+
+  const [swappedCards2, setSwappedCards2] = useState()
+
+  const splitRoundReset = () => {
+    setSplitFlag(1)
+    roundStartFlagReset()
+  }
 
   const doubleDown = () => {
     // hit one time, double the bet, then end player turn.
     playerBetUpdate(playerBet * 2)
     yourMoneyValue(yourMoney - playerBet)
     playerHit()
-    console.log(yourCards)
+    //Turn end function
+    stand()
+  }
+
+  const doubleDown2 = () => {
+    // hit one time, double the bet, then end player turn.
+    setPlayerBet2(playerBet2 * 2)
+    yourMoneyValue(yourMoney - playerBet2)
+    playerHit2()
     //Turn end function
     stand()
   }
@@ -379,6 +418,11 @@ function TableOptions({
     }
   }
 
+  const handSwitch = () => {
+    // Start playing other hand
+    setHandOneEnd(0)
+  }
+
   // If splitting the game should continue its normal flow then after stand switch your cards2 into your cards and play it out
   const stand = () => {
     if (splitFlag) {
@@ -397,6 +441,12 @@ function TableOptions({
     else {
       // Handle second hand
       // We need both hands to resolve before endTurnFlag can be switched
+      // Display result 1 while 2 is active
+      if (handOneEnd === 0) {
+        dealerHit()
+        endTurnFlagSwitch()
+      }
+      handSwitch() // Deprecated name
     }
   }
 
@@ -407,7 +457,18 @@ function TableOptions({
   }, [yourCards])
 
   useEffect(() => {
-    if (endTurnFlag === 0) {
+    if (splitFlag === 0) {
+      if (yourCards2.map(x => x.value).reduce((x, y) => x + y) > 21) {
+        setBust2(1)
+      }
+    }
+  }, [yourCards2])
+
+  // Use this for second hand resolve
+
+  // Issue is that both the checks for hand 1 and 2 updating at the same time only allows for hand 1 to update in a cycle.
+  useEffect(() => {
+    if (endTurnFlag === 0 && splitFlag) {
       if (
         localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
         yourCards.map(x => x.value).reduce((x, y) => x + y)
@@ -432,11 +493,89 @@ function TableOptions({
         yourMoneyValue(yourMoney + playerBet)
         setRoundResult("It's a tie")
       }
+    } else {
+      if (endTurnFlag === 0) {
+        if (
+          localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
+          yourCards.map(x => x.value).reduce((x, y) => x + y)
+        ) {
+          if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+            return
+          } else {
+            yourMoneyValue(yourMoney + playerBet * 2)
+            setHandResult1(`You won ${playerBet * 2}`)
+          }
+        } else if (
+          localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
+          yourCards.map(x => x.value).reduce((x, y) => x + y)
+        ) {
+          if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22) {
+            setHandResult1("You lost")
+          } else {
+            yourMoneyValue(yourMoney + playerBet * 2)
+            setHandResult1(`Dealer Bust. You win ${playerBet * 2}`)
+          }
+        } else {
+          yourMoneyValue(yourMoney + playerBet)
+          setHandResult1("It's a tie")
+        }
+      }
     }
   }, [endTurnFlag])
 
+  useEffect(() => {
+    if (endTurnFlag === 0 && splitFlag === 0) {
+      if (
+        localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
+        yourCards2.map(x => x.value).reduce((x, y) => x + y)
+      ) {
+        if (yourCards2.map(x => x.value).reduce((x, y) => x + y) > 21) {
+          return
+        } else {
+          yourMoneyValue(yourMoney + playerBet2 * 2)
+          setHandResult2(`You won ${playerBet2 * 2}`)
+        }
+      } else if (
+        localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
+        yourCards2.map(x => x.value).reduce((x, y) => x + y)
+      ) {
+        if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22) {
+          setHandResult2("You lost")
+        } else {
+          yourMoneyValue(yourMoney + playerBet2 * 2)
+          setHandResult2(`Dealer Bust. You win ${playerBet2 * 2}`)
+        }
+      } else {
+        yourMoneyValue(yourMoney + playerBet2)
+        setHandResult2("It's a tie")
+      }
+    }
+  }, [endTurnFlag])
+
+  // Use this for first hand resolve
+
+  useEffect(() => {
+    if (splitFlag === 0) {
+      if (bust2) {
+        setHandResult2("Bust")
+        endTurnFlagSwitch()
+      }
+    }
+  })
+
+  useEffect(() => {
+    if (splitFlag === 0) {
+      if (bust) {
+        setHandResult1("Bust")
+        // Initiate switch to 2nd hand
+        handSwitch()
+      }
+    }
+  })
+
   if (splitFlag === 0) {
-    if (endTurnFlag) {
+    if (handOneEnd) {
+      // End turnFlag will trigger after the second hand has resolved
       return (
         <div>
           <button onClick={playerHit}>Hit</button>
@@ -448,6 +587,7 @@ function TableOptions({
           <br></br>
           <p>Money: {yourMoney}</p>
           <p>Your Bet: {playerBet}</p>
+          <p>Second Bet: {playerBet2}</p>
           <br></br>
           <p>
             Your First Hand: {yourCards.map(x => x.name).join(", ")}
@@ -468,14 +608,19 @@ function TableOptions({
           </p>
         </div>
       )
-    } else {
+    } else if (endTurnFlag) {
       return (
         <div>
-          <button onClick={roundStartFlagReset}>Continue</button>
+          <button onClick={playerHit2}>Hit</button>
+          <br></br>
+          <button onClick={doubleDown2}>Double Down</button>
+          <br></br>
+          <button onClick={stand}>Stand</button>
           <br></br>
           <br></br>
           <p>Money: {yourMoney}</p>
           <p>Your Bet: {playerBet}</p>
+          <p>Second Bet: {playerBet2}</p>
           <br></br>
           <p>
             Your First Hand: {yourCards.map(x => x.name).join(", ")}
@@ -494,8 +639,40 @@ function TableOptions({
             <br></br>
             Value: {localDealerCards[0].value}
           </p>
+          <h1>{handResult1}</h1>
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          <button onClick={splitRoundReset}>Continue</button>
+          <br></br>
+          <br></br>
+          <p>Money: {yourMoney}</p>
+          <p>Your Bet: {playerBet}</p>
+          <p>Second Bet: {playerBet2}</p>
+          <br></br>
+          <p>
+            Your First Hand: {yourCards.map(x => x.name).join(", ")}
+            <br></br>
+            Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
+          </p>
+          <br></br>
+          <p>
+            Your Second Hand: {yourCards2.map(x => x.name).join(", ")}
+            <br></br>
+            Total: {yourCards2.map(x => x.value).reduce((x, y) => x + y)}
+          </p>
+          <br></br>
+          <p>
+            Dealer Card: {localDealerCards.map(x => x.name).join(", ")}
+            <br></br>
+            Value: {localDealerCards.map(x => x.value).reduce((x, y) => x + y)}
+          </p>
           <h1>
-            {handResult1} {handResult2}
+            Hand 1:{handResult1}
+            <br></br>
+            Hand 2:{handResult2}
           </h1>
         </div>
       )
@@ -615,6 +792,9 @@ function App() {
   //   const [handCount, setHandCount] = useState(0)
 
   const [yourCards, setYourCards] = useState([])
+  const yourCardsValue = value => {
+    setYourCards(value)
+  }
 
   // To be used when splitting cards
   const [yourCards2, setYourCards2] = useState([])
@@ -882,7 +1062,7 @@ function App() {
     let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
     let card2 = thisDeck[cardIndex2]
     thisDeck.splice(cardIndex2, 1)
-    discardPile.push(card2)
+    discardPile.push(card2) // We use two ways of doing this need to see if there is a difference
     setDeck(thisDeck)
     setYourCards([card, card2])
     // An issue for seeing the results I had was that after setYourCards was finished viewing yourCards through the console wasn't correctly updated until the next update.
@@ -903,19 +1083,50 @@ function App() {
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
     let card = thisDeck[cardIndex]
     thisDeck.splice(cardIndex, 1)
-    setDiscardPile([...discardPile, card])
+    setDiscardPile([...discardPile, card]) // We use two ways of doing this need to see if there is a difference
     setDeck(thisDeck)
     // Now update hand
     setYourCards([...yourCards, card])
   }
 
+  const playerHit2 = () => {
+    let thisDeck = deck
+    let cardIndex = Math.floor(Math.random() * thisDeck.length)
+    let card = thisDeck[cardIndex]
+    thisDeck.splice(cardIndex, 1)
+    setDiscardPile([...discardPile, card]) // We use two ways of doing this need to see if there is a difference
+    setDeck(thisDeck)
+    // Now update hand
+    setYourCards2([...yourCards2, card])
+  }
+
   const splitting = () => {
     // splitting should only be available on the deal no other times
-    setPlayerBet(playerBet * 2)
+    // Need to add functions of splitting that occur before standing
+
+    // So all the state it receives stays the same through the entire operation
+
+    setYourMoney(yourMoney - playerBet)
+
     let splitCard1 = yourCards.slice(0, 1)
-    let splitCard2 = yourCards.slice(1)
-    setYourCards(splitCard1)
-    setYourCards2(splitCard2)
+    let splitCard2 = yourCards.slice(1, 2)
+
+    let thisDeck = deck
+
+    let cardIndex = Math.floor(Math.random() * thisDeck.length)
+    let card = thisDeck[cardIndex]
+    thisDeck.splice(cardIndex, 1)
+
+    let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
+    let card2 = thisDeck[cardIndex2]
+    thisDeck.splice(cardIndex2, 1)
+
+    setDiscardPile([...discardPile, card, card2])
+    setDeck(thisDeck)
+
+    setYourCards([...splitCard1, card]) // The reason it needs to be spread out is that the split is an object
+    setYourCards2([...splitCard2, card2])
+
     splitFlagSwitch()
   }
 
@@ -977,6 +1188,10 @@ function App() {
       roundStartFlagReset={roundStartFlagReset}
       yourMoney={yourMoney}
       discardPileUpdate={discardPileUpdate}
+      yourCardsValue={yourCardsValue}
+      setYourCards={setYourCards}
+      playerHit2={playerHit2}
+      setSplitFlag={setSplitFlag}
     ></LoadOrder>
   )
 }
