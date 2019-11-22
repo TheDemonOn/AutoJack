@@ -297,6 +297,10 @@ function TableOptions({
 
   const [swappedCards2, setSwappedCards2] = useState()
 
+  const [handOneWin, setHandOneWin] = useState(0)
+
+  const [handTwoWin, setHandTwoWin] = useState(0)
+
   const splitRoundReset = () => {
     setSplitFlag(1)
     roundStartFlagReset()
@@ -446,7 +450,7 @@ function TableOptions({
         dealerHit()
         endTurnFlagSwitch()
       }
-      handSwitch() // Deprecated name
+      handSwitch() // Deprecated name,
     }
   }
 
@@ -468,33 +472,10 @@ function TableOptions({
 
   // Issue is that both the checks for hand 1 and 2 updating at the same time only allows for hand 1 to update in a cycle.
   useEffect(() => {
-    if (endTurnFlag === 0 && splitFlag) {
-      if (
-        localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
-        yourCards.map(x => x.value).reduce((x, y) => x + y)
-      ) {
-        if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
-          return
-        } else {
-          yourMoneyValue(yourMoney + playerBet * 2)
-          setRoundResult(`You won ${playerBet * 2}`)
-        }
-      } else if (
-        localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
-        yourCards.map(x => x.value).reduce((x, y) => x + y)
-      ) {
-        if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22) {
-          setRoundResult("You lost")
-        } else {
-          yourMoneyValue(yourMoney + playerBet * 2)
-          setRoundResult(`Dealer Bust. You win ${playerBet * 2}`)
-        }
-      } else {
-        yourMoneyValue(yourMoney + playerBet)
-        setRoundResult("It's a tie")
-      }
+    if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+      return
     } else {
-      if (endTurnFlag === 0) {
+      if (endTurnFlag === 0 && splitFlag) {
         if (
           localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
           yourCards.map(x => x.value).reduce((x, y) => x + y)
@@ -503,21 +484,52 @@ function TableOptions({
             return
           } else {
             yourMoneyValue(yourMoney + playerBet * 2)
-            setHandResult1(`You won ${playerBet * 2}`)
+            setRoundResult(`You won ${playerBet * 2}`)
           }
         } else if (
           localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
           yourCards.map(x => x.value).reduce((x, y) => x + y)
         ) {
           if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22) {
-            setHandResult1("You lost")
+            setRoundResult("You lost")
           } else {
             yourMoneyValue(yourMoney + playerBet * 2)
-            setHandResult1(`Dealer Bust. You win ${playerBet * 2}`)
+            setRoundResult(`Dealer Bust. You win ${playerBet * 2}`)
           }
         } else {
           yourMoneyValue(yourMoney + playerBet)
-          setHandResult1("It's a tie")
+          setRoundResult("It's a tie")
+        }
+      } else {
+        if (endTurnFlag === 0) {
+          if (
+            localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
+            yourCards.map(x => x.value).reduce((x, y) => x + y)
+          ) {
+            if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+              return
+            } else {
+              yourMoneyValue(yourMoney + playerBet * 2)
+              setHandResult1(`You won ${playerBet * 2}`)
+              setHandOneWin(1)
+            }
+          } else if (
+            localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
+            yourCards.map(x => x.value).reduce((x, y) => x + y)
+          ) {
+            if (
+              localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22
+            ) {
+              setHandResult1("You lost")
+            } else {
+              yourMoneyValue(yourMoney + playerBet * 2)
+              setHandResult1(`Dealer Bust. You win ${playerBet * 2}`)
+              setHandOneWin(1)
+            }
+          } else {
+            yourMoneyValue(yourMoney + playerBet)
+            setHandResult1("It's a tie")
+          }
         }
       }
     }
@@ -525,6 +537,7 @@ function TableOptions({
 
   useEffect(() => {
     if (endTurnFlag === 0 && splitFlag === 0) {
+      // When endTurnFlag executes on split, the first hand has resolved already; resolve second hand
       if (
         localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
         yourCards2.map(x => x.value).reduce((x, y) => x + y)
@@ -534,6 +547,7 @@ function TableOptions({
         } else {
           yourMoneyValue(yourMoney + playerBet2 * 2)
           setHandResult2(`You won ${playerBet2 * 2}`)
+          setHandTwoWin(1)
         }
       } else if (
         localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
@@ -544,6 +558,7 @@ function TableOptions({
         } else {
           yourMoneyValue(yourMoney + playerBet2 * 2)
           setHandResult2(`Dealer Bust. You win ${playerBet2 * 2}`)
+          setHandTwoWin(1)
         }
       } else {
         yourMoneyValue(yourMoney + playerBet2)
@@ -551,6 +566,13 @@ function TableOptions({
       }
     }
   }, [endTurnFlag])
+
+  useEffect(() => {
+    // Resolves for updating yourMoney twice in the same cycle
+    if (handOneWin && handTwoWin) {
+      yourMoneyValue(yourMoney + playerBet + playerBet2)
+    }
+  }, [handTwoWin])
 
   // Use this for first hand resolve
 
