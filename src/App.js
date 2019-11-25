@@ -85,6 +85,7 @@ function LoadOrder({
         setYourCards={setYourCards}
         playerHit2={playerHit2}
         setSplitFlag={setSplitFlag}
+        roundStartFlag={roundStartFlag}
       ></TableOptions>
     )
   }
@@ -275,7 +276,8 @@ function TableOptions({
   yourCardsValue,
   setYourCards,
   playerHit2,
-  setSplitFlag
+  setSplitFlag,
+  roundStartFlag
 }) {
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
 
@@ -300,6 +302,18 @@ function TableOptions({
   const [handOneWin, setHandOneWin] = useState(0)
 
   const [handTwoWin, setHandTwoWin] = useState(0)
+
+  const [totalWithAce, setTotalWithAce] = useState()
+
+  const [cardTotal, setCardTotal] = useState(
+    yourCards.map(x => x.value).reduce((x, y) => x + y)
+  )
+
+  const [cardTotal2, setCardTotal2] = useState()
+
+  const [dealerCardTotal, setDealerCardTotal] = useState(
+    localDealerCards.map(x => x.value).reduce((x, y) => x + y)
+  )
 
   const splitRoundReset = () => {
     setSplitFlag(1)
@@ -430,83 +444,226 @@ function TableOptions({
   // If splitting the game should continue its normal flow then after stand switch your cards2 into your cards and play it out
   const stand = () => {
     if (splitFlag) {
+      // If split is not triggered
       dealerHit()
       endTurnFlagSwitch()
-
-      // In other words dealerCards doesn't change from its perspective after dealerHit() operates.
-
-      // To fix don't use state from the main to make determinations about the future make its own local state to perform operations.
-
-      // It could be that the state stand has access to is freeze framed then brought into the component so when the state update occurs
-      // In the real state it changed but the freeze frame is now inaccurate for use.
-    }
-
-    // setEndTurnFlag(0) // Takes you to screen with result of the play.
-    else {
+    } else {
       // Handle second hand
       // We need both hands to resolve before endTurnFlag can be switched
-      // Display result 1 while 2 is active
       if (handOneEnd === 0) {
         dealerHit()
         endTurnFlagSwitch()
       }
-      handSwitch() // Deprecated name,
+      handSwitch() // Switches to second hand
     }
   }
 
   useEffect(() => {
-    if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
-      setBust(1)
+    // Sets an initial value for yourCards2 if the hand is split
+    if (splitFlag === 0) {
+      setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
+    }
+  }, [splitFlag])
+
+  useEffect(() => {
+    console.log(yourCards.map(x => x.value).filter(x => x === 11)[0] > 0)
+    console.log(yourCards.filter(x => x.value2 === 1).length)
+  }, [cardTotal])
+
+  useEffect(() => {
+    if (yourCards[0].value + yourCards[1].value === 21) {
+      // Blackjack check
+      stand()
+    } else {
+      if (yourCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
+        // Checking for Aces in yourCards
+        let aceCards = yourCards.filter(x => x.value2 === 1)
+        if (
+          // Checks for bust with Aces reduced to 1
+          yourCards.map(x => x.value).reduce((x, y) => x + y) -
+            aceCards.length * 11 +
+            aceCards.length >
+          21
+        ) {
+          setCardTotal(
+            yourCards.map(x => x.value).reduce((x, y) => x + y) -
+              aceCards.length * 11 +
+              aceCards.length
+          )
+          setBust(1)
+        } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) <= 21) {
+          // Normal draw calculation with Ace being 11 if not busting
+          setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
+        } else {
+          // Draw but with reduced Aces
+          setCardTotal(
+            yourCards.map(x => x.value).reduce((x, y) => x + y) -
+              aceCards.length * 11 +
+              aceCards.length
+          )
+        }
+      } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+        // Checks for bust with no Aces
+        setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
+        setBust(1)
+      } else {
+        // Normal draw calculation without Aces
+        setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
+      }
     }
   }, [yourCards])
 
   useEffect(() => {
-    if (splitFlag === 0) {
-      if (yourCards2.map(x => x.value).reduce((x, y) => x + y) > 21) {
-        setBust2(1)
+    if (handOneEnd === 0) {
+      if (yourCards2[0].value + yourCards2[1].value === 21) {
+        // Blackjack check
+        stand()
+      } else {
+        if (yourCards2.map(x => x.value).filter(x => x === 11)[0] > 0) {
+          // Checking for ace in yourCards
+          let aceCards = yourCards2.filter(x => x.value2 === 1)
+          if (
+            // Checking for bust with reduced Aces
+            yourCards2.map(x => x.value).reduce((x, y) => x + y) -
+              aceCards.length * 11 +
+              aceCards.length >
+            21
+          ) {
+            // Checks to see if you bust with the ace being 11, if true calculate total with the ace being 1
+            setCardTotal2(
+              yourCards2.map(x => x.value).reduce((x, y) => x + y) -
+                aceCards.length * 11 +
+                aceCards.length
+            )
+            setBust2(1)
+          } else if (
+            yourCards2.map(x => x.value).reduce((x, y) => x + y) <= 21
+          ) {
+            // Normal draw calculation with Ace being 11 if not busting
+            setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
+          } else {
+            // Draw but with reduced Aces
+            setCardTotal2(
+              yourCards2.map(x => x.value).reduce((x, y) => x + y) -
+                aceCards.length * 11 +
+                aceCards.length
+            )
+          }
+        } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) > 21) {
+          // Checking for Bust without Aces
+          setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
+          setBust2(1)
+        } else {
+          // Normal draw calculation
+          setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
+        }
       }
     }
   }, [yourCards2])
 
+  useEffect(() => {
+    // Calculation for the dealer, the difference will be that if the calculations as a result of the Ace being 1 is a total that is
+    // less than 17 then a new card will have to be drawn until the original condition has been met
+    // Also for the dealer a new card should only need to be drawn when an Ace is being set to 1, otherwise its calculated as expected
+    if (localDealerCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
+      // Checking for Aces in yourCards
+      let aceCards = localDealerCards.filter(x => x.value2 === 1)
+      // For the dealer a bust flag does not need to trigger, if the dealer busts then no more cards are drawn and the result is calculated
+      if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) <= 21) {
+        // Normal draw calculation with Ace being 11 if not busting, no additional card check needed
+        setDealerCardTotal(
+          localDealerCards.map(x => x.value).reduce((x, y) => x + y)
+        )
+      } else if (
+        localDealerCards.map(x => x.value).reduce((x, y) => x + y) -
+          aceCards.length * 11 +
+          aceCards.length <
+        17
+      ) {
+        // The total with normal Aces is greater than 21, this checks to see if the reduced Aces put it below its goal.
+        // If so draw a card, if the total is at 17 or greater then an additional card draw is not needed.
+        let thisDeck = deck
+        let cardIndex = Math.floor(Math.random() * thisDeck.length)
+        let card = thisDeck[cardIndex]
+        thisDeck.splice(cardIndex, 1)
+        discardPileUpdate(card)
+        setDeck(thisDeck)
+        setDealerCards([...localDealerCards, card])
+        setLocalDealerCards([...localDealerCards, card])
+        setDealerCardTotal(
+          localDealerCards.map(x => x.value).reduce((x, y) => x + y) -
+            aceCards.length * 11 +
+            aceCards.length
+        )
+      }
+    } else {
+      // Normal draw calculation without Aces
+      setDealerCardTotal(
+        localDealerCards.map(x => x.value).reduce((x, y) => x + y)
+      )
+    }
+  }, [localDealerCards])
+
+  useEffect(() => {
+    console.log(dealerCardTotal)
+  })
+
   // Use this for second hand resolve
 
   // Issue is that both the checks for hand 1 and 2 updating at the same time only allows for hand 1 to update in a cycle.
+
+  // NEED TO UPDATE ALL MAPS USED FOR CALCULATIONS TO USE NEW CARD TOTAL
   useEffect(() => {
-    if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+    if (cardTotal > 21) {
+      // Checks for bust on double down
       return
     } else {
       if (endTurnFlag === 0 && splitFlag) {
+        // If turn has ended and it has not split
         if (
-          localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
-          yourCards.map(x => x.value).reduce((x, y) => x + y)
+          localDealerCards.map(x => x.value).reduce((x, y) => x + y) ===
+          cardTotal
         ) {
-          if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+          yourMoneyValue(yourMoney + playerBet)
+          setRoundResult("It's a push")
+        }
+        if (
+          localDealerCards.map(x => x.value).reduce((x, y) => x + y) < cardTotal
+        ) {
+          if (cardTotal > 21) {
             return
+          } else if (yourCards[0].value + yourCards[1].value === 21) {
+            yourMoneyValue(yourMoney + playerBet + Math.round(playerBet * 1.5))
+            setRoundResult(
+              `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
+            )
           } else {
             yourMoneyValue(yourMoney + playerBet * 2)
             setRoundResult(`You won ${playerBet * 2}`)
           }
         } else if (
-          localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
-          yourCards.map(x => x.value).reduce((x, y) => x + y)
+          localDealerCards.map(x => x.value).reduce((x, y) => x + y) > cardTotal
         ) {
           if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22) {
             setRoundResult("You lost")
+          } else if (yourCards[0].value + yourCards[1].value === 21) {
+            yourMoneyValue(yourMoney + playerBet + Math.round(playerBet * 1.5))
+            setRoundResult(
+              `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
+            )
           } else {
             yourMoneyValue(yourMoney + playerBet * 2)
             setRoundResult(`Dealer Bust. You win ${playerBet * 2}`)
           }
-        } else {
-          yourMoneyValue(yourMoney + playerBet)
-          setRoundResult("It's a tie")
         }
       } else {
         if (endTurnFlag === 0) {
+          // If turn has ended and has split; results for hand 1
           if (
             localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
-            yourCards.map(x => x.value).reduce((x, y) => x + y)
+            cardTotal
           ) {
-            if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+            if (cardTotal > 21) {
               return
             } else {
               yourMoneyValue(yourMoney + playerBet * 2)
@@ -515,7 +672,7 @@ function TableOptions({
             }
           } else if (
             localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
-            yourCards.map(x => x.value).reduce((x, y) => x + y)
+            cardTotal
           ) {
             if (
               localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22
@@ -536,13 +693,13 @@ function TableOptions({
   }, [endTurnFlag])
 
   useEffect(() => {
+    // If turn has ended and has split; results for hand 2
     if (endTurnFlag === 0 && splitFlag === 0) {
       // When endTurnFlag executes on split, the first hand has resolved already; resolve second hand
       if (
-        localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
-        yourCards2.map(x => x.value).reduce((x, y) => x + y)
+        localDealerCards.map(x => x.value).reduce((x, y) => x + y) < cardTotal2
       ) {
-        if (yourCards2.map(x => x.value).reduce((x, y) => x + y) > 21) {
+        if (cardTotal2 > 21) {
           return
         } else {
           yourMoneyValue(yourMoney + playerBet2 * 2)
@@ -550,8 +707,7 @@ function TableOptions({
           setHandTwoWin(1)
         }
       } else if (
-        localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
-        yourCards2.map(x => x.value).reduce((x, y) => x + y)
+        localDealerCards.map(x => x.value).reduce((x, y) => x + y) > cardTotal2
       ) {
         if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22) {
           setHandResult2("You lost")
@@ -568,24 +724,24 @@ function TableOptions({
   }, [endTurnFlag])
 
   useEffect(() => {
-    // Resolves for updating yourMoney twice in the same cycle
+    // Resolves for updating yourMoney state twice in the same cycle if both hands on split win
     if (handOneWin && handTwoWin) {
       yourMoneyValue(yourMoney + playerBet + playerBet2)
     }
   }, [handTwoWin])
 
-  // Use this for first hand resolve
-
   useEffect(() => {
+    // Checks for busting on second hand and ends turn
     if (splitFlag === 0) {
       if (bust2) {
         setHandResult2("Bust")
         endTurnFlagSwitch()
       }
     }
-  })
+  }, [cardTotal2])
 
   useEffect(() => {
+    // Checks for busting on first hand and switches to second
     if (splitFlag === 0) {
       if (bust) {
         setHandResult1("Bust")
@@ -593,11 +749,12 @@ function TableOptions({
         handSwitch()
       }
     }
-  })
+  }, [cardTotal])
 
   if (splitFlag === 0) {
+    // Split flag triggered
     if (handOneEnd) {
-      // End turnFlag will trigger after the second hand has resolved
+      // First hand
       return (
         <div>
           <button onClick={playerHit}>Hit</button>
@@ -614,13 +771,13 @@ function TableOptions({
           <p>
             Your First Hand: {yourCards.map(x => x.name).join(", ")}
             <br></br>
-            Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
+            Total: {cardTotal}
           </p>
           <br></br>
           <p>
             Your Second Hand: {yourCards2.map(x => x.name).join(", ")}
             <br></br>
-            Total: {yourCards2.map(x => x.value).reduce((x, y) => x + y)}
+            Total: {cardTotal2}
           </p>
           <br></br>
           <p>
@@ -631,6 +788,7 @@ function TableOptions({
         </div>
       )
     } else if (endTurnFlag) {
+      // Second hand
       return (
         <div>
           <button onClick={playerHit2}>Hit</button>
@@ -647,13 +805,13 @@ function TableOptions({
           <p>
             Your First Hand: {yourCards.map(x => x.name).join(", ")}
             <br></br>
-            Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
+            Total: {cardTotal}
           </p>
           <br></br>
           <p>
             Your Second Hand: {yourCards2.map(x => x.name).join(", ")}
             <br></br>
-            Total: {yourCards2.map(x => x.value).reduce((x, y) => x + y)}
+            Total: {cardTotal2}
           </p>
           <br></br>
           <p>
@@ -666,6 +824,7 @@ function TableOptions({
       )
     } else {
       return (
+        // Split hand full resolved
         <div>
           <button onClick={splitRoundReset}>Continue</button>
           <br></br>
@@ -677,13 +836,13 @@ function TableOptions({
           <p>
             Your First Hand: {yourCards.map(x => x.name).join(", ")}
             <br></br>
-            Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
+            Total: {cardTotal}
           </p>
           <br></br>
           <p>
             Your Second Hand: {yourCards2.map(x => x.name).join(", ")}
             <br></br>
-            Total: {yourCards2.map(x => x.value).reduce((x, y) => x + y)}
+            Total: {cardTotal2}
           </p>
           <br></br>
           <p>
@@ -700,6 +859,7 @@ function TableOptions({
       )
     }
   } else if (bust) {
+    // Bust
     return (
       <div>
         <button onClick={roundStartFlagReset}>Continue</button>
@@ -711,7 +871,7 @@ function TableOptions({
         <p>
           Your Cards: {yourCards.map(x => x.name).join(", ")}
           <br></br>
-          Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
+          Total: {cardTotal}
         </p>
         <br></br>
         <p>
@@ -723,6 +883,7 @@ function TableOptions({
       </div>
     )
   } else if (endTurnFlag) {
+    // Normal hand
     return (
       <div>
         <button onClick={playerHit}>Hit</button>
@@ -740,7 +901,7 @@ function TableOptions({
         <p>
           Your Cards: {yourCards.map(x => x.name).join(", ")}
           <br></br>
-          Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
+          Total: {cardTotal}
         </p>
         <br></br>
         <p>
@@ -752,6 +913,7 @@ function TableOptions({
     )
   } else {
     return (
+      // Normal hand resolve
       <div>
         <button onClick={roundStartFlagReset}>Continue</button>
         <br></br>
@@ -762,7 +924,7 @@ function TableOptions({
         <p>
           Your Cards: {yourCards.map(x => x.name).join(", ")}
           <br></br>
-          Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
+          Total: {cardTotal}
         </p>
         <br></br>
         <p>
@@ -1073,8 +1235,6 @@ function App() {
     console.log(deck)
   }, [deckCount])
 
-  // For starters only going to use 1 player then figure out how to simulate other hands.
-  // Only deals once for now BTW
   const playerDeal = () => {
     let thisDeck = deck
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
@@ -1084,7 +1244,7 @@ function App() {
     let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
     let card2 = thisDeck[cardIndex2]
     thisDeck.splice(cardIndex2, 1)
-    discardPile.push(card2) // We use two ways of doing this need to see if there is a difference
+    discardPile.push(card2) // We use two ways of doing this need to see if there is a difference; there isn't
     setDeck(thisDeck)
     setYourCards([card, card2])
     // An issue for seeing the results I had was that after setYourCards was finished viewing yourCards through the console wasn't correctly updated until the next update.
@@ -1214,6 +1374,7 @@ function App() {
       setYourCards={setYourCards}
       playerHit2={playerHit2}
       setSplitFlag={setSplitFlag}
+      roundStartFlag={roundStartFlag}
     ></LoadOrder>
   )
 }
