@@ -315,33 +315,139 @@ function TableOptions({
     localDealerCards.map(x => x.value).reduce((x, y) => x + y)
   )
 
+  const [endPlayerTurn, setEndPlayerTurn] = useState(0)
+
   const splitRoundReset = () => {
     setSplitFlag(1)
     roundStartFlagReset()
   }
 
+  // PlayerHit executes giving stand stale state
   const doubleDown = () => {
     // hit one time, double the bet, then end player turn.
     playerBetUpdate(playerBet * 2)
     yourMoneyValue(yourMoney - playerBet)
-    playerHit()
+    doubleDownHit()
     //Turn end function
     stand()
+  }
+
+  // Money is being added even if busting
+
+  // From set's perspective state is not
+  const doubleDownHit = () => {
+    let thisDeck = deck
+    let cardIndex = Math.floor(Math.random() * thisDeck.length)
+    let card = thisDeck[cardIndex]
+    thisDeck.splice(cardIndex, 1)
+    discardPileUpdate(card)
+    setDeck(thisDeck)
+    yourCards.push(card)
+    // setYourCards([...yourCards, card])
+
+    // This is necessary because the useEffect was not performing when the double happened because it evaluates after the render when
+    // we need to make calculations before the end of the cycle
+    // Spaghetti code
+    if (yourCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
+      // Checking for Aces in yourCards
+      let aceCards = yourCards.filter(x => x.value2 === 1)
+      if (
+        // Checks for bust with Aces reduced to 1
+        yourCards.map(x => x.value).reduce((x, y) => x + y) -
+          aceCards.length * 11 +
+          aceCards.length >
+        21
+      ) {
+        setCardTotal(
+          yourCards.map(x => x.value).reduce((x, y) => x + y) -
+            aceCards.length * 11 +
+            aceCards.length
+        )
+        setBust(1)
+      } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) <= 21) {
+        // Normal draw calculation with Ace being 11 if not busting
+        setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
+      } else {
+        // Draw but with reduced Aces
+        setCardTotal(
+          yourCards.map(x => x.value).reduce((x, y) => x + y) -
+            aceCards.length * 11 +
+            aceCards.length
+        )
+      }
+    } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+      // Checks for bust with no Aces
+      setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
+      setBust(1)
+    } else {
+      // Normal draw calculation without Aces
+      setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
+    }
   }
 
   const doubleDown2 = () => {
     // hit one time, double the bet, then end player turn.
     setPlayerBet2(playerBet2 * 2)
     yourMoneyValue(yourMoney - playerBet2)
-    playerHit2()
+    doubleDownHit2()
     //Turn end function
     stand()
   }
 
-  const dealerHit = () => {
-    // console.log(dealerCards.map(x => x.value).reduce((x, y) => x + y))
+  const doubleDownHit2 = () => {
+    let thisDeck = deck
+    let cardIndex = Math.floor(Math.random() * thisDeck.length)
+    let card = thisDeck[cardIndex]
+    thisDeck.splice(cardIndex, 1)
+    discardPileUpdate(card)
+    setDeck(thisDeck)
+    yourCards2.push(card)
+    // setYourCards([...yourCards, card])
 
-    // console.log(localDealerCards.map(x => x.value).reduce((x, y) => x + y))
+    // This is necessary because the useEffect was not performing when the double happened because it evaluates after the render when
+    // we need to make calculations before the end of the cycle
+    // Spaghetti code
+
+    if (yourCards2.map(x => x.value).filter(x => x === 11)[0] > 0) {
+      // Checking for ace in yourCards
+      let aceCards = yourCards2.filter(x => x.value2 === 1)
+      if (
+        // Checking for bust with reduced Aces
+        yourCards2.map(x => x.value).reduce((x, y) => x + y) -
+          aceCards.length * 11 +
+          aceCards.length >
+        21
+      ) {
+        // Checks to see if you bust with the ace being 11, if true calculate total with the ace being 1
+        setCardTotal2(
+          yourCards2.map(x => x.value).reduce((x, y) => x + y) -
+            aceCards.length * 11 +
+            aceCards.length
+        )
+        setBust2(1)
+      } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) <= 21) {
+        // Normal draw calculation with Ace being 11 if not busting
+        setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
+      } else {
+        // Draw but with reduced Aces
+        setCardTotal2(
+          yourCards2.map(x => x.value).reduce((x, y) => x + y) -
+            aceCards.length * 11 +
+            aceCards.length
+        )
+      }
+    } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) > 21) {
+      // Checking for Bust without Aces
+      setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
+      setBust2(1)
+    } else {
+      // Normal draw calculation
+      setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
+    }
+  }
+
+  const dealerHit = () => {
+    console.log("Dealer Hitting")
     if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 17) {
       let thisDeck = deck
       let cardIndex = Math.floor(Math.random() * thisDeck.length)
@@ -391,50 +497,335 @@ function TableOptions({
               thisDeck.splice(cardIndex5, 1)
               discardPileUpdate(card)
               setDeck(thisDeck)
-              setDealerCards([
-                ...localDealerCards,
-                card,
-                card2,
-                card3,
-                card4,
-                card5
-              ])
-              setLocalDealerCards([
-                ...localDealerCards,
-                card,
-                card2,
-                card3,
-                card4,
-                card5
-              ])
+              // setDealerCards([
+              //   ...localDealerCards,
+              //   card,
+              //   card2,
+              //   card3,
+              //   card4,
+              //   card5
+              // ])
+              // setLocalDealerCards([
+              //   ...localDealerCards,
+              //   card,
+              //   card2,
+              //   card3,
+              //   card4,
+              //   card5
+              // ])
+              localDealerCards.push(card)
+              localDealerCards.push(card2)
+              localDealerCards.push(card3)
+              localDealerCards.push(card4)
+              localDealerCards.push(card5)
               return
             }
             setDeck(thisDeck)
-            setDealerCards([...localDealerCards, card, card2, card3, card4])
-            setLocalDealerCards([
-              ...localDealerCards,
-              card,
-              card2,
-              card3,
-              card4
-            ])
+            // setDealerCards([...localDealerCards, card, card2, card3, card4])
+            // setLocalDealerCards([
+            //   ...localDealerCards,
+            //   card,
+            //   card2,
+            //   card3,
+            //   card4
+            // ])
+            localDealerCards.push(card)
+            localDealerCards.push(card2)
+            localDealerCards.push(card3)
+            localDealerCards.push(card4)
             return
           }
           setDeck(thisDeck)
-          setDealerCards([...localDealerCards, card, card2, card3])
-          setLocalDealerCards([...localDealerCards, card, card2, card3])
+          // setDealerCards([...localDealerCards, card, card2, card3])
+          // setLocalDealerCards([...localDealerCards, card, card2, card3])
+          localDealerCards.push(card)
+          localDealerCards.push(card2)
+          localDealerCards.push(card3)
           return
         }
         setDeck(thisDeck)
-        setDealerCards([...localDealerCards, card, card2])
-        setLocalDealerCards([...localDealerCards, card, card2])
+        // setDealerCards([...localDealerCards, card, card2])
+        // setLocalDealerCards([...localDealerCards, card, card2])
+        localDealerCards.push(card)
+        localDealerCards.push(card2)
         return
       }
       setDeck(thisDeck)
-      setDealerCards([...localDealerCards, card])
-      setLocalDealerCards([...localDealerCards, card])
+      // setDealerCards([...localDealerCards, card])
+      // setLocalDealerCards([...localDealerCards, card])
+      localDealerCards.push(card)
     }
   }
+
+  function dealerCardTotalEvaluation() {
+    console.log("Evaluating dealer cards")
+    if (localDealerCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
+      // Checking for Aces in yourCards
+      let aceCards = localDealerCards.filter(x => x.value2 === 1)
+      // For the dealer a bust flag does not need to trigger, if the dealer busts then no more cards are drawn and the result is calculated
+      if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) <= 21) {
+        // Normal draw calculation with Ace being 11 if not busting, no additional card check needed
+        console.log(
+          "Total is:",
+          localDealerCards.map(x => x.value).reduce((x, y) => x + y)
+        )
+        setDealerCardTotal(
+          localDealerCards.map(x => x.value).reduce((x, y) => x + y)
+        )
+        endTurnFlagSwitch() // The draw is done and conditions met; end turn
+        console.log("End: Aces, but reduced not needed")
+      } else if (
+        localDealerCards.map(x => x.value).reduce((x, y) => x + y) -
+          aceCards.length * 11 +
+          aceCards.length <
+        17
+      ) {
+        // The total with normal Aces is greater than 21, this checks to see if the reduced Aces put it below its goal.
+        // If so draw a card, if the total is at 17 or greater then an additional card draw is not needed.
+
+        let initialReducedAceValue =
+          localDealerCards.map(x => x.value).reduce((x, y) => x + y) -
+          aceCards.length * 11 +
+          aceCards.length
+        let thisDeck = deck
+
+        while (initialReducedAceValue < 17) {
+          let cardIndex = Math.floor(Math.random() * thisDeck.length)
+          let card = thisDeck[cardIndex]
+          thisDeck.splice(cardIndex, 1)
+          discardPileUpdate(card) // This is a .push so no issue to loop
+          console.log("Looped") // Checks to see how many times it loops
+          console.log(localDealerCards) // Checks to see if pushing the card works for future calculations
+          localDealerCards.push(card)
+          console.log(localDealerCards)
+
+          let aceCardsLocal = localDealerCards.filter(x => x.value2 === 1)
+
+          let localTotal =
+            localDealerCards.map(x => x.value).reduce((x, y) => x + y) -
+            aceCardsLocal.length * 11 +
+            aceCardsLocal.length
+
+          initialReducedAceValue += localTotal - initialReducedAceValue
+
+          setDeck(thisDeck)
+          setDealerCards([...localDealerCards]) // This will probably be removed soon, not sure if it does anything
+          // setLocalDealerCards([...localDealerCards, card])
+          setDealerCardTotal(initialReducedAceValue)
+        }
+        endTurnFlagSwitch()
+      } else {
+        setDealerCardTotal(
+          localDealerCards.map(x => x.value).reduce((x, y) => x + y) -
+            aceCards.length * 11 +
+            aceCards.length
+        )
+        console.log("Aces are reduced and the total is at 17 or higher")
+        endTurnFlagSwitch()
+      }
+    } else {
+      // Normal draw calculation without Aces
+      console.log(
+        "Total is",
+        localDealerCards.map(x => x.value).reduce((x, y) => x + y)
+      )
+      if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) >= 17) {
+        setDealerCardTotal(
+          localDealerCards.map(x => x.value).reduce((x, y) => x + y)
+        )
+        console.log("End: No Aces")
+        endTurnFlagSwitch()
+      } else {
+        console.log("Should never get to the end here")
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (endPlayerTurn === 1) {
+      console.log("cardTotal:", cardTotal)
+      console.log("dealerCardTotal:", dealerCardTotal)
+      if (cardTotal > 21) {
+        // Checks for bust on double down
+        console.log("bust")
+        return
+      } else {
+        console.log("Calculating final round result")
+        if (splitFlag) {
+          // If turn has ended and it has not split
+          if (dealerCardTotal === cardTotal) {
+            yourMoneyValue(yourMoney + playerBet)
+            setRoundResult("It's a push")
+          }
+          if (dealerCardTotal < cardTotal) {
+            if (cardTotal > 21) {
+              return
+            } else if (yourCards[0].value + yourCards[1].value === 21) {
+              yourMoneyValue(
+                yourMoney + playerBet + Math.round(playerBet * 1.5)
+              )
+              setRoundResult(
+                `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
+              )
+            } else {
+              yourMoneyValue(yourMoney + playerBet * 2)
+              setRoundResult(`You won ${playerBet * 2}`)
+            }
+          } else if (dealerCardTotal > cardTotal) {
+            if (dealerCardTotal < 22) {
+              setRoundResult("You lost")
+            } else if (yourCards[0].value + yourCards[1].value === 21) {
+              yourMoneyValue(
+                yourMoney + playerBet + Math.round(playerBet * 1.5)
+              )
+              setRoundResult(
+                `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
+              )
+            } else {
+              yourMoneyValue(yourMoney + playerBet * 2)
+              setRoundResult(`Dealer Bust. You win ${playerBet * 2}`)
+            }
+          }
+        } else {
+          // This will evaluate both the first and second hand sequentially at once
+          // First hand
+          if (dealerCardTotal < cardTotal) {
+            if (cardTotal > 21) {
+            } else {
+              yourMoneyValue(yourMoney + playerBet * 2)
+              setHandResult1(`You won ${playerBet * 2}`)
+              setHandOneWin(1)
+            }
+          } else if (dealerCardTotal > cardTotal) {
+            if (dealerCardTotal < 22) {
+              setHandResult1("You lost")
+            } else {
+              yourMoneyValue(yourMoney + playerBet * 2)
+              setHandResult1(`Dealer Bust. You win ${playerBet * 2}`)
+              setHandOneWin(1)
+            }
+          } else {
+            yourMoneyValue(yourMoney + playerBet)
+            setHandResult1("It's a tie")
+          }
+          // Second hand
+          if (dealerCardTotal < cardTotal2) {
+            if (cardTotal2 > 21) {
+              setHandResult2(`Bust`)
+            } else {
+              yourMoneyValue(yourMoney + playerBet2 * 2)
+              setHandResult2(`You won ${playerBet2 * 2}`)
+              setHandTwoWin(1)
+            }
+          } else if (dealerCardTotal > cardTotal2) {
+            if (dealerCardTotal < 22) {
+              setHandResult2("You lost")
+            } else {
+              yourMoneyValue(yourMoney + playerBet2 * 2)
+              setHandResult2(`Dealer Bust. You win ${playerBet2 * 2}`)
+              setHandTwoWin(1)
+            }
+          } else {
+            yourMoneyValue(yourMoney + playerBet2)
+            setHandResult2("It's a tie")
+          }
+        }
+      }
+    }
+  }, [endPlayerTurn])
+
+  useEffect(() => {
+    console.log(dealerCardTotal)
+  })
+
+  // In the evaluation stage it doesn't see the updated dealerCardTotal because the state is stale, but it does see the cardTotal because it is before the stand
+  // function roundEvaluation() {
+  //   console.log("cardTotal:", cardTotal)
+  //   console.log("dealerCardTotal:", dealerCardTotal)
+  //   if (cardTotal > 21) {
+  //     // Checks for bust on double down
+  //     console.log("bust")
+  //     return
+  //   } else {
+  //     console.log("Calculating final round result")
+  //     if (splitFlag) {
+  //       // If turn has ended and it has not split
+  //       if (dealerCardTotal === cardTotal) {
+  //         yourMoneyValue(yourMoney + playerBet)
+  //         setRoundResult("It's a push")
+  //       }
+  //       if (dealerCardTotal < cardTotal) {
+  //         if (cardTotal > 21) {
+  //           return
+  //         } else if (yourCards[0].value + yourCards[1].value === 21) {
+  //           yourMoneyValue(yourMoney + playerBet + Math.round(playerBet * 1.5))
+  //           setRoundResult(
+  //             `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
+  //           )
+  //         } else {
+  //           yourMoneyValue(yourMoney + playerBet * 2)
+  //           setRoundResult(`You won ${playerBet * 2}`)
+  //         }
+  //       } else if (dealerCardTotal > cardTotal) {
+  //         if (dealerCardTotal < 22) {
+  //           setRoundResult("You lost")
+  //         } else if (yourCards[0].value + yourCards[1].value === 21) {
+  //           yourMoneyValue(yourMoney + playerBet + Math.round(playerBet * 1.5))
+  //           setRoundResult(
+  //             `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
+  //           )
+  //         } else {
+  //           yourMoneyValue(yourMoney + playerBet * 2)
+  //           setRoundResult(`Dealer Bust. You win ${playerBet * 2}`)
+  //         }
+  //       }
+  //     } else {
+  //       // This will evaluate both the first and second hand sequentially at once
+  //       // First hand
+  //       if (dealerCardTotal < cardTotal) {
+  //         if (cardTotal > 21) {
+  //           return
+  //         } else {
+  //           yourMoneyValue(yourMoney + playerBet * 2)
+  //           setHandResult1(`You won ${playerBet * 2}`)
+  //           setHandOneWin(1)
+  //         }
+  //       } else if (dealerCardTotal > cardTotal) {
+  //         if (dealerCardTotal < 22) {
+  //           setHandResult1("You lost")
+  //         } else {
+  //           yourMoneyValue(yourMoney + playerBet * 2)
+  //           setHandResult1(`Dealer Bust. You win ${playerBet * 2}`)
+  //           setHandOneWin(1)
+  //         }
+  //       } else {
+  //         yourMoneyValue(yourMoney + playerBet)
+  //         setHandResult1("It's a tie")
+  //       }
+  //       // Second hand
+  //       if (dealerCardTotal < cardTotal2) {
+  //         if (cardTotal2 > 21) {
+  //           return
+  //         } else {
+  //           yourMoneyValue(yourMoney + playerBet2 * 2)
+  //           setHandResult2(`You won ${playerBet2 * 2}`)
+  //           setHandTwoWin(1)
+  //         }
+  //       } else if (dealerCardTotal > cardTotal2) {
+  //         if (dealerCardTotal < 22) {
+  //           setHandResult2("You lost")
+  //         } else {
+  //           yourMoneyValue(yourMoney + playerBet2 * 2)
+  //           setHandResult2(`Dealer Bust. You win ${playerBet2 * 2}`)
+  //           setHandTwoWin(1)
+  //         }
+  //       } else {
+  //         yourMoneyValue(yourMoney + playerBet2)
+  //         setHandResult2("It's a tie")
+  //       }
+  //     }
+  //   }
+  // }
 
   const handSwitch = () => {
     // Start playing other hand
@@ -446,13 +837,21 @@ function TableOptions({
     if (splitFlag) {
       // If split is not triggered
       dealerHit()
-      endTurnFlagSwitch()
+      dealerCardTotalEvaluation()
+      setEndPlayerTurn(1)
+      // roundEvaluation()
+      // setEndPlayerTurn(1)
+
+      // endTurnFlagSwitch() // This is what starts the results calculations
     } else {
       // Handle second hand
       // We need both hands to resolve before endTurnFlag can be switched
       if (handOneEnd === 0) {
         dealerHit()
-        endTurnFlagSwitch()
+        dealerCardTotalEvaluation()
+        setEndPlayerTurn(1)
+        // roundEvaluation()
+        // endTurnFlagSwitch()
       }
       handSwitch() // Switches to second hand
     }
@@ -470,6 +869,7 @@ function TableOptions({
     console.log(yourCards.filter(x => x.value2 === 1).length)
   }, [cardTotal])
 
+  // sets yourCards to totalCards
   useEffect(() => {
     if (yourCards[0].value + yourCards[1].value === 21) {
       // Blackjack check
@@ -561,167 +961,117 @@ function TableOptions({
     }
   }, [yourCards2])
 
-  useEffect(() => {
-    // Calculation for the dealer, the difference will be that if the calculations as a result of the Ace being 1 is a total that is
-    // less than 17 then a new card will have to be drawn until the original condition has been met
-    // Also for the dealer a new card should only need to be drawn when an Ace is being set to 1, otherwise its calculated as expected
-    if (localDealerCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
-      // Checking for Aces in yourCards
-      let aceCards = localDealerCards.filter(x => x.value2 === 1)
-      // For the dealer a bust flag does not need to trigger, if the dealer busts then no more cards are drawn and the result is calculated
-      if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) <= 21) {
-        // Normal draw calculation with Ace being 11 if not busting, no additional card check needed
-        setDealerCardTotal(
-          localDealerCards.map(x => x.value).reduce((x, y) => x + y)
-        )
-      } else if (
-        localDealerCards.map(x => x.value).reduce((x, y) => x + y) -
-          aceCards.length * 11 +
-          aceCards.length <
-        17
-      ) {
-        // The total with normal Aces is greater than 21, this checks to see if the reduced Aces put it below its goal.
-        // If so draw a card, if the total is at 17 or greater then an additional card draw is not needed.
-        let thisDeck = deck
-        let cardIndex = Math.floor(Math.random() * thisDeck.length)
-        let card = thisDeck[cardIndex]
-        thisDeck.splice(cardIndex, 1)
-        discardPileUpdate(card)
-        setDeck(thisDeck)
-        setDealerCards([...localDealerCards, card])
-        setLocalDealerCards([...localDealerCards, card])
-        setDealerCardTotal(
-          localDealerCards.map(x => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length
-        )
-      }
-    } else {
-      // Normal draw calculation without Aces
-      setDealerCardTotal(
-        localDealerCards.map(x => x.value).reduce((x, y) => x + y)
-      )
-    }
-  }, [localDealerCards])
+  // RESULTS ARE RESOLVING BEFORE THE DEALER CARD TOTAL IS UPDATED
 
-  useEffect(() => {
-    console.log(dealerCardTotal)
-  })
+  // IF THE DEALER HAS 17 OR HIGHER IT INSTANTLY ENDS THE TURN
+
+  // NOW IT GOES END: ACES, BUT NOT REDUCED FOR INSTANT RESOLVE
+
+  // BUSTING ON SECOND HAND IN SPLIT BREAKS IT
+
+  // FIRST HAND WIN, SECOND HAND BUSTS, DEALER BUSTS, THEN IT TREATS SECOND HAND BUST AS WIN FOR DEALER BUSTING
+  // All resolved thus far
 
   // Use this for second hand resolve
 
   // Issue is that both the checks for hand 1 and 2 updating at the same time only allows for hand 1 to update in a cycle.
 
   // NEED TO UPDATE ALL MAPS USED FOR CALCULATIONS TO USE NEW CARD TOTAL
-  useEffect(() => {
-    if (cardTotal > 21) {
-      // Checks for bust on double down
-      return
-    } else {
-      if (endTurnFlag === 0 && splitFlag) {
-        // If turn has ended and it has not split
-        if (
-          localDealerCards.map(x => x.value).reduce((x, y) => x + y) ===
-          cardTotal
-        ) {
-          yourMoneyValue(yourMoney + playerBet)
-          setRoundResult("It's a push")
-        }
-        if (
-          localDealerCards.map(x => x.value).reduce((x, y) => x + y) < cardTotal
-        ) {
-          if (cardTotal > 21) {
-            return
-          } else if (yourCards[0].value + yourCards[1].value === 21) {
-            yourMoneyValue(yourMoney + playerBet + Math.round(playerBet * 1.5))
-            setRoundResult(
-              `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
-            )
-          } else {
-            yourMoneyValue(yourMoney + playerBet * 2)
-            setRoundResult(`You won ${playerBet * 2}`)
-          }
-        } else if (
-          localDealerCards.map(x => x.value).reduce((x, y) => x + y) > cardTotal
-        ) {
-          if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22) {
-            setRoundResult("You lost")
-          } else if (yourCards[0].value + yourCards[1].value === 21) {
-            yourMoneyValue(yourMoney + playerBet + Math.round(playerBet * 1.5))
-            setRoundResult(
-              `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
-            )
-          } else {
-            yourMoneyValue(yourMoney + playerBet * 2)
-            setRoundResult(`Dealer Bust. You win ${playerBet * 2}`)
-          }
-        }
-      } else {
-        if (endTurnFlag === 0) {
-          // If turn has ended and has split; results for hand 1
-          if (
-            localDealerCards.map(x => x.value).reduce((x, y) => x + y) <
-            cardTotal
-          ) {
-            if (cardTotal > 21) {
-              return
-            } else {
-              yourMoneyValue(yourMoney + playerBet * 2)
-              setHandResult1(`You won ${playerBet * 2}`)
-              setHandOneWin(1)
-            }
-          } else if (
-            localDealerCards.map(x => x.value).reduce((x, y) => x + y) >
-            cardTotal
-          ) {
-            if (
-              localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22
-            ) {
-              setHandResult1("You lost")
-            } else {
-              yourMoneyValue(yourMoney + playerBet * 2)
-              setHandResult1(`Dealer Bust. You win ${playerBet * 2}`)
-              setHandOneWin(1)
-            }
-          } else {
-            yourMoneyValue(yourMoney + playerBet)
-            setHandResult1("It's a tie")
-          }
-        }
-      }
-    }
-  }, [endTurnFlag])
 
-  useEffect(() => {
-    // If turn has ended and has split; results for hand 2
-    if (endTurnFlag === 0 && splitFlag === 0) {
-      // When endTurnFlag executes on split, the first hand has resolved already; resolve second hand
-      if (
-        localDealerCards.map(x => x.value).reduce((x, y) => x + y) < cardTotal2
-      ) {
-        if (cardTotal2 > 21) {
-          return
-        } else {
-          yourMoneyValue(yourMoney + playerBet2 * 2)
-          setHandResult2(`You won ${playerBet2 * 2}`)
-          setHandTwoWin(1)
-        }
-      } else if (
-        localDealerCards.map(x => x.value).reduce((x, y) => x + y) > cardTotal2
-      ) {
-        if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 22) {
-          setHandResult2("You lost")
-        } else {
-          yourMoneyValue(yourMoney + playerBet2 * 2)
-          setHandResult2(`Dealer Bust. You win ${playerBet2 * 2}`)
-          setHandTwoWin(1)
-        }
-      } else {
-        yourMoneyValue(yourMoney + playerBet2)
-        setHandResult2("It's a tie")
-      }
-    }
-  }, [endTurnFlag])
+  // Convert these into functions instead
+  // Also don't forget about the doubleDown method I added for testing
+  // useEffect(() => {
+  //   if (cardTotal > 21) {
+  //     // Checks for bust on double down
+  //     console.log("bust")
+  //     return
+  //   } else {
+  //     console.log("Player hand Calculation begun")
+  //     if (endTurnFlag === 0 && splitFlag) {
+  //       // If turn has ended and it has not split
+  //       if (dealerCardTotal === cardTotal) {
+  //         yourMoneyValue(yourMoney + playerBet)
+  //         setRoundResult("It's a push")
+  //       }
+  //       if (dealerCardTotal < cardTotal) {
+  //         if (cardTotal > 21) {
+  //           return
+  //         } else if (yourCards[0].value + yourCards[1].value === 21) {
+  //           yourMoneyValue(yourMoney + playerBet + Math.round(playerBet * 1.5))
+  //           setRoundResult(
+  //             `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
+  //           )
+  //         } else {
+  //           yourMoneyValue(yourMoney + playerBet * 2)
+  //           setRoundResult(`You won ${playerBet * 2}`)
+  //         }
+  //       } else if (dealerCardTotal > cardTotal) {
+  //         if (dealerCardTotal < 22) {
+  //           setRoundResult("You lost")
+  //         } else if (yourCards[0].value + yourCards[1].value === 21) {
+  //           yourMoneyValue(yourMoney + playerBet + Math.round(playerBet * 1.5))
+  //           setRoundResult(
+  //             `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
+  //           )
+  //         } else {
+  //           yourMoneyValue(yourMoney + playerBet * 2)
+  //           setRoundResult(`Dealer Bust. You win ${playerBet * 2}`)
+  //         }
+  //       }
+  //     } else {
+  //       if (endTurnFlag === 0) {
+  //         // If turn has ended and has split; results for hand 1
+  //         if (dealerCardTotal < cardTotal) {
+  //           if (cardTotal > 21) {
+  //             return
+  //           } else {
+  //             yourMoneyValue(yourMoney + playerBet * 2)
+  //             setHandResult1(`You won ${playerBet * 2}`)
+  //             setHandOneWin(1)
+  //           }
+  //         } else if (dealerCardTotal > cardTotal) {
+  //           if (dealerCardTotal < 22) {
+  //             setHandResult1("You lost")
+  //           } else {
+  //             yourMoneyValue(yourMoney + playerBet * 2)
+  //             setHandResult1(`Dealer Bust. You win ${playerBet * 2}`)
+  //             setHandOneWin(1)
+  //           }
+  //         } else {
+  //           yourMoneyValue(yourMoney + playerBet)
+  //           setHandResult1("It's a tie")
+  //         }
+  //       }
+  //     }
+  //   }
+  // }, [endTurnFlag])
+
+  // useEffect(() => {
+  //   // If turn has ended and has split; results for hand 2
+  //   if (endTurnFlag === 0 && splitFlag === 0) {
+  //     // When endTurnFlag executes on split, the first hand has resolved already; resolve second hand
+  //     if (dealerCardTotal < cardTotal2) {
+  //       if (cardTotal2 > 21) {
+  //         return
+  //       } else {
+  //         yourMoneyValue(yourMoney + playerBet2 * 2)
+  //         setHandResult2(`You won ${playerBet2 * 2}`)
+  //         setHandTwoWin(1)
+  //       }
+  //     } else if (dealerCardTotal > cardTotal2) {
+  //       if (dealerCardTotal < 22) {
+  //         setHandResult2("You lost")
+  //       } else {
+  //         yourMoneyValue(yourMoney + playerBet2 * 2)
+  //         setHandResult2(`Dealer Bust. You win ${playerBet2 * 2}`)
+  //         setHandTwoWin(1)
+  //       }
+  //     } else {
+  //       yourMoneyValue(yourMoney + playerBet2)
+  //       setHandResult2("It's a tie")
+  //     }
+  //   }
+  // }, [endTurnFlag])
 
   useEffect(() => {
     // Resolves for updating yourMoney state twice in the same cycle if both hands on split win
@@ -735,7 +1085,7 @@ function TableOptions({
     if (splitFlag === 0) {
       if (bust2) {
         setHandResult2("Bust")
-        endTurnFlagSwitch()
+        stand()
       }
     }
   }, [cardTotal2])
@@ -750,6 +1100,18 @@ function TableOptions({
       }
     }
   }, [cardTotal])
+
+  const [splitElement, setSplitElement] = useState()
+
+  useEffect(() => {
+    if (yourCards[0].value === yourCards[1].value) {
+      setSplitElement(
+        <div>
+          <button onClick={splitting}>Split</button>
+        </div>
+      )
+    }
+  }, [])
 
   if (splitFlag === 0) {
     // Split flag triggered
@@ -848,7 +1210,7 @@ function TableOptions({
           <p>
             Dealer Card: {localDealerCards.map(x => x.name).join(", ")}
             <br></br>
-            Value: {localDealerCards.map(x => x.value).reduce((x, y) => x + y)}
+            Value: {dealerCardTotal}
           </p>
           <h1>
             Hand 1:{handResult1}
@@ -890,9 +1252,8 @@ function TableOptions({
         <br></br>
         <button onClick={doubleDown}>Double Down</button>
         <br></br>
-        <button onClick={splitting}>Split</button>
-        <br></br>
         <button onClick={stand}>Stand</button>
+        {splitElement}
         <br></br>
         <br></br>
         <p>Money: {yourMoney}</p>
@@ -930,7 +1291,7 @@ function TableOptions({
         <p>
           Dealer Cards: {localDealerCards.map(x => x.name).join(", ")}
           <br></br>
-          Value: {localDealerCards.map(x => x.value).reduce((x, y) => x + y)}
+          Value: {dealerCardTotal}
         </p>
         <h1>{roundResult}</h1>
       </div>
@@ -1268,6 +1629,7 @@ function App() {
     setDiscardPile([...discardPile, card]) // We use two ways of doing this need to see if there is a difference
     setDeck(thisDeck)
     // Now update hand
+    // This needs to be sent to table options faster
     setYourCards([...yourCards, card])
   }
 
