@@ -35,7 +35,8 @@ function LoadOrder({
   remainingCards,
   discardPile,
   oldDiscardPileUpdate,
-  oldDiscardPile
+  oldDiscardPile,
+  cutPosition
 }) {
   if (startFlag) {
     return (
@@ -96,6 +97,7 @@ function LoadOrder({
         discardPile={discardPile}
         oldDiscardPileUpdate={oldDiscardPileUpdate}
         oldDiscardPile={oldDiscardPile}
+        cutPosition={cutPosition}
       ></TableOptions>
     )
   }
@@ -292,7 +294,8 @@ function TableOptions({
   remainingCards,
   discardPile,
   oldDiscardPileUpdate,
-  oldDiscardPile
+  oldDiscardPile,
+  cutPosition
 }) {
   // shoeCount(100) // Setting shoeCount does not affect the calculation below until next cycle,
 
@@ -341,11 +344,13 @@ function TableOptions({
 
   console.log(discardPile)
 
-  const [cutPosition, setCutPosition] = useState(
-    Math.floor(
-      (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) * deck.length
+  if (cutPosition === "none") {
+    shoeCount(
+      Math.floor(
+        (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) * deck.length
+      )
     )
-  )
+  }
 
   console.log(cutPosition)
   useEffect(() => {
@@ -983,6 +988,7 @@ function TableOptions({
           <br></br>
           <button onClick={stand}>Stand</button>
           <br></br>
+          Remaining Cards: {cutPosition - discardPile.length}
           <br></br>
           <p>Money: {yourMoney}</p>
           <p>Your Bet: {playerBet}</p>
@@ -1017,6 +1023,7 @@ function TableOptions({
           <br></br>
           <button onClick={stand}>Stand</button>
           <br></br>
+          Remaining Cards: {cutPosition - discardPile.length}
           <br></br>
           <p>Money: {yourMoney}</p>
           <p>Your Bet: {playerBet}</p>
@@ -1048,6 +1055,7 @@ function TableOptions({
         <div>
           <button onClick={splitRoundReset}>Continue</button>
           <br></br>
+          Remaining Cards: {cutPosition - discardPile.length}
           <br></br>
           <p>Money: {yourMoney}</p>
           <p>Your Bet: {playerBet}</p>
@@ -1084,6 +1092,7 @@ function TableOptions({
       <div>
         <button onClick={roundStartFlagReset}>Continue</button>
         <br></br>
+        Remaining Cards: {cutPosition - discardPile.length}
         <br></br>
         <p>Money: {yourMoney}</p>
         <p>Your Bet: {playerBet}</p>
@@ -1113,6 +1122,7 @@ function TableOptions({
         <button onClick={stand}>Stand</button>
         {splitElement}
         <br></br>
+        Remaining Cards: {cutPosition - discardPile.length}
         <br></br>
         <p>Money: {yourMoney}</p>
         <p>Your Bet: {playerBet}</p>
@@ -1136,6 +1146,7 @@ function TableOptions({
       <div>
         <button onClick={roundStartFlagReset}>Continue</button>
         <br></br>
+        Remaining Cards: {cutPosition - discardPile.length}
         <br></br>
         <p>Money: {yourMoney}</p>
         <p>Your Bet: {playerBet}</p>
@@ -1406,9 +1417,10 @@ function App() {
     console.log(deck)
   }, [deckCount])
 
-  // const shoeCount = amount => {
-  //   setCutPosition(amount)
-  // }
+  const [cutPosition, setCutPosition] = useState("none")
+  const shoeCount = amount => {
+    setCutPosition(amount)
+  }
 
   // function deckShufflePosition() {
   //   // The remaining cards not used should be about 0.7 to 0.85
@@ -1626,10 +1638,11 @@ function App() {
       playerHit2={playerHit2}
       setSplitFlag={setSplitFlag}
       roundStartFlag={roundStartFlag}
-      // shoeCount={shoeCount}
+      shoeCount={shoeCount}
       discardPile={discardPile}
       oldDiscardPile={oldDiscardPile}
       oldDiscardPileUpdate={oldDiscardPileUpdate}
+      cutPosition={cutPosition}
     ></LoadOrder>
   )
 }
