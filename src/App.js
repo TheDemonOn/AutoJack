@@ -30,7 +30,12 @@ function LoadOrder({
   yourCardsValue,
   setYourCards,
   playerHit2,
-  setSplitFlag
+  setSplitFlag,
+  shoeCount,
+  remainingCards,
+  discardPile,
+  oldDiscardPileUpdate,
+  oldDiscardPile
 }) {
   if (startFlag) {
     return (
@@ -86,6 +91,11 @@ function LoadOrder({
         playerHit2={playerHit2}
         setSplitFlag={setSplitFlag}
         roundStartFlag={roundStartFlag}
+        shoeCount={shoeCount}
+        remainingCards={remainingCards}
+        discardPile={discardPile}
+        oldDiscardPileUpdate={oldDiscardPileUpdate}
+        oldDiscardPile={oldDiscardPile}
       ></TableOptions>
     )
   }
@@ -277,8 +287,17 @@ function TableOptions({
   setYourCards,
   playerHit2,
   setSplitFlag,
-  roundStartFlag
+  roundStartFlag,
+  shoeCount,
+  remainingCards,
+  discardPile,
+  oldDiscardPileUpdate,
+  oldDiscardPile
 }) {
+  // shoeCount(100) // Setting shoeCount does not affect the calculation below until next cycle,
+
+  // remainingCards = remainingCards - 4 // doing this just loops forever
+
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
 
   const [roundResult, setRoundResult] = useState("")
@@ -316,6 +335,42 @@ function TableOptions({
   )
 
   const [endPlayerTurn, setEndPlayerTurn] = useState(0)
+  //////////////////////////////////////////////////////
+  // ISSUE: When busting after drawing a card then doubling down while the dealer does not bust the cards they drew does not show up, but should.
+  // On dealer blackjack should show the cards maybe
+
+  console.log(discardPile)
+
+  const [cutPosition, setCutPosition] = useState(
+    Math.floor(
+      (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) * deck.length
+    )
+  )
+
+  console.log(cutPosition)
+  useEffect(() => {
+    console.log(deck.length)
+  })
+
+  // useEffect(() => {
+  //   remainingCards -= 4
+  // }, [])
+
+  // // So far it works except for when the dealer draws
+
+  // // I need to modify a parent state of "remainingCards" in order for it to be preserved through cycles of TableOptions
+  // useEffect(() => {
+  //   let discardPileDifference = discardPile.filter(
+  //     x => !oldDiscardPile.includes(x)
+  //   )
+  //   console.log(remainingCards - discardPileDifference.length)
+  //   shoeCount(remainingCards - discardPileDifference.length)
+  //   oldDiscardPileUpdate(discardPile)
+  // })
+
+  // I think for this to work it will need to modify the parent state rather than it's own
+  // const [singleDeckCycles, setSingleDeckCycles] = useState(0)
+  // setSingleDeckCycles(x => x + 1)
 
   const splitRoundReset = () => {
     setSplitFlag(1)
@@ -462,7 +517,7 @@ function TableOptions({
         let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
         let card2 = thisDeck[cardIndex2]
         thisDeck.splice(cardIndex2, 1)
-        discardPileUpdate(card)
+        discardPileUpdate(card2)
         if (
           localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
             card.value +
@@ -472,7 +527,7 @@ function TableOptions({
           let cardIndex3 = Math.floor(Math.random() * thisDeck.length)
           let card3 = thisDeck[cardIndex3]
           thisDeck.splice(cardIndex3, 1)
-          discardPileUpdate(card)
+          discardPileUpdate(card3)
           if (
             localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
               card.value +
@@ -483,7 +538,7 @@ function TableOptions({
             let cardIndex4 = Math.floor(Math.random() * thisDeck.length)
             let card4 = thisDeck[cardIndex4]
             thisDeck.splice(cardIndex4, 1)
-            discardPileUpdate(card)
+            discardPileUpdate(card4)
             if (
               localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
                 card.value +
@@ -495,7 +550,7 @@ function TableOptions({
               let cardIndex5 = Math.floor(Math.random() * thisDeck.length)
               let card5 = thisDeck[cardIndex5]
               thisDeck.splice(cardIndex5, 1)
-              discardPileUpdate(card)
+              discardPileUpdate(card5)
               setDeck(thisDeck)
               // setDealerCards([
               //   ...localDealerCards,
@@ -595,9 +650,10 @@ function TableOptions({
           thisDeck.splice(cardIndex, 1)
           discardPileUpdate(card) // This is a .push so no issue to loop
           console.log("Looped") // Checks to see how many times it loops
-          console.log(localDealerCards) // Checks to see if pushing the card works for future calculations
+          console.log("Dealer Cards:")
+          // console.log(localDealerCards) // Checks to see if pushing the card works for future calculations
           localDealerCards.push(card)
-          console.log(localDealerCards)
+          // console.log(localDealerCards)
 
           let aceCardsLocal = localDealerCards.filter(x => x.value2 === 1)
 
@@ -640,6 +696,9 @@ function TableOptions({
       }
     }
   }
+
+  // PROBLEMS WITH PUSHING AUTOMATICALLY
+  // TEST DOUBLE DOWN ON PUSH
 
   useEffect(() => {
     if (endPlayerTurn === 1) {
@@ -737,95 +796,6 @@ function TableOptions({
   useEffect(() => {
     console.log(dealerCardTotal)
   })
-
-  // In the evaluation stage it doesn't see the updated dealerCardTotal because the state is stale, but it does see the cardTotal because it is before the stand
-  // function roundEvaluation() {
-  //   console.log("cardTotal:", cardTotal)
-  //   console.log("dealerCardTotal:", dealerCardTotal)
-  //   if (cardTotal > 21) {
-  //     // Checks for bust on double down
-  //     console.log("bust")
-  //     return
-  //   } else {
-  //     console.log("Calculating final round result")
-  //     if (splitFlag) {
-  //       // If turn has ended and it has not split
-  //       if (dealerCardTotal === cardTotal) {
-  //         yourMoneyValue(yourMoney + playerBet)
-  //         setRoundResult("It's a push")
-  //       }
-  //       if (dealerCardTotal < cardTotal) {
-  //         if (cardTotal > 21) {
-  //           return
-  //         } else if (yourCards[0].value + yourCards[1].value === 21) {
-  //           yourMoneyValue(yourMoney + playerBet + Math.round(playerBet * 1.5))
-  //           setRoundResult(
-  //             `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
-  //           )
-  //         } else {
-  //           yourMoneyValue(yourMoney + playerBet * 2)
-  //           setRoundResult(`You won ${playerBet * 2}`)
-  //         }
-  //       } else if (dealerCardTotal > cardTotal) {
-  //         if (dealerCardTotal < 22) {
-  //           setRoundResult("You lost")
-  //         } else if (yourCards[0].value + yourCards[1].value === 21) {
-  //           yourMoneyValue(yourMoney + playerBet + Math.round(playerBet * 1.5))
-  //           setRoundResult(
-  //             `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
-  //           )
-  //         } else {
-  //           yourMoneyValue(yourMoney + playerBet * 2)
-  //           setRoundResult(`Dealer Bust. You win ${playerBet * 2}`)
-  //         }
-  //       }
-  //     } else {
-  //       // This will evaluate both the first and second hand sequentially at once
-  //       // First hand
-  //       if (dealerCardTotal < cardTotal) {
-  //         if (cardTotal > 21) {
-  //           return
-  //         } else {
-  //           yourMoneyValue(yourMoney + playerBet * 2)
-  //           setHandResult1(`You won ${playerBet * 2}`)
-  //           setHandOneWin(1)
-  //         }
-  //       } else if (dealerCardTotal > cardTotal) {
-  //         if (dealerCardTotal < 22) {
-  //           setHandResult1("You lost")
-  //         } else {
-  //           yourMoneyValue(yourMoney + playerBet * 2)
-  //           setHandResult1(`Dealer Bust. You win ${playerBet * 2}`)
-  //           setHandOneWin(1)
-  //         }
-  //       } else {
-  //         yourMoneyValue(yourMoney + playerBet)
-  //         setHandResult1("It's a tie")
-  //       }
-  //       // Second hand
-  //       if (dealerCardTotal < cardTotal2) {
-  //         if (cardTotal2 > 21) {
-  //           return
-  //         } else {
-  //           yourMoneyValue(yourMoney + playerBet2 * 2)
-  //           setHandResult2(`You won ${playerBet2 * 2}`)
-  //           setHandTwoWin(1)
-  //         }
-  //       } else if (dealerCardTotal > cardTotal2) {
-  //         if (dealerCardTotal < 22) {
-  //           setHandResult2("You lost")
-  //         } else {
-  //           yourMoneyValue(yourMoney + playerBet2 * 2)
-  //           setHandResult2(`Dealer Bust. You win ${playerBet2 * 2}`)
-  //           setHandTwoWin(1)
-  //         }
-  //       } else {
-  //         yourMoneyValue(yourMoney + playerBet2)
-  //         setHandResult2("It's a tie")
-  //       }
-  //     }
-  //   }
-  // }
 
   const handSwitch = () => {
     // Start playing other hand
@@ -960,118 +930,6 @@ function TableOptions({
       }
     }
   }, [yourCards2])
-
-  // RESULTS ARE RESOLVING BEFORE THE DEALER CARD TOTAL IS UPDATED
-
-  // IF THE DEALER HAS 17 OR HIGHER IT INSTANTLY ENDS THE TURN
-
-  // NOW IT GOES END: ACES, BUT NOT REDUCED FOR INSTANT RESOLVE
-
-  // BUSTING ON SECOND HAND IN SPLIT BREAKS IT
-
-  // FIRST HAND WIN, SECOND HAND BUSTS, DEALER BUSTS, THEN IT TREATS SECOND HAND BUST AS WIN FOR DEALER BUSTING
-  // All resolved thus far
-
-  // Use this for second hand resolve
-
-  // Issue is that both the checks for hand 1 and 2 updating at the same time only allows for hand 1 to update in a cycle.
-
-  // NEED TO UPDATE ALL MAPS USED FOR CALCULATIONS TO USE NEW CARD TOTAL
-
-  // Convert these into functions instead
-  // Also don't forget about the doubleDown method I added for testing
-  // useEffect(() => {
-  //   if (cardTotal > 21) {
-  //     // Checks for bust on double down
-  //     console.log("bust")
-  //     return
-  //   } else {
-  //     console.log("Player hand Calculation begun")
-  //     if (endTurnFlag === 0 && splitFlag) {
-  //       // If turn has ended and it has not split
-  //       if (dealerCardTotal === cardTotal) {
-  //         yourMoneyValue(yourMoney + playerBet)
-  //         setRoundResult("It's a push")
-  //       }
-  //       if (dealerCardTotal < cardTotal) {
-  //         if (cardTotal > 21) {
-  //           return
-  //         } else if (yourCards[0].value + yourCards[1].value === 21) {
-  //           yourMoneyValue(yourMoney + playerBet + Math.round(playerBet * 1.5))
-  //           setRoundResult(
-  //             `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
-  //           )
-  //         } else {
-  //           yourMoneyValue(yourMoney + playerBet * 2)
-  //           setRoundResult(`You won ${playerBet * 2}`)
-  //         }
-  //       } else if (dealerCardTotal > cardTotal) {
-  //         if (dealerCardTotal < 22) {
-  //           setRoundResult("You lost")
-  //         } else if (yourCards[0].value + yourCards[1].value === 21) {
-  //           yourMoneyValue(yourMoney + playerBet + Math.round(playerBet * 1.5))
-  //           setRoundResult(
-  //             `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
-  //           )
-  //         } else {
-  //           yourMoneyValue(yourMoney + playerBet * 2)
-  //           setRoundResult(`Dealer Bust. You win ${playerBet * 2}`)
-  //         }
-  //       }
-  //     } else {
-  //       if (endTurnFlag === 0) {
-  //         // If turn has ended and has split; results for hand 1
-  //         if (dealerCardTotal < cardTotal) {
-  //           if (cardTotal > 21) {
-  //             return
-  //           } else {
-  //             yourMoneyValue(yourMoney + playerBet * 2)
-  //             setHandResult1(`You won ${playerBet * 2}`)
-  //             setHandOneWin(1)
-  //           }
-  //         } else if (dealerCardTotal > cardTotal) {
-  //           if (dealerCardTotal < 22) {
-  //             setHandResult1("You lost")
-  //           } else {
-  //             yourMoneyValue(yourMoney + playerBet * 2)
-  //             setHandResult1(`Dealer Bust. You win ${playerBet * 2}`)
-  //             setHandOneWin(1)
-  //           }
-  //         } else {
-  //           yourMoneyValue(yourMoney + playerBet)
-  //           setHandResult1("It's a tie")
-  //         }
-  //       }
-  //     }
-  //   }
-  // }, [endTurnFlag])
-
-  // useEffect(() => {
-  //   // If turn has ended and has split; results for hand 2
-  //   if (endTurnFlag === 0 && splitFlag === 0) {
-  //     // When endTurnFlag executes on split, the first hand has resolved already; resolve second hand
-  //     if (dealerCardTotal < cardTotal2) {
-  //       if (cardTotal2 > 21) {
-  //         return
-  //       } else {
-  //         yourMoneyValue(yourMoney + playerBet2 * 2)
-  //         setHandResult2(`You won ${playerBet2 * 2}`)
-  //         setHandTwoWin(1)
-  //       }
-  //     } else if (dealerCardTotal > cardTotal2) {
-  //       if (dealerCardTotal < 22) {
-  //         setHandResult2("You lost")
-  //       } else {
-  //         yourMoneyValue(yourMoney + playerBet2 * 2)
-  //         setHandResult2(`Dealer Bust. You win ${playerBet2 * 2}`)
-  //         setHandTwoWin(1)
-  //       }
-  //     } else {
-  //       yourMoneyValue(yourMoney + playerBet2)
-  //       setHandResult2("It's a tie")
-  //     }
-  //   }
-  // }, [endTurnFlag])
 
   useEffect(() => {
     // Resolves for updating yourMoney state twice in the same cycle if both hands on split win
@@ -1311,64 +1169,7 @@ function DealerBlackJack({ roundStartFlagReset, yourMoney }) {
 
 // later create a validation so that if the entered input is not acceptable it lets them know, but also prompts a button to continue with default options.
 function App() {
-  // Used to determine if the startScreen should load.
-  const [startFlag, setStartFlag] = useState(1)
-  const startFlagSwitch = () => {
-    setStartFlag(0)
-  }
-  const [roundStartFlag, setRoundStartFlag] = useState(1)
-  const roundStartFlagSwitch = () => {
-    setRoundStartFlag(0)
-  }
-  const roundStartFlagReset = () => {
-    setRoundStartFlag(1)
-    setEndTurnFlag(1)
-  }
-  // How many decks are being used.
-  const [deckCount, setDeckCount] = useState(1)
-
-  // If there is a state we want children to modify we use this structure of function and pass it down.
-  const theDeckCountValue = count => {
-    // This is a function that is being passed to the child of start screen so that deckCount in the parent can be modified from there.
-    setDeckCount(count)
-  }
-
-  //   // How many hands have been delt.
-  //   const [handCount, setHandCount] = useState(0)
-
-  const [yourCards, setYourCards] = useState([])
-  const yourCardsValue = value => {
-    setYourCards(value)
-  }
-
-  // To be used when splitting cards
-  const [yourCards2, setYourCards2] = useState([])
-
-  const [dealerCards, setDealerCards] = useState([])
-
-  const dealerDeal = () => {
-    let thisDeck = deck
-    let cardIndex = Math.floor(Math.random() * thisDeck.length)
-    let card = thisDeck[cardIndex]
-    thisDeck.splice(cardIndex, 1)
-    discardPile.push(card)
-    let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
-    let card2 = thisDeck[cardIndex2]
-    thisDeck.splice(cardIndex2, 1)
-    discardPile.push(card2)
-    setDeck(thisDeck)
-    setDealerCards([card, card2])
-  }
-
-  // The number of additional players
-  const [otherPlayers, setOtherPlayers] = useState(0)
-
-  const otherPlayersValue = value => {
-    setOtherPlayers(value)
-  }
-
-  // For here use a function to generate a new state for each otherPlayer
-  const [otherPlayerHands, setOtherPlayerHands] = useState([])
+  console.log("Main is looped")
 
   const [deck, setDeck] = useState([
     {
@@ -1585,6 +1386,15 @@ function App() {
     }
   ])
 
+  // How many decks are being used.
+  const [deckCount, setDeckCount] = useState(1)
+
+  // If there is a state we want children to modify we use this structure of function and pass it down.
+  const theDeckCountValue = count => {
+    // This is a function that is being passed to the child of start screen so that deckCount in the parent can be modified from there.
+    setDeckCount(count)
+  }
+
   useEffect(() => {
     // If deck is ever manually updated update the deck
     if (deckCount != 1) {
@@ -1595,6 +1405,96 @@ function App() {
     }
     console.log(deck)
   }, [deckCount])
+
+  // const shoeCount = amount => {
+  //   setCutPosition(amount)
+  // }
+
+  // function deckShufflePosition() {
+  //   // The remaining cards not used should be about 0.7 to 0.85
+  //   if (deck != 52) {
+  //     // This will determine how many cards are remaining in the shoe between 70% and 85% of the total deck
+  //     let cutPoint = Math.floor(
+  //       (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) * deck.length
+  //     )
+  //     console.log(cutPoint)
+  //     shoeCount(cutPoint)
+  //   } else {
+  //     // Set method for single decks to use hands not cards remaining
+  //   }
+  // }
+
+  const [discardPile, setDiscardPile] = useState([]) // discardPile is not iterable // Objects are outside the array
+  const discardPileUpdate = value => {
+    discardPile.push(value)
+  }
+
+  const shuffleDeck = () => {
+    // Shuffle percentage 1 player to 5 hands for 1 deck,
+    let deck = [...discardPile, ...deck]
+    setDeck(deck)
+  }
+
+  // if (discardPile.length >= cutPosition) {
+  //   shuffleDeck()
+  //   deckShufflePosition()
+  // }
+
+  const [oldDiscardPile, setOldDiscardPile] = useState(discardPile)
+  const oldDiscardPileUpdate = value => {
+    setOldDiscardPile(value)
+  }
+
+  // Used to determine if the startScreen should load.
+  const [startFlag, setStartFlag] = useState(1)
+  const startFlagSwitch = () => {
+    setStartFlag(0)
+  }
+  const [roundStartFlag, setRoundStartFlag] = useState(1)
+  const roundStartFlagSwitch = () => {
+    setRoundStartFlag(0)
+  }
+  const roundStartFlagReset = () => {
+    setRoundStartFlag(1)
+    setEndTurnFlag(1)
+  }
+
+  //   // How many hands have been delt.
+  //   const [handCount, setHandCount] = useState(0)
+
+  const [yourCards, setYourCards] = useState([])
+  const yourCardsValue = value => {
+    setYourCards(value)
+  }
+
+  // To be used when splitting cards
+  const [yourCards2, setYourCards2] = useState([])
+
+  const [dealerCards, setDealerCards] = useState([])
+
+  const dealerDeal = () => {
+    let thisDeck = deck
+    let cardIndex = Math.floor(Math.random() * thisDeck.length)
+    let card = thisDeck[cardIndex]
+    thisDeck.splice(cardIndex, 1)
+    discardPile.push(card)
+    let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
+    let card2 = thisDeck[cardIndex2]
+    thisDeck.splice(cardIndex2, 1)
+    discardPile.push(card2)
+    setDeck(thisDeck)
+    setDealerCards([card, card2])
+  }
+
+  // The number of additional players
+  const [otherPlayers, setOtherPlayers] = useState(0)
+
+  const otherPlayersValue = value => {
+    setOtherPlayers(value)
+  }
+
+  // For here use a function to generate a new state for each otherPlayer
+  const [otherPlayerHands, setOtherPlayerHands] = useState([])
 
   const playerDeal = () => {
     let thisDeck = deck
@@ -1609,11 +1509,6 @@ function App() {
     setDeck(thisDeck)
     setYourCards([card, card2])
     // An issue for seeing the results I had was that after setYourCards was finished viewing yourCards through the console wasn't correctly updated until the next update.
-  }
-
-  const [discardPile, setDiscardPile] = useState([]) // discardPile is not iterable // Objects are outside the array
-  const discardPileUpdate = value => {
-    discardPile.push(value)
   }
 
   const [playerBet, setPlayerBet] = useState(1)
@@ -1685,12 +1580,6 @@ function App() {
     setEndTurnFlag(0)
   }
 
-  const shuffleDeck = () => {
-    // Shuffle percentage 1 player to 5 hands for 1 deck,
-    let deck = [...discardPile, ...deck]
-    setDeck(deck)
-  }
-
   const [yourMoney, setYourMoney] = useState(100)
 
   const yourMoneyValue = value => {
@@ -1737,6 +1626,10 @@ function App() {
       playerHit2={playerHit2}
       setSplitFlag={setSplitFlag}
       roundStartFlag={roundStartFlag}
+      // shoeCount={shoeCount}
+      discardPile={discardPile}
+      oldDiscardPile={oldDiscardPile}
+      oldDiscardPileUpdate={oldDiscardPileUpdate}
     ></LoadOrder>
   )
 }
