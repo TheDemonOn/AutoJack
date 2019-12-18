@@ -36,8 +36,15 @@ function LoadOrder({
   discardPile,
   oldDiscardPileUpdate,
   oldDiscardPile,
-  cutPosition
+  cutPosition,
+  shuffleDeck,
+  tableStart,
+  tableStartZero,
+  tableStartOne,
+  setDiscardPile
 }) {
+  //switch goes to 0
+  //roundStartFlagReset goes to 1 and sets end player turn to 1
   if (startFlag) {
     return (
       <StartScreen
@@ -57,6 +64,8 @@ function LoadOrder({
         dealerDeal={dealerDeal}
         yourMoney={yourMoney}
         yourMoneyValue={yourMoneyValue}
+        cutPosition={cutPosition}
+        discardPile={discardPile}
       ></RoundStart>
     )
   } else if (dealerCards[0].value + dealerCards[1].value === 21) {
@@ -65,9 +74,15 @@ function LoadOrder({
       <DealerBlackJack
         roundStartFlagReset={roundStartFlagReset}
         yourMoney={yourMoney}
+        yourMoneyValue={yourMoneyValue}
+        playerBet={playerBet}
+        cutPosition={cutPosition}
+        discardPile={discardPile}
+        yourCards={yourCards}
+        dealerCards={dealerCards}
       ></DealerBlackJack>
     )
-  } else {
+  } else if (tableStart) {
     return (
       <TableOptions
         playerHit={playerHit}
@@ -98,6 +113,8 @@ function LoadOrder({
         oldDiscardPileUpdate={oldDiscardPileUpdate}
         oldDiscardPile={oldDiscardPile}
         cutPosition={cutPosition}
+        shuffleDeck={shuffleDeck}
+        setDiscardPile={setDiscardPile}
       ></TableOptions>
     )
   }
@@ -111,8 +128,6 @@ function StartScreen({
 }) {
   const [deckCountValue, setDeckCountValue] = useState("")
 
-  const [OtherPlayers, setOtherPlayers] = useState("")
-
   const [YourMoneyLocal, setYourMoneyLocal] = useState("")
 
   const handleDeckCount = e => {
@@ -121,14 +136,6 @@ function StartScreen({
     console.log(deckCountValue)
     theDeckCountValue(deckCountValue)
     setDeckCountValue("")
-  }
-
-  const handleOtherPlayers = e => {
-    e.preventDefault()
-    if (!OtherPlayers) return
-    console.log(OtherPlayers)
-    otherPlayersValue(OtherPlayers)
-    setOtherPlayers("")
   }
 
   const handleYourMoney = e => {
@@ -144,26 +151,21 @@ function StartScreen({
       <form onSubmit={handleDeckCount}>
         How many decks do you want to use?{" "}
         <input
-          type="text"
+          type="number"
           value={deckCountValue}
+          min="1"
+          max="100"
           onChange={e => setDeckCountValue(e.target.value)}
         />{" "}
-        <br></br>
-      </form>
-      <form onSubmit={handleOtherPlayers}>
-        How many other players do you want?{" "}
-        <input
-          type="text"
-          value={OtherPlayers}
-          onChange={e => setOtherPlayers(e.target.value)}
-        />
         <br></br>
       </form>
       <form onSubmit={handleYourMoney}>
         How much money do you want to start with?{" "}
         <input
-          type="text"
+          type="number"
           value={YourMoneyLocal}
+          min="1"
+          max="1000000"
           onChange={e => setYourMoneyLocal(e.target.value)}
         />
       </form>
@@ -179,7 +181,9 @@ function RoundStart({
   playerBetUpdate,
   dealerDeal,
   yourMoney,
-  yourMoneyValue
+  yourMoneyValue,
+  cutPosition,
+  discardPile
 }) {
   // So it appears that even when thr function is called from the child it still executes in the location it was defined (the parent) and had access to everything it would normally.
   const [playerBetHandle, setPlayerBetHandle] = useState("")
@@ -234,6 +238,48 @@ function RoundStart({
     yourMoneyValue(yourMoney - 500)
     deal()
   }
+
+  const [cardsLeft, setCardsLeft] = useState()
+  const [one, setOne] = useState()
+  const [five, setFive] = useState()
+  const [ten, setTen] = useState()
+  const [twentyFive, setTwentyFive] = useState()
+  const [fifty, setFifty] = useState()
+  const [oneHundred, setOneHundred] = useState()
+  const [fiveHundred, setFiveHundred] = useState()
+
+  useEffect(() => {
+    if (yourMoney >= 1) {
+      setOne(<button onClick={betOne}>Bet 1</button>)
+    }
+    if (yourMoney >= 5) {
+      setFive(<button onClick={betFive}>Bet 5</button>)
+    }
+    if (yourMoney >= 10) {
+      setTen(<button onClick={betTen}>Bet 10</button>)
+    }
+    if (yourMoney >= 25) {
+      setTwentyFive(<button onClick={betTwentyFive}>Bet 25</button>)
+    }
+    if (yourMoney >= 50) {
+      setFifty(<button onClick={betFifty}>Bet 50</button>)
+    }
+    if (yourMoney >= 100) {
+      setOneHundred(<button onClick={betOneHundred}>Bet 100</button>)
+    }
+    if (yourMoney >= 500) {
+      setFiveHundred(<button onClick={betFiveHundred}>Bet 500</button>)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (cutPosition - discardPile.length) {
+      setCardsLeft(
+        <div>Remaining Cards: {cutPosition - discardPile.length}</div>
+      )
+    }
+  }, [])
+
   return (
     <div>
       <div>
@@ -241,31 +287,36 @@ function RoundStart({
         <form onSubmit={betHandle}>
           Enter bet
           <input
-            type="text"
+            type="number"
+            min="1"
+            max={yourMoney}
             value={playerBetHandle}
             onChange={e => setPlayerBetHandle(e.target.value)}
           />{" "}
           <br></br>
         </form>
+        {cardsLeft}
       </div>
       <div>
-        <button onClick={betOne}>Bet 1</button>
+        {one}
         <br></br>
-        <button onClick={betFive}>Bet 5</button>
+        {five}
         <br></br>
-        <button onClick={betTen}>Bet 10</button>
+        {ten}
         <br></br>
-        <button onClick={betTwentyFive}>Bet 25</button>
+        {twentyFive}
         <br></br>
-        <button onClick={betFifty}>Bet 50</button>
+        {fifty}
         <br></br>
-        <button onClick={betOneHundred}>Bet 100</button>
+        {oneHundred}
         <br></br>
-        <button onClick={betFiveHundred}>Bet 500</button>
+        {fiveHundred}
       </div>
     </div>
   )
 }
+
+//  There is a bug where cards are randomly disappearing, pay attention to the discardPile plus deck total to figure out how this happens
 
 function TableOptions({
   playerHit,
@@ -295,12 +346,11 @@ function TableOptions({
   discardPile,
   oldDiscardPileUpdate,
   oldDiscardPile,
-  cutPosition
+  cutPosition,
+  shuffleDeck,
+  tableStart,
+  setDiscardPile
 }) {
-  // shoeCount(100) // Setting shoeCount does not affect the calculation below until next cycle,
-
-  // remainingCards = remainingCards - 4 // doing this just loops forever
-
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
 
   const [roundResult, setRoundResult] = useState("")
@@ -342,20 +392,20 @@ function TableOptions({
   // ISSUE: When busting after drawing a card then doubling down while the dealer does not bust the cards they drew does not show up, but should.
   // On dealer blackjack should show the cards maybe
 
-  console.log(discardPile)
+  useEffect(() => {
+    console.log(discardPile)
+    console.log("deck + discard: " + (deck.length + discardPile.length))
+    console.log("deck length: " + deck.length)
+  })
 
   if (cutPosition === "none") {
+    // If the position is not set then set it to a random point between 70% and 85% of the total deck
     shoeCount(
       Math.floor(
         (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) * deck.length
       )
     )
   }
-
-  console.log(cutPosition)
-  useEffect(() => {
-    console.log(deck.length)
-  })
 
   // useEffect(() => {
   //   remainingCards -= 4
@@ -967,7 +1017,7 @@ function TableOptions({
   const [splitElement, setSplitElement] = useState()
 
   useEffect(() => {
-    if (yourCards[0].value === yourCards[1].value) {
+    if (yourCards[0].value === yourCards[1].value && playerBet <= yourMoney) {
       setSplitElement(
         <div>
           <button onClick={splitting}>Split</button>
@@ -975,6 +1025,72 @@ function TableOptions({
       )
     }
   }, [])
+
+  const [doubleDownElement, setDoubleDownElement] = useState()
+
+  useEffect(() => {
+    if (playerBet <= yourMoney) {
+      setDoubleDownElement(
+        <div>
+          <button onClick={doubleDown}>Double Down</button>
+          <br></br>
+        </div>
+      )
+    }
+  }, [])
+
+  const [doubleDownElement2, setDoubleDownElement2] = useState()
+
+  useEffect(() => {
+    if (playerBet2 <= yourMoney) {
+      setDoubleDownElement2(
+        <div>
+          <button onClick={doubleDown2}>Double Down</button>
+          <br></br>
+        </div>
+      )
+    }
+  }, [])
+
+  // A potential way of solving this would be removing the phantom cards from playerHand and localDealerCards and running the draws again so that the cards you draw go into the discard pile
+  // Another simpler way is simply taking the cards in your cards and the dealer cards, putting them in the discard pile and splicing them out of the draw deck
+  useEffect(() => {
+    if (cutPosition - discardPile.length <= 0) {
+      if (roundStartFlag === 0) {
+        // wait until the round is over to do the next steps
+        // discardPile.push(...yourCards, ...localDealerCards)
+        let placeHolderDeck = [...deck, ...discardPile]
+
+        shuffleDeck()
+        shoeCount(
+          Math.floor(
+            (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) *
+              (deck.length + discardPile.length)
+          )
+        )
+
+        console.log(yourCards)
+        console.log(localDealerCards)
+        discardPile.length = 0
+        discardPile.push(...yourCards, ...localDealerCards)
+        // setDiscardPile([...yourCards, ...localDealerCards])
+        console.log(discardPile)
+
+        // discardPileUpdate(yourCards)
+        // discardPileUpdate(localDealerCards)
+        // The DiscardPile it is reading from is old
+        // The deck it is filtering with is old
+        setDeck(placeHolderDeck.filter(x => !discardPile.includes(x))) // This should show what cards are the same between them abd remove them
+      }
+    }
+  }, [roundStartFlag]) // To shuffle when the turn ends
+  //roundStartFlagSwitch gets triggered on bet and deal. roundStartFlag being zero causes the table options screen to occur
+
+  // useEffect(() => {
+  //   console.log(yourCards)
+  //   console.log(localDealerCards)
+  //   console.log(discardPile)
+  // })
 
   if (splitFlag === 0) {
     // Split flag triggered
@@ -984,8 +1100,7 @@ function TableOptions({
         <div>
           <button onClick={playerHit}>Hit</button>
           <br></br>
-          <button onClick={doubleDown}>Double Down</button>
-          <br></br>
+          {doubleDownElement}
           <button onClick={stand}>Stand</button>
           <br></br>
           Remaining Cards: {cutPosition - discardPile.length}
@@ -1019,8 +1134,7 @@ function TableOptions({
         <div>
           <button onClick={playerHit2}>Hit</button>
           <br></br>
-          <button onClick={doubleDown2}>Double Down</button>
-          <br></br>
+          {doubleDownElement2}
           <button onClick={stand}>Stand</button>
           <br></br>
           Remaining Cards: {cutPosition - discardPile.length}
@@ -1117,8 +1231,7 @@ function TableOptions({
       <div>
         <button onClick={playerHit}>Hit</button>
         <br></br>
-        <button onClick={doubleDown}>Double Down</button>
-        <br></br>
+        {doubleDownElement}
         <button onClick={stand}>Stand</button>
         {splitElement}
         <br></br>
@@ -1168,12 +1281,53 @@ function TableOptions({
   }
 }
 
-function DealerBlackJack({ roundStartFlagReset, yourMoney }) {
+function DealerBlackJack({
+  roundStartFlagReset,
+  yourMoney,
+  yourMoneyValue,
+  playerBet,
+  cutPosition,
+  discardPile,
+  yourCards,
+  dealerCards
+}) {
+  const [pushElement, setPushElement] = useState()
+
+  useEffect(() => {
+    if (yourCards.map(x => x.value).reduce((x, y) => x + y) === 21) {
+      yourMoneyValue(yourMoney + playerBet)
+      setPushElement(
+        <div>
+          <br></br>
+          <p>You also have a blackjack. It's a push.</p>
+        </div>
+      )
+    }
+  }, [])
+
   return (
     <div>
       <p>Money: {yourMoney}</p>
       <p>Dealer blackjack</p>
+      {pushElement}
       <button onClick={roundStartFlagReset}>Continue</button>
+      <br></br>
+      Remaining Cards: {cutPosition - discardPile.length}
+      <br></br>
+      <p>Money: {yourMoney}</p>
+      <p>Your Bet: {playerBet}</p>
+      <br></br>
+      <p>
+        Your Cards: {yourCards.map(x => x.name).join(", ")}
+        <br></br>
+        Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
+      </p>
+      <br></br>
+      <p>
+        Dealer Cards: {dealerCards.map(x => x.name).join(", ")}
+        <br></br>
+        Value: 21
+      </p>
     </div>
   )
 }
@@ -1443,8 +1597,8 @@ function App() {
 
   const shuffleDeck = () => {
     // Shuffle percentage 1 player to 5 hands for 1 deck,
-    let deck = [...discardPile, ...deck]
-    setDeck(deck)
+    let deckNew = [...deck, ...discardPile]
+    setDeck(deckNew)
   }
 
   // if (discardPile.length >= cutPosition) {
@@ -1469,6 +1623,7 @@ function App() {
   const roundStartFlagReset = () => {
     setRoundStartFlag(1)
     setEndTurnFlag(1)
+    tableStartZero()
   }
 
   //   // How many hands have been delt.
@@ -1602,9 +1757,13 @@ function App() {
 
   const [pastResults, setPastResults] = useState([])
 
-  useEffect(() => {
-    console.log(discardPile)
-  }, [discardPile])
+  const [tableStart, setTableStart] = useState(1)
+  const tableStartZero = () => {
+    setTableStart(x => x + 1)
+  }
+  const tableStartOne = () => {
+    setTableStart(1)
+  }
 
   return (
     <LoadOrder
@@ -1643,6 +1802,11 @@ function App() {
       oldDiscardPile={oldDiscardPile}
       oldDiscardPileUpdate={oldDiscardPileUpdate}
       cutPosition={cutPosition}
+      shuffleDeck={shuffleDeck}
+      tableStart={tableStart}
+      tableStartZero={tableStartZero}
+      tableStartOne={tableStartOne}
+      setDiscardPile={setDiscardPile}
     ></LoadOrder>
   )
 }
