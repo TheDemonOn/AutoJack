@@ -317,6 +317,13 @@ function RoundStart({
 }
 
 //  There is a bug where cards are randomly disappearing, pay attention to the discardPile plus deck total to figure out how this happens
+// I was splitting don't remember if doubling, the turn the deck shuffled seems correct but suddenly the next turn
+// Perhaps some code was running twice because of outdated information?
+
+// New testing, hitting until busting does not appear to cause the bug
+// Reproduced similar situation to last time by only using doubleDown, after shuffle seemed fine then next turn went down to 16
+// discardPile does not seem to be the issue, leaving the deck still for scrutiny
+// Double Down causes the bug, don't know for split
 
 function TableOptions({
   playerHit,
@@ -390,13 +397,13 @@ function TableOptions({
   const [endPlayerTurn, setEndPlayerTurn] = useState(0)
   //////////////////////////////////////////////////////
   // ISSUE: When busting after drawing a card then doubling down while the dealer does not bust the cards they drew does not show up, but should.
-  // On dealer blackjack should show the cards maybe
+  // Double Down causes the bug, don't know for split
 
   useEffect(() => {
     console.log(discardPile)
     console.log("deck + discard: " + (deck.length + discardPile.length))
     console.log("deck length: " + deck.length)
-  })
+  }, [deck, discardPile])
 
   if (cutPosition === "none") {
     // If the position is not set then set it to a random point between 70% and 85% of the total deck
@@ -848,10 +855,6 @@ function TableOptions({
     }
   }, [endPlayerTurn])
 
-  useEffect(() => {
-    console.log(dealerCardTotal)
-  })
-
   const handSwitch = () => {
     // Start playing other hand
     setHandOneEnd(0)
@@ -888,11 +891,6 @@ function TableOptions({
       setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
     }
   }, [splitFlag])
-
-  useEffect(() => {
-    console.log(yourCards.map(x => x.value).filter(x => x === 11)[0] > 0)
-    console.log(yourCards.filter(x => x.value2 === 1).length)
-  }, [cardTotal])
 
   // sets yourCards to totalCards
   useEffect(() => {
@@ -1017,14 +1015,18 @@ function TableOptions({
   const [splitElement, setSplitElement] = useState()
 
   useEffect(() => {
-    if (yourCards[0].value === yourCards[1].value && playerBet <= yourMoney) {
+    if (
+      yourCards[0].value === yourCards[1].value &&
+      playerBet <= yourMoney &&
+      yourCards[2] === undefined
+    ) {
       setSplitElement(
         <div>
           <button onClick={splitting}>Split</button>
         </div>
       )
     }
-  }, [])
+  }, [yourCards])
 
   const [doubleDownElement, setDoubleDownElement] = useState()
 
@@ -1060,7 +1062,8 @@ function TableOptions({
         // wait until the round is over to do the next steps
         // discardPile.push(...yourCards, ...localDealerCards)
         let placeHolderDeck = [...deck, ...discardPile]
-
+        let localDiscardPile = discardPile
+        console.log("Deck Shuffling")
         shuffleDeck()
         shoeCount(
           Math.floor(
@@ -1080,7 +1083,9 @@ function TableOptions({
         // discardPileUpdate(localDealerCards)
         // The DiscardPile it is reading from is old
         // The deck it is filtering with is old
-        setDeck(placeHolderDeck.filter(x => !discardPile.includes(x))) // This should show what cards are the same between them abd remove them
+        setDeck(placeHolderDeck.filter(x => !localDiscardPile.includes(x))) // This should show what cards are the same between them abd remove them
+        // Something involving this piece of code is bugging
+        // Double Down causes the bug, don't know for split
       }
     }
   }, [roundStartFlag]) // To shuffle when the turn ends
