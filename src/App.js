@@ -41,7 +41,9 @@ function LoadOrder({
   tableStart,
   tableStartZero,
   tableStartOne,
-  setDiscardPile
+  setDiscardPile,
+  playerHitAlt,
+  realDiscardPileUpdate
 }) {
   //switch goes to 0
   //roundStartFlagReset goes to 1 and sets end player turn to 1
@@ -115,6 +117,8 @@ function LoadOrder({
         cutPosition={cutPosition}
         shuffleDeck={shuffleDeck}
         setDiscardPile={setDiscardPile}
+        playerHitAlt={playerHitAlt}
+        realDiscardPileUpdate={realDiscardPileUpdate}
       ></TableOptions>
     )
   }
@@ -356,7 +360,9 @@ function TableOptions({
   cutPosition,
   shuffleDeck,
   tableStart,
-  setDiscardPile
+  setDiscardPile,
+  playerHitAlt,
+  realDiscardPileUpdate
 }) {
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
 
@@ -388,7 +394,7 @@ function TableOptions({
     yourCards.map(x => x.value).reduce((x, y) => x + y)
   )
 
-  const [cardTotal2, setCardTotal2] = useState()
+  const [cardTotal2, setCardTotal2] = useState(0)
 
   const [dealerCardTotal, setDealerCardTotal] = useState(
     localDealerCards.map(x => x.value).reduce((x, y) => x + y)
@@ -442,125 +448,29 @@ function TableOptions({
   // PlayerHit executes giving stand stale state
   const doubleDown = () => {
     // hit one time, double the bet, then end player turn.
+
+    // I believe the handSwitching is not causing the turn to end but rather the busting does
+
     playerBetUpdate(playerBet * 2)
     yourMoneyValue(yourMoney - playerBet)
-    doubleDownHit()
-    //Turn end function
-    stand()
+    playerHit()
+    if (splitFlag === 0) {
+      handSwitch()
+    } else {
+      stand()
+    }
   }
 
   // Money is being added even if busting
 
   // From set's perspective state is not
-  const doubleDownHit = () => {
-    let thisDeck = deck
-    let cardIndex = Math.floor(Math.random() * thisDeck.length)
-    let card = thisDeck[cardIndex]
-    thisDeck.splice(cardIndex, 1)
-    discardPileUpdate(card)
-    setDeck(thisDeck)
-    yourCards.push(card)
-    // setYourCards([...yourCards, card])
-
-    // This is necessary because the useEffect was not performing when the double happened because it evaluates after the render when
-    // we need to make calculations before the end of the cycle
-    // Spaghetti code
-    if (yourCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
-      // Checking for Aces in yourCards
-      let aceCards = yourCards.filter(x => x.value2 === 1)
-      if (
-        // Checks for bust with Aces reduced to 1
-        yourCards.map(x => x.value).reduce((x, y) => x + y) -
-          aceCards.length * 11 +
-          aceCards.length >
-        21
-      ) {
-        setCardTotal(
-          yourCards.map(x => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length
-        )
-        setBust(1)
-      } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) <= 21) {
-        // Normal draw calculation with Ace being 11 if not busting
-        setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
-      } else {
-        // Draw but with reduced Aces
-        setCardTotal(
-          yourCards.map(x => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length
-        )
-      }
-    } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
-      // Checks for bust with no Aces
-      setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
-      setBust(1)
-    } else {
-      // Normal draw calculation without Aces
-      setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
-    }
-  }
 
   const doubleDown2 = () => {
     // hit one time, double the bet, then end player turn.
     setPlayerBet2(playerBet2 * 2)
     yourMoneyValue(yourMoney - playerBet2)
-    doubleDownHit2()
-    //Turn end function
+    playerHit2()
     stand()
-  }
-
-  const doubleDownHit2 = () => {
-    let thisDeck = deck
-    let cardIndex = Math.floor(Math.random() * thisDeck.length)
-    let card = thisDeck[cardIndex]
-    thisDeck.splice(cardIndex, 1)
-    discardPileUpdate(card)
-    setDeck(thisDeck)
-    yourCards2.push(card)
-    // setYourCards([...yourCards, card])
-
-    // This is necessary because the useEffect was not performing when the double happened because it evaluates after the render when
-    // we need to make calculations before the end of the cycle
-    // Spaghetti code
-
-    if (yourCards2.map(x => x.value).filter(x => x === 11)[0] > 0) {
-      // Checking for ace in yourCards
-      let aceCards = yourCards2.filter(x => x.value2 === 1)
-      if (
-        // Checking for bust with reduced Aces
-        yourCards2.map(x => x.value).reduce((x, y) => x + y) -
-          aceCards.length * 11 +
-          aceCards.length >
-        21
-      ) {
-        // Checks to see if you bust with the ace being 11, if true calculate total with the ace being 1
-        setCardTotal2(
-          yourCards2.map(x => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length
-        )
-        setBust2(1)
-      } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) <= 21) {
-        // Normal draw calculation with Ace being 11 if not busting
-        setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
-      } else {
-        // Draw but with reduced Aces
-        setCardTotal2(
-          yourCards2.map(x => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length
-        )
-      }
-    } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) > 21) {
-      // Checking for Bust without Aces
-      setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
-      setBust2(1)
-    } else {
-      // Normal draw calculation
-      setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
-    }
   }
 
   const dealerHit = () => {
@@ -570,7 +480,7 @@ function TableOptions({
       let cardIndex = Math.floor(Math.random() * thisDeck.length)
       let card = thisDeck[cardIndex]
       thisDeck.splice(cardIndex, 1)
-      discardPileUpdate(card)
+      realDiscardPileUpdate(card)
       if (
         localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
           card.value <
@@ -579,7 +489,7 @@ function TableOptions({
         let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
         let card2 = thisDeck[cardIndex2]
         thisDeck.splice(cardIndex2, 1)
-        discardPileUpdate(card2)
+        realDiscardPileUpdate(card2)
         if (
           localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
             card.value +
@@ -589,7 +499,7 @@ function TableOptions({
           let cardIndex3 = Math.floor(Math.random() * thisDeck.length)
           let card3 = thisDeck[cardIndex3]
           thisDeck.splice(cardIndex3, 1)
-          discardPileUpdate(card3)
+          realDiscardPileUpdate(card3)
           if (
             localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
               card.value +
@@ -600,7 +510,7 @@ function TableOptions({
             let cardIndex4 = Math.floor(Math.random() * thisDeck.length)
             let card4 = thisDeck[cardIndex4]
             thisDeck.splice(cardIndex4, 1)
-            discardPileUpdate(card4)
+            realDiscardPileUpdate(card4)
             if (
               localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
                 card.value +
@@ -612,24 +522,8 @@ function TableOptions({
               let cardIndex5 = Math.floor(Math.random() * thisDeck.length)
               let card5 = thisDeck[cardIndex5]
               thisDeck.splice(cardIndex5, 1)
-              discardPileUpdate(card5)
+              realDiscardPileUpdate(card5)
               setDeck(thisDeck)
-              // setDealerCards([
-              //   ...localDealerCards,
-              //   card,
-              //   card2,
-              //   card3,
-              //   card4,
-              //   card5
-              // ])
-              // setLocalDealerCards([
-              //   ...localDealerCards,
-              //   card,
-              //   card2,
-              //   card3,
-              //   card4,
-              //   card5
-              // ])
               localDealerCards.push(card)
               localDealerCards.push(card2)
               localDealerCards.push(card3)
@@ -638,14 +532,6 @@ function TableOptions({
               return
             }
             setDeck(thisDeck)
-            // setDealerCards([...localDealerCards, card, card2, card3, card4])
-            // setLocalDealerCards([
-            //   ...localDealerCards,
-            //   card,
-            //   card2,
-            //   card3,
-            //   card4
-            // ])
             localDealerCards.push(card)
             localDealerCards.push(card2)
             localDealerCards.push(card3)
@@ -653,23 +539,17 @@ function TableOptions({
             return
           }
           setDeck(thisDeck)
-          // setDealerCards([...localDealerCards, card, card2, card3])
-          // setLocalDealerCards([...localDealerCards, card, card2, card3])
           localDealerCards.push(card)
           localDealerCards.push(card2)
           localDealerCards.push(card3)
           return
         }
         setDeck(thisDeck)
-        // setDealerCards([...localDealerCards, card, card2])
-        // setLocalDealerCards([...localDealerCards, card, card2])
         localDealerCards.push(card)
         localDealerCards.push(card2)
         return
       }
       setDeck(thisDeck)
-      // setDealerCards([...localDealerCards, card])
-      // setLocalDealerCards([...localDealerCards, card])
       localDealerCards.push(card)
     }
   }
@@ -710,7 +590,7 @@ function TableOptions({
           let cardIndex = Math.floor(Math.random() * thisDeck.length)
           let card = thisDeck[cardIndex]
           thisDeck.splice(cardIndex, 1)
-          discardPileUpdate(card) // This is a .push so no issue to loop
+          realDiscardPileUpdate(card) // This is a .push so no issue to loop
           console.log("Looped") // Checks to see how many times it loops
           console.log("Dealer Cards:")
           // console.log(localDealerCards) // Checks to see if pushing the card works for future calculations
@@ -765,8 +645,9 @@ function TableOptions({
   useEffect(() => {
     if (endPlayerTurn === 1) {
       console.log("cardTotal:", cardTotal)
+      console.log("cardTotal2:", cardTotal2)
       console.log("dealerCardTotal:", dealerCardTotal)
-      if (cardTotal > 21) {
+      if (cardTotal > 21 && cardTotal === 0) {
         // Checks for bust on double down
         console.log("bust")
         return
@@ -860,6 +741,7 @@ function TableOptions({
     setHandOneEnd(0)
   }
 
+  console.log(splitFlag)
   // If splitting the game should continue its normal flow then after stand switch your cards2 into your cards and play it out
   const stand = () => {
     if (splitFlag) {
@@ -936,51 +818,53 @@ function TableOptions({
     }
   }, [yourCards])
 
+  //////////////////////////////////////
+  //////////////////////////////////////
+  //////////////////////////////////////
+
   useEffect(() => {
     if (handOneEnd === 0) {
-      if (yourCards2[0].value + yourCards2[1].value === 21) {
-        // Blackjack check
-        stand()
-      } else {
-        if (yourCards2.map(x => x.value).filter(x => x === 11)[0] > 0) {
-          // Checking for ace in yourCards
-          let aceCards = yourCards2.filter(x => x.value2 === 1)
-          if (
-            // Checking for bust with reduced Aces
+      // if (yourCards2[0].value + yourCards2[1].value === 21) {
+      //   // Blackjack check
+      //   // stand() ////////////////////////////
+      // } else {
+      if (yourCards2.map(x => x.value).filter(x => x === 11)[0] > 0) {
+        // Checking for ace in yourCards
+        let aceCards = yourCards2.filter(x => x.value2 === 1)
+        if (
+          // Checking for bust with reduced Aces
+          yourCards2.map(x => x.value).reduce((x, y) => x + y) -
+            aceCards.length * 11 +
+            aceCards.length >
+          21
+        ) {
+          // Checks to see if you bust with the ace being 11, if true calculate total with the ace being 1
+          setCardTotal2(
             yourCards2.map(x => x.value).reduce((x, y) => x + y) -
               aceCards.length * 11 +
-              aceCards.length >
-            21
-          ) {
-            // Checks to see if you bust with the ace being 11, if true calculate total with the ace being 1
-            setCardTotal2(
-              yourCards2.map(x => x.value).reduce((x, y) => x + y) -
-                aceCards.length * 11 +
-                aceCards.length
-            )
-            setBust2(1)
-          } else if (
-            yourCards2.map(x => x.value).reduce((x, y) => x + y) <= 21
-          ) {
-            // Normal draw calculation with Ace being 11 if not busting
-            setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
-          } else {
-            // Draw but with reduced Aces
-            setCardTotal2(
-              yourCards2.map(x => x.value).reduce((x, y) => x + y) -
-                aceCards.length * 11 +
-                aceCards.length
-            )
-          }
-        } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) > 21) {
-          // Checking for Bust without Aces
-          setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
+              aceCards.length
+          )
           setBust2(1)
-        } else {
-          // Normal draw calculation
+        } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) <= 21) {
+          // Normal draw calculation with Ace being 11 if not busting
           setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
+        } else {
+          // Draw but with reduced Aces
+          setCardTotal2(
+            yourCards2.map(x => x.value).reduce((x, y) => x + y) -
+              aceCards.length * 11 +
+              aceCards.length
+          )
         }
+      } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) > 21) {
+        // Checking for Bust without Aces
+        setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
+        setBust2(1)
+      } else {
+        // Normal draw calculation
+        setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
       }
+      // }
     }
   }, [yourCards2])
 
@@ -1064,7 +948,8 @@ function TableOptions({
         let placeHolderDeck = [...deck, ...discardPile]
         let localDiscardPile = discardPile
         console.log("Deck Shuffling")
-        shuffleDeck()
+        // shuffleDeck()
+        // setDeck(...placeHolderDeck)
         shoeCount(
           Math.floor(
             (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) *
@@ -1599,12 +1484,15 @@ function App() {
   const discardPileUpdate = value => {
     discardPile.push(value)
   }
-
-  const shuffleDeck = () => {
-    // Shuffle percentage 1 player to 5 hands for 1 deck,
-    let deckNew = [...deck, ...discardPile]
-    setDeck(deckNew)
+  const realDiscardPileUpdate = value => {
+    setDiscardPile(discardPile => [...discardPile, value])
   }
+
+  // const shuffleDeck = () => {
+  //   // Shuffle percentage 1 player to 5 hands for 1 deck,
+  //   let deckNew = [...deck, ...discardPile]
+  //   setDeck(deckNew)
+  // }
 
   // if (discardPile.length >= cutPosition) {
   //   shuffleDeck()
@@ -1689,15 +1577,20 @@ function App() {
   }
 
   const playerHit = () => {
+    // deck + discard became NaN
+
+    // I think I can make this work if I make the have the ablility to run multiple times in a cycle
     let thisDeck = deck
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
     let card = thisDeck[cardIndex]
     thisDeck.splice(cardIndex, 1)
-    setDiscardPile([...discardPile, card]) // We use two ways of doing this need to see if there is a difference
+    setDiscardPile(discardPile => [...discardPile, card])
+    // setDiscardPile([...discardPile, card]) // We use two ways of doing this need to see if there is a difference
     setDeck(thisDeck)
     // Now update hand
     // This needs to be sent to table options faster
-    setYourCards([...yourCards, card])
+    setYourCards(yourCards => [...yourCards, card])
+    // setYourCards([...yourCards, card])
   }
 
   const playerHit2 = () => {
@@ -1705,11 +1598,17 @@ function App() {
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
     let card = thisDeck[cardIndex]
     thisDeck.splice(cardIndex, 1)
-    setDiscardPile([...discardPile, card]) // We use two ways of doing this need to see if there is a difference
+    setDiscardPile(discardPile => [...discardPile, card]) // We use two ways of doing this need to see if there is a difference
     setDeck(thisDeck)
     // Now update hand
-    setYourCards2([...yourCards2, card])
+    setYourCards2(yourCards2 => [...yourCards2, card])
   }
+
+  // Flag to indicate if standing should end the turn
+  const [splitFlag, setSplitFlag] = useState(1)
+  // const splitFlagSwitch = () => {
+  //   setSplitFlag(0)
+  // }
 
   const splitting = () => {
     // splitting should only be available on the deal no other times
@@ -1732,18 +1631,14 @@ function App() {
     let card2 = thisDeck[cardIndex2]
     thisDeck.splice(cardIndex2, 1)
 
-    setDiscardPile([...discardPile, card, card2])
+    setDiscardPile(discardPile => [...discardPile, card, card2])
     setDeck(thisDeck)
 
     setYourCards([...splitCard1, card]) // The reason it needs to be spread out is that the split is an object
+    // setYourCards(splitCard1 => [...splitCard1, card])
     setYourCards2([...splitCard2, card2])
+    // setYourCards2(splitCard2 => [...splitCard2, card2])
 
-    splitFlagSwitch()
-  }
-
-  // Flag to indicate if standing should end the turn
-  const [splitFlag, setSplitFlag] = useState(1)
-  const splitFlagSwitch = () => {
     setSplitFlag(0)
   }
 
@@ -1807,11 +1702,12 @@ function App() {
       oldDiscardPile={oldDiscardPile}
       oldDiscardPileUpdate={oldDiscardPileUpdate}
       cutPosition={cutPosition}
-      shuffleDeck={shuffleDeck}
+      // shuffleDeck={shuffleDeck}
       tableStart={tableStart}
       tableStartZero={tableStartZero}
       tableStartOne={tableStartOne}
       setDiscardPile={setDiscardPile}
+      realDiscardPileUpdate={realDiscardPileUpdate}
     ></LoadOrder>
   )
 }
