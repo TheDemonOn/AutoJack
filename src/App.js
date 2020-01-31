@@ -14,10 +14,10 @@ function LoadOrder({
   roundStartFlagSwitch,
   roundStartFlag,
   yourCards,
+  yourCards2,
   playerBet,
   playerBetUpdate,
   splitting,
-  yourCards2,
   dealerCards,
   dealerDeal,
   splitFlag,
@@ -30,7 +30,9 @@ function LoadOrder({
   yourMoney,
   discardPileUpdate,
   yourCardsValue,
+  yourCardsValue2,
   setYourCards,
+  setYourCards2,
   playerHit2,
   setSplitFlag,
   shoeCount,
@@ -47,7 +49,6 @@ function LoadOrder({
   playerHitAlt,
   realDiscardPileUpdate,
   deckUpdate,
-  setYourCards2,
   doubleCard
 }) {
   //switch goes to 0
@@ -94,8 +95,8 @@ function LoadOrder({
       <TableOptions
         playerHit={playerHit}
         yourCards={yourCards}
-        splitting={splitting}
         yourCards2={yourCards2}
+        splitting={splitting}
         playerBet={playerBet}
         dealerCards={dealerCards}
         splitFlag={splitFlag}
@@ -110,7 +111,9 @@ function LoadOrder({
         discardPileUpdate={discardPileUpdate}
         playerBetUpdate={playerBetUpdate}
         yourCardsValue={yourCardsValue}
+        yourCardsValue2={yourCardsValue2}
         setYourCards={setYourCards}
+        setYourCards2={setYourCards2}
         playerHit2={playerHit2}
         setSplitFlag={setSplitFlag}
         roundStartFlag={roundStartFlag}
@@ -125,7 +128,6 @@ function LoadOrder({
         playerHitAlt={playerHitAlt}
         realDiscardPileUpdate={realDiscardPileUpdate}
         deckUpdate={deckUpdate}
-        setYourCards2={setYourCards2}
         doubleCard={doubleCard}
       ></TableOptions>
     )
@@ -340,8 +342,8 @@ function RoundStart({
 function TableOptions({
   playerHit,
   yourCards,
-  splitting,
   yourCards2,
+  splitting,
   playerBet,
   playerBetUpdate,
   dealerCards,
@@ -356,7 +358,9 @@ function TableOptions({
   yourMoneyValue,
   discardPileUpdate,
   yourCardsValue,
+  yourCardsValue2,
   setYourCards,
+  setYourCards2,
   playerHit2,
   setSplitFlag,
   roundStartFlag,
@@ -372,7 +376,6 @@ function TableOptions({
   playerHitAlt,
   realDiscardPileUpdate,
   deckUpdate,
-  setYourCards2,
   doubleCard
 }) {
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
@@ -391,10 +394,6 @@ function TableOptions({
 
   const [handOneEnd, setHandOneEnd] = useState(1)
 
-  const [swappedCards1, setSwappedCards1] = useState(yourCards)
-
-  const [swappedCards2, setSwappedCards2] = useState()
-
   const [handOneWin, setHandOneWin] = useState(0)
 
   const [handTwoWin, setHandTwoWin] = useState(0)
@@ -412,9 +411,11 @@ function TableOptions({
   )
 
   const [endPlayerTurn, setEndPlayerTurn] = useState(0)
+
   //////////////////////////////////////////////////////
   // ISSUE: When busting after drawing a card then doubling down while the dealer does not bust the cards they drew does not show up, but should.
   // Double Down causes the bug, don't know for split
+  console.log(yourCards2.map(x => x.name))
 
   useEffect(() => {
     console.log("discard length: " + discardPile.length)
@@ -443,47 +444,54 @@ function TableOptions({
     setHandOneEnd(0)
   }
 
-  let doubleEndHandle = () => {
-    if (handOneEnd === 0) {
-      handSwitch()
-    } else {
-      stand()
-    }
-  }
-
   let doubleLostCards = []
 
+  let prevCards1 = []
+
+  let prevCards2 = []
+
+  useEffect(() => {
+    if (splitFlag === 0) {
+      console.log(prevCards1)
+      console.log(prevCards2)
+      prevCards1.push(...yourCards)
+      prevCards2.push(...yourCards2)
+      console.log(prevCards1)
+      console.log(prevCards2)
+    }
+  }, [deck, discardPile, yourCards, yourCards2])
+  //////////////////////////////////////
+  // So even in doubleDown yourCards2 is not visible to the act of doubling is not the cause of the bug
+
   // PlayerHit executes giving stand stale state
+
+  // The yourCards it sees here is actually the old state of yourCards, not the new one. This explains the inconsistency with
+  // yourCards 1 having 2 cards and yourCards2 having zero
+
+  // When doubleDown Executes even after the useEffect updates variables in tableOptions doubleDown does not see it
+  // potential solution is running the useEffect in a different context where doubleDown is (the main) and send it to table options
   const doubleDown = () => {
-    // it has an old problem again it is overwriting the playerHit card and replacing the value with the drawn card on double but the text does not reflect that
-
-    // from yourCards perspective here pushing does not update the state
-
     console.log("Should only occur once reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+    console.log(prevCards1)
+    console.log(prevCards2)
     console.log(yourCards.length)
     console.log(yourCards.map(x => x.name))
+    console.log(yourCards2.map(x => x.name))
     console.log(yourCards)
     playerBetUpdate(playerBet * 2)
     yourMoneyValue(yourMoney - playerBet)
-    // playerHit()
-
-    // console.log(yourCards.map(x => x.name))
-    // console.log(yourCards)
-    // console.log(yourCards.map(x => x.name))
-    // console.log(yourCards)
+    // Because of issues with the transfer of state we are drawing the card from within function manually
     let thisDeck = deck
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
     let card = thisDeck[cardIndex]
     deck.splice(cardIndex, 1)
     setDiscardPile(discardPile => [...discardPile, card])
-    // need to bot update state and card calculation locally i think
+    // The card is being pushed here so that yourCards is accurate for the local calculations below
+    // Do note that if it was just the push then the display of cards from the state would not include the drawn card
+    // The state has to be set at the end for it to update in the list
     yourCards.push(card)
-    // setYourCards(yourCards => [...yourCards, card])
-    // console.log(yourCards.map(x => x.name))
-    // console.log(yourCards)
-    // // yourCardsValue()
-    // doubleLostCards.push(card)
-
+    // Because drawing a card then ending the turn happens in one cycle I have to do a local calculation that checks for Aces
+    // because otherwise the cardTotal is set too late for the final evaluation
     if (yourCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
       // Checking for Aces in yourCards
       let aceCards = yourCards.filter(x => x.value2 === 1)
@@ -503,7 +511,7 @@ function TableOptions({
       } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) <= 21) {
         // Normal draw calculation with Ace being 11 if not busting
         setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
-        doubleEndHandle()
+        stand()
       } else {
         // Draw but with reduced Aces
         setCardTotal(
@@ -511,7 +519,7 @@ function TableOptions({
             aceCards.length * 11 +
             aceCards.length
         )
-        doubleEndHandle()
+        stand()
       }
     } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
       // Checks for bust with no Aces
@@ -520,8 +528,9 @@ function TableOptions({
     } else {
       // Normal draw calculation without Aces
       setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
-      doubleEndHandle()
+      stand()
     }
+    // This actually sets the state to what it should be because otherwise the "yourCards" locally would not be the same as the global yourCards
     yourCardsValue(yourCards)
   }
 
@@ -529,48 +538,44 @@ function TableOptions({
 
   // From set's perspective state is not
 
+  //////////////////////////////////////////
+  // See explanation above
   const doubleDown2 = () => {
-    // hit one time, double the bet, then end player turn.
-    setPlayerBet2(playerBet2 * 2)
-    yourMoneyValue(yourMoney - playerBet2)
-
+    console.log("Double Down 2222222222222222222222222222222222222222222222")
+    // let yourCards2 = doubleCards2
+    console.log(yourCards2.length)
+    console.log(yourCards2.map(x => x.name))
+    console.log(yourCards2)
+    playerBetUpdate(playerBet * 2)
+    yourMoneyValue(yourMoney - playerBet)
+    // Because of issues with the transfer of state we are drawing the card from within function manually
     let thisDeck = deck
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
     let card = thisDeck[cardIndex]
     deck.splice(cardIndex, 1)
-    setDiscardPile(discardPile => [...discardPile, card]) // We use two ways of doing this need to see if there is a difference
-    // setDeck(thisDeck)
-    // Now update hand
-    console.log(yourCards2.map(x => x.name))
-    // setYourCards2(yourCards2.push(card))
-    console.log(yourCards2.map(x => x.name))
-
-    // let thisDeck = deck
-    // let cardIndex = Math.floor(Math.random() * thisDeck.length)
-    // let card = thisDeck[cardIndex]
-    // deck.splice(cardIndex, 1)
-    // setDiscardPile(discardPile => [...discardPile, card])
-    // console.log(yourCards2.length)
-    // yourCards2.push(card)
-    // console.log(yourCards2.length)
-
+    setDiscardPile(discardPile => [...discardPile, card])
+    // The card is being pushed here so that yourCards is accurate for the local calculations below
+    // Do note that if it was just the push then the display of cards from the state would not include the drawn card
+    // The state has to be set at the end for it to update in the list
+    yourCards2.push(card)
+    // Because drawing a card then ending the turn happens in one cycle I have to do a local calculation that checks for Aces
+    // because otherwise the cardTotal is set too late for the final evaluation
     if (yourCards2.map(x => x.value).filter(x => x === 11)[0] > 0) {
-      // Checking for ace in yourCards
+      // Checking for Aces in yourCards
       let aceCards = yourCards2.filter(x => x.value2 === 1)
       if (
-        // Checking for bust with reduced Aces
+        // Checks for bust with Aces reduced to 1
         yourCards2.map(x => x.value).reduce((x, y) => x + y) -
           aceCards.length * 11 +
           aceCards.length >
         21
       ) {
-        // Checks to see if you bust with the ace being 11, if true calculate total with the ace being 1
         setCardTotal2(
           yourCards2.map(x => x.value).reduce((x, y) => x + y) -
             aceCards.length * 11 +
             aceCards.length
         )
-        setBust2(1)
+        setBust2(1) ////////////////////////////////////////////////////////////////// Modify the busts for bust 2?
       } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) <= 21) {
         // Normal draw calculation with Ace being 11 if not busting
         setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
@@ -585,14 +590,16 @@ function TableOptions({
         stand()
       }
     } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) > 21) {
-      // Checking for Bust without Aces
+      // Checks for bust with no Aces
       setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
       setBust2(1)
     } else {
-      // Normal draw calculation
+      // Normal draw calculation without Aces
       setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
       stand()
     }
+    // This actually sets the state to what it should be because otherwise the "yourCards" locally would not be the same as the global yourCards
+    yourCardsValue2(yourCards2) //////////////// Make this but for 2
   }
 
   let dealerHitLostCards = []
@@ -778,6 +785,8 @@ function TableOptions({
 
     // So the issue now is that the card drawn from the double is setting the discardPile after we set it to zero thereby adding a card
 
+    // The deck is set to the proper values, but the discard is not set to 0
+
     console.log("Shuffle check")
     console.log(cutPosition - discardPile.length)
     let together = deck.length + discardPile.length
@@ -810,6 +819,7 @@ function TableOptions({
       deck.length = 0
       deckUpdate(placeHolderDeck)
       discardPile.length = 0
+      setDiscardPile([])
     }
   }
 
@@ -831,6 +841,7 @@ function TableOptions({
       if (handOneEnd === 0) {
         dealerHit()
         dealerCardTotalEvaluation()
+        deckShuffleFunction()
         setEndPlayerTurn(1)
         // roundEvaluation()
         // endTurnFlagSwitch()
@@ -842,7 +853,42 @@ function TableOptions({
   useEffect(() => {
     // Sets an initial value for yourCards2 if the hand is split
     if (splitFlag === 0) {
-      setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
+      if (yourCards2.map(x => x.value).filter(x => x === 11)[0] > 0) {
+        // Checking for ace in yourCards
+        let aceCards = yourCards2.filter(x => x.value2 === 1)
+        if (
+          // Checking for bust with reduced Aces
+          yourCards2.map(x => x.value).reduce((x, y) => x + y) -
+            aceCards.length * 11 +
+            aceCards.length >
+          21
+        ) {
+          // Checks to see if you bust with the ace being 11, if true calculate total with the ace being 1
+          setCardTotal2(
+            yourCards2.map(x => x.value).reduce((x, y) => x + y) -
+              aceCards.length * 11 +
+              aceCards.length
+          )
+          setBust2(1)
+        } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) <= 21) {
+          // Normal draw calculation with Ace being 11 if not busting
+          setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
+        } else {
+          // Draw but with reduced Aces
+          setCardTotal2(
+            yourCards2.map(x => x.value).reduce((x, y) => x + y) -
+              aceCards.length * 11 +
+              aceCards.length
+          )
+        }
+      } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) > 21) {
+        // Checking for Bust without Aces
+        setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
+        setBust2(1)
+      } else {
+        // Normal draw calculation
+        setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
+      }
     }
   }, [splitFlag])
 
@@ -896,6 +942,7 @@ function TableOptions({
 
   useEffect(() => {
     if (handOneEnd === 0) {
+      console.log("Your Cards 2 evaluation for total is starting")
       // if (yourCards2[0].value + yourCards2[1].value === 21) {
       //   // Blackjack check
       //   // stand() ////////////////////////////
@@ -1104,125 +1151,11 @@ function TableOptions({
     }
   }, [])
 
-  // function shuffleTheDeck(deck, discardPile) {
-  //     if (roundStartFlag === 0) {
-  //       let placeHolderDeck = [...deck, ...discardPile]
-  //       let localDiscardPile = discardPile
-  //       console.log("Deck Shuffling")
-  //       shoeCount(
-  //         Math.floor(
-  //           (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) *
-  //             (deck.length + discardPile.length)
-  //         )
-  //       )
-  //       console.log(yourCards)
-  //       console.log(localDealerCards)
-  //       discardPile.length = 0
-  //       discardPile.push(...yourCards, ...localDealerCards)
-  //       console.log(discardPile)
-  //       console.log(
-  //         placeHolderDeck.length -
-  //           placeHolderDeck.filter(x => !localDiscardPile.includes(x)).length
-  //       )
-  //       if (
-  //         placeHolderDeck.length -
-  //           placeHolderDeck.filter(x => !localDiscardPile.includes(x)).length >
-  //         4
-  //       ) {
-  //         console.log(placeHolderDeck)
-  //         setDeck(placeHolderDeck)
-  //       } else {
-  //         console.log(placeHolderDeck)
-  //         console.log(
-  //           placeHolderDeck.filter(x => !localDiscardPile.includes(x))
-  //         )
-  //         deckUpdate(placeHolderDeck.filter(x => !localDiscardPile.includes(x))) // This should show what cards are the same between them abd remove them
-  //       }
-  //   }
-  // }
-  // if (cutPosition - discardPile.length <= 0) {
-  //   shuffleTheDeck(deck, discardPile)
-  // }
-
-  // A potential way of solving this would be removing the phantom cards from playerHand and localDealerCards and running the draws again so that the cards you draw go into the discard pile
-  // Another simpler way is simply taking the cards in your cards and the dealer cards, putting them in the discard pile and splicing them out of the draw deck
-  // useEffect(() => {
-  //   ///////////////////////////
-  //   // A remaining bug is that 2 turns after the shuffle a majority of cards go missing from the deck, not discardPile
-  //   // It likely has something to do with the filter, does not appear to be the case
-
-  //   // It appears that the deck size is being set to the total deck - the remaining Cards
-  //   // Another interesting property is that deck + discard is no longer changing values, which is what it is supposed to do,
-  //   // and would still be properly working if the cards from the deck didn't disappear
-
-  //   /////////////////////////////////
-  //   // The deck is being set at pretty much the beginning of the turn; when the shuffle occurs.
-  //   // Could it be that somewhere the deck is being set using the old data before the deck set from the shuffle had been updated
-  //   // The solution is this case would be for the shuffle to occur at the end of the turn when remaining cards is at or below 0
-
-  //   if (cutPosition - discardPile.length <= 0) {
-  //     if (roundStartFlag === 0) {
-  //       // wait until the round is over to do the next steps
-  //       // discardPile.push(...yourCards, ...localDealerCards)
-  //       let placeHolderDeck = [...deck, ...discardPile]
-  //       let localDiscardPile = discardPile
-  //       console.log("Deck Shuffling")
-  //       // shuffleDeck()
-  //       // setDeck(...placeHolderDeck)
-  //       shoeCount(
-  //         Math.floor(
-  //           (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) *
-  //             (deck.length + discardPile.length)
-  //         )
-  //       )
-
-  //       console.log(yourCards)
-  //       console.log(localDealerCards)
-  //       discardPile.length = 0
-  //       discardPile.push(...yourCards, ...localDealerCards)
-  //       // setDiscardPile([...yourCards, ...localDealerCards])
-  //       console.log(discardPile)
-
-  //       // discardPileUpdate(yourCards)
-  //       // discardPileUpdate(localDealerCards)
-  //       // The DiscardPile it is reading from is old
-  //       // The deck it is filtering with is old
-  //       console.log(
-  //         placeHolderDeck.length -
-  //           placeHolderDeck.filter(x => !localDiscardPile.includes(x)).length
-  //       )
-  //       if (
-  //         placeHolderDeck.length -
-  //           placeHolderDeck.filter(x => !localDiscardPile.includes(x)).length >
-  //         4
-  //       ) {
-  //         console.log(placeHolderDeck)
-  //         setDeck(placeHolderDeck)
-  //       } else {
-  //         console.log(placeHolderDeck)
-  //         console.log(
-  //           placeHolderDeck.filter(x => !localDiscardPile.includes(x))
-  //         )
-  //         deckUpdate(placeHolderDeck.filter(x => !localDiscardPile.includes(x))) // This should show what cards are the same between them abd remove them
-  //       }
-
-  //       // Something involving this piece of code is bugging
-  //       // Double Down causes the bug, don't know for split
-  //     }
-  //   }
-  // }, [roundStartFlag]) // To shuffle when the turn ends
-  //roundStartFlagSwitch gets triggered on bet and deal. roundStartFlag being zero causes the table options screen to occur
-
-  // useEffect(() => {
-  //   console.log(yourCards)
-  //   console.log(localDealerCards)
-  //   console.log(discardPile)
-  // })
-
   if (splitFlag === 0) {
     // Split flag triggered
-    if (handOneEnd) {
+    if (handOneEnd === 1) {
       // First hand
+      console.log("First Hand")
       return (
         <div>
           <button onClick={playerHit}>Hit</button>
@@ -1255,8 +1188,10 @@ function TableOptions({
           </p>
         </div>
       )
-    } else if (endTurnFlag) {
+    } else if (endTurnFlag === 1) {
+      // when the final stand occurs this is no longer true and gives next screen
       // Second hand
+      console.log("Second Hand")
       return (
         <div>
           <button onClick={playerHit2}>Hit</button>
@@ -1421,7 +1356,7 @@ function DealerBlackJack({
   dealerCards
 }) {
   /////////////////////////
-  // Need to import a bunch of state for this later
+  // Need to import a bunch of state for this later to shuffle check when the dealer draws a blackJack
 
   // function deckShuffleFunction() {
   //   console.log("Shuffle check")
@@ -1739,7 +1674,7 @@ function App() {
 
   useEffect(() => {
     // If deck is ever manually updated update the deck
-    if (deckCount != 1) {
+    if (deckCount !== 1) {
       let localDeck = deck
       for (let i = 1; i < deckCount; i++) {
         deck.push(...localDeck.slice(0, 52))
@@ -1816,6 +1751,9 @@ function App() {
 
   // To be used when splitting cards
   const [yourCards2, setYourCards2] = useState([])
+  const yourCardsValue2 = value => {
+    setYourCards2(value)
+  }
 
   const [dealerCards, setDealerCards] = useState([])
 
@@ -1872,15 +1810,9 @@ function App() {
     let card = thisDeck[cardIndex]
     thisDeck.splice(cardIndex, 1)
     setDiscardPile(discardPile => [...discardPile, card])
-    // setDiscardPile([...discardPile, card]) // We use two ways of doing this need to see if there is a difference
     setDeck(thisDeck)
-    // Now update hand
-    // This needs to be sent to table options faster
-    // setYourCards(yourCards => [...yourCards, card])
     yourCards.push(card)
     setYourCards(yourCards => [...yourCards])
-    // Pushing doesn't work because the state is not changing for calculations
-    // setYourCards([...yourCards, card])
   }
 
   const [doubleCard, setDoubleCard] = useState(["hello"])
@@ -1905,8 +1837,9 @@ function App() {
     thisDeck.splice(cardIndex, 1)
     setDiscardPile(discardPile => [...discardPile, card]) // We use two ways of doing this need to see if there is a difference
     setDeck(thisDeck)
+    yourCards2.push(card)
     // Now update hand
-    setYourCards2(yourCards2 => [...yourCards2, card])
+    setYourCards2(yourCards2 => [...yourCards2])
   }
 
   // Flag to indicate if standing should end the turn
@@ -1982,10 +1915,10 @@ function App() {
       roundStartFlagSwitch={roundStartFlagSwitch}
       roundStartFlag={roundStartFlag}
       yourCards={yourCards}
+      yourCards2={yourCards2}
       playerBet={playerBet}
       playerBetUpdate={playerBetUpdate}
       splitting={splitting}
-      yourCards2={yourCards2}
       dealerCards={dealerCards}
       dealerDeal={dealerDeal}
       splitFlag={splitFlag}
@@ -1998,7 +1931,9 @@ function App() {
       yourMoney={yourMoney}
       discardPileUpdate={discardPileUpdate}
       yourCardsValue={yourCardsValue}
+      yourCardsValue2={yourCardsValue2}
       setYourCards={setYourCards}
+      setYourCards2={setYourCards2}
       playerHit2={playerHit2}
       setSplitFlag={setSplitFlag}
       roundStartFlag={roundStartFlag}
@@ -2015,7 +1950,6 @@ function App() {
       realDiscardPileUpdate={realDiscardPileUpdate}
       playerHitAlt={playerHitAlt}
       deckUpdate={deckUpdate}
-      setYourCards2={setYourCards2}
       doubleCard={doubleCard}
     ></LoadOrder>
   )
