@@ -343,7 +343,7 @@ function TableOptions({
   playerHit,
   yourCards,
   yourCards2,
-  splitting,
+  // splitting,
   playerBet,
   playerBetUpdate,
   dealerCards,
@@ -425,6 +425,47 @@ function TableOptions({
     console.log(yourCards2.map(x => x.name))
   }, [deck, discardPile, yourCards, yourCards2])
 
+  const splitting = () => {
+    // splitting should only be available on the deal no other times
+    // Need to add functions of splitting that occur before standing
+
+    // So all the state it receives stays the same through the entire operation
+
+    yourMoneyValue(yourMoney - playerBet)
+
+    let splitCard1 = yourCards.slice(0, 1)
+    let splitCard2 = yourCards.slice(1, 2)
+
+    let thisDeck = deck
+
+    let cardIndex = Math.floor(Math.random() * thisDeck.length)
+    let card = thisDeck[cardIndex]
+    thisDeck.splice(cardIndex, 1)
+
+    let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
+    let card2 = thisDeck[cardIndex2]
+    thisDeck.splice(cardIndex2, 1)
+
+    setDiscardPile(discardPile => [...discardPile, card, card2])
+    setDeck(thisDeck)
+
+    yourCards.length = 0
+    yourCards2.length = 0
+
+    yourCards.push(...splitCard1, card)
+    setYourCards([...splitCard1, card]) // The reason it needs to be spread out is that the split is an object
+
+    // setYourCards(splitCard1 => [...splitCard1, card])
+
+    yourCards2.push(...splitCard2, card2)
+    setYourCards2([...splitCard2, card2])
+    // setYourCards2(splitCard2 => [...splitCard2, card2])
+
+    setSplitFlag(0)
+  }
+
+  const [doubleSplit, setDoubleSplit] = useState(0)
+
   if (cutPosition === "none") {
     // If the position is not set then set it to a random point between 70% and 85% of the total deck
     shoeCount(
@@ -446,20 +487,6 @@ function TableOptions({
 
   let doubleLostCards = []
 
-  let prevCards1 = []
-
-  let prevCards2 = []
-
-  useEffect(() => {
-    if (splitFlag === 0) {
-      console.log(prevCards1)
-      console.log(prevCards2)
-      prevCards1.push(...yourCards)
-      prevCards2.push(...yourCards2)
-      console.log(prevCards1)
-      console.log(prevCards2)
-    }
-  }, [deck, discardPile, yourCards, yourCards2])
   //////////////////////////////////////
   // So even in doubleDown yourCards2 is not visible to the act of doubling is not the cause of the bug
 
@@ -470,17 +497,14 @@ function TableOptions({
 
   // When doubleDown Executes even after the useEffect updates variables in tableOptions doubleDown does not see it
   // potential solution is running the useEffect in a different context where doubleDown is (the main) and send it to table options
+
+  // With the updated split doubleDown can now see yourCards and 2 but before the hit, meaning doubling would be fine but not after hitting
+  // I need to make it see the hit
   const doubleDown = () => {
     console.log("Should only occur once reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-    console.log(prevCards1)
-    console.log(prevCards2)
-    console.log(yourCards.length)
-    console.log(yourCards.map(x => x.name))
-    console.log(yourCards2.map(x => x.name))
-    console.log(yourCards)
     playerBetUpdate(playerBet * 2)
     yourMoneyValue(yourMoney - playerBet)
-    // Because of issues with the transfer of state we are drawing the card from within function manually
+    // Because of issues with the transfer of state we are drawing the card from within function manually; this did not work
     let thisDeck = deck
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
     let card = thisDeck[cardIndex]
@@ -531,7 +555,8 @@ function TableOptions({
       stand()
     }
     // This actually sets the state to what it should be because otherwise the "yourCards" locally would not be the same as the global yourCards
-    yourCardsValue(yourCards)
+    // yourCardsValue(yourCards)
+    setYourCards([...yourCards])
   }
 
   // Money is being added even if busting
@@ -542,10 +567,6 @@ function TableOptions({
   // See explanation above
   const doubleDown2 = () => {
     console.log("Double Down 2222222222222222222222222222222222222222222222")
-    // let yourCards2 = doubleCards2
-    console.log(yourCards2.length)
-    console.log(yourCards2.map(x => x.name))
-    console.log(yourCards2)
     playerBetUpdate(playerBet * 2)
     yourMoneyValue(yourMoney - playerBet)
     // Because of issues with the transfer of state we are drawing the card from within function manually
@@ -575,7 +596,7 @@ function TableOptions({
             aceCards.length * 11 +
             aceCards.length
         )
-        setBust2(1) ////////////////////////////////////////////////////////////////// Modify the busts for bust 2?
+        setBust2(1)
       } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) <= 21) {
         // Normal draw calculation with Ace being 11 if not busting
         setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
@@ -599,7 +620,8 @@ function TableOptions({
       stand()
     }
     // This actually sets the state to what it should be because otherwise the "yourCards" locally would not be the same as the global yourCards
-    yourCardsValue2(yourCards2) //////////////// Make this but for 2
+    // yourCardsValue2(yourCards2)
+    setYourCards2([...yourCards2])
   }
 
   let dealerHitLostCards = []
@@ -690,6 +712,7 @@ function TableOptions({
     }
   }
 
+  // Evaluates dealerCardTotal and draws additional cards if necessary with Aces
   function dealerCardTotalEvaluation() {
     console.log("Evaluating dealer cards")
     if (localDealerCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
@@ -850,8 +873,8 @@ function TableOptions({
     }
   }
 
+  // Sets an initial value for yourCards2 if the hand is split
   useEffect(() => {
-    // Sets an initial value for yourCards2 if the hand is split
     if (splitFlag === 0) {
       if (yourCards2.map(x => x.value).filter(x => x === 11)[0] > 0) {
         // Checking for ace in yourCards
@@ -892,9 +915,16 @@ function TableOptions({
     }
   }, [splitFlag])
 
+  ///////////
+  // Bug with calculation of cardTotal after blackjack from drawn card off of split
+  // I suspect that when the cardTotal useEffect activated the blackjack check passed so it standed and the cardTotal was just the same
+  // total it had before the useEffect triggered because it wasn't updated
+
+  // Solution: have the blackjack check ensure that there is no split
+
   // sets yourCards to totalCards
   useEffect(() => {
-    if (yourCards[0].value + yourCards[1].value === 21) {
+    if (yourCards[0].value + yourCards[1].value === 21 && splitFlag === 1) {
       // Blackjack check
       stand()
     } else {
@@ -936,10 +966,7 @@ function TableOptions({
     }
   }, [yourCards])
 
-  //////////////////////////////////////
-  //////////////////////////////////////
-  //////////////////////////////////////
-
+  // Sets card total for yourCards2
   useEffect(() => {
     if (handOneEnd === 0) {
       console.log("Your Cards 2 evaluation for total is starting")
@@ -987,6 +1014,7 @@ function TableOptions({
     }
   }, [yourCards2])
 
+  // Creates round result
   useEffect(() => {
     if (endPlayerTurn === 1) {
       console.log("cardTotal:", cardTotal)
@@ -1081,15 +1109,15 @@ function TableOptions({
     }
   }, [endPlayerTurn])
 
+  // Resolves for updating yourMoney state twice in the same cycle if both hands on split win
   useEffect(() => {
-    // Resolves for updating yourMoney state twice in the same cycle if both hands on split win
     if (handOneWin && handTwoWin) {
       yourMoneyValue(yourMoney + playerBet + playerBet2)
     }
   }, [handTwoWin])
 
+  // Checks for busting on second hand and ends turn
   useEffect(() => {
-    // Checks for busting on second hand and ends turn
     if (splitFlag === 0) {
       if (bust2) {
         setHandResult2("Bust")
@@ -1098,8 +1126,8 @@ function TableOptions({
     }
   }, [cardTotal2])
 
+  // Checks for busting on first hand and switches to second
   useEffect(() => {
-    // Checks for busting on first hand and switches to second
     if (splitFlag === 0) {
       if (bust) {
         setHandResult1("Bust hand one")
@@ -1111,6 +1139,7 @@ function TableOptions({
 
   const [splitElement, setSplitElement] = useState()
 
+  // Sets split element
   useEffect(() => {
     if (
       yourCards[0].value === yourCards[1].value &&
@@ -1127,6 +1156,7 @@ function TableOptions({
 
   const [doubleDownElement, setDoubleDownElement] = useState()
 
+  // Sets double down element
   useEffect(() => {
     if (playerBet <= yourMoney) {
       setDoubleDownElement(
@@ -1136,10 +1166,15 @@ function TableOptions({
         </div>
       )
     }
-  }, [])
+    // Removes the option to double on split if you have already hit
+    if (splitFlag === 0 && yourCards.length > 2) {
+      setDoubleDownElement()
+    }
+  }, [yourCards])
 
   const [doubleDownElement2, setDoubleDownElement2] = useState()
 
+  // Sets double down element 2
   useEffect(() => {
     if (playerBet2 <= yourMoney) {
       setDoubleDownElement2(
@@ -1148,8 +1183,12 @@ function TableOptions({
           <br></br>
         </div>
       )
+      // Removes the option to double on split if you have already hit
+      if (splitFlag === 0 && yourCards2.length > 2) {
+        setDoubleDownElement2()
+      }
     }
-  }, [])
+  }, [yourCards2])
 
   if (splitFlag === 0) {
     // Split flag triggered
@@ -1848,38 +1887,6 @@ function App() {
   //   setSplitFlag(0)
   // }
 
-  const splitting = () => {
-    // splitting should only be available on the deal no other times
-    // Need to add functions of splitting that occur before standing
-
-    // So all the state it receives stays the same through the entire operation
-
-    setYourMoney(yourMoney - playerBet)
-
-    let splitCard1 = yourCards.slice(0, 1)
-    let splitCard2 = yourCards.slice(1, 2)
-
-    let thisDeck = deck
-
-    let cardIndex = Math.floor(Math.random() * thisDeck.length)
-    let card = thisDeck[cardIndex]
-    thisDeck.splice(cardIndex, 1)
-
-    let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
-    let card2 = thisDeck[cardIndex2]
-    thisDeck.splice(cardIndex2, 1)
-
-    setDiscardPile(discardPile => [...discardPile, card, card2])
-    setDeck(thisDeck)
-
-    setYourCards([...splitCard1, card]) // The reason it needs to be spread out is that the split is an object
-    // setYourCards(splitCard1 => [...splitCard1, card])
-    setYourCards2([...splitCard2, card2])
-    // setYourCards2(splitCard2 => [...splitCard2, card2])
-
-    setSplitFlag(0)
-  }
-
   const [endTurnFlag, setEndTurnFlag] = useState(1)
   const endTurnFlagSwitch = () => {
     setEndTurnFlag(0)
@@ -1918,7 +1925,7 @@ function App() {
       yourCards2={yourCards2}
       playerBet={playerBet}
       playerBetUpdate={playerBetUpdate}
-      splitting={splitting}
+      // splitting={splitting}
       dealerCards={dealerCards}
       dealerDeal={dealerDeal}
       splitFlag={splitFlag}
