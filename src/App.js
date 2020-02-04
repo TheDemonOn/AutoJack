@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, Component } from "react"
 import "./App.css"
+import Button from "./MinorComponents/Button.js"
+import GithubSVG from "./MinorComponents/GithubSVG.js"
 
 // Important thing perhaps is don't setState in a useEffect that I intend to use for a calculation in the same cycle
 
@@ -49,11 +51,23 @@ function LoadOrder({
   playerHitAlt,
   realDiscardPileUpdate,
   deckUpdate,
-  doubleCard
+  doubleCard,
+  homeFlagSwitch,
+  buttonTheme,
+  iconTheme
 }) {
+  if (homeFlagSwitch) {
+    return (
+      <Home
+        homeFlagSwitch={homeFlagSwitch}
+        buttonTheme={buttonTheme}
+        iconTheme={iconTheme}
+      ></Home>
+    )
+  }
   //switch goes to 0
   //roundStartFlagReset goes to 1 and sets end player turn to 1
-  if (startFlag) {
+  else if (startFlag) {
     return (
       <StartScreen
         theDeckCountValue={theDeckCountValue}
@@ -134,6 +148,41 @@ function LoadOrder({
   }
 }
 
+function Home({ homeFlagSwitch, buttonTheme, iconTheme }) {
+  return (
+    <div>
+      <header>
+        <h1>Autojack</h1>
+      </header>
+      <h2>The Blackjack that plays itself.</h2>
+      <div class="buttonWrapper">
+        <div>
+          <Button
+            buttonTheme={buttonTheme}
+            content={"Manual"}
+            ID={"one"}
+          ></Button>
+        </div>
+        <div>
+          <Button
+            buttonTheme={buttonTheme}
+            content={"Automated"}
+            ID={"two"}
+          ></Button>
+        </div>
+      </div>
+
+      <h3>Play the game by yourself</h3>
+      <a href="#">
+        <GithubSVG iconTheme={iconTheme}></GithubSVG>
+      </a>
+      {/* <h3>/</h3>
+      <h3>Let the machine do it for you</h3> */}
+      {/* Github button image and setting button here */}
+    </div>
+  )
+}
+
 function StartScreen({
   theDeckCountValue,
   otherPlayersValue,
@@ -179,7 +228,7 @@ function StartScreen({
           type="number"
           value={YourMoneyLocal}
           min="1"
-          max="1000000"
+          max="10000"
           onChange={e => setYourMoneyLocal(e.target.value)}
         />
       </form>
@@ -1481,6 +1530,15 @@ function DealerBlackJack({
 function App() {
   console.log("Main is looped")
 
+  // Format: object
+  const [buttonTheme, setButtonTheme] = useState({
+    textAlign: "center",
+    fontSize: "3em"
+  })
+
+  // Format: string
+  const [iconTheme, setIconTheme] = useState("black")
+
   const [deck, setDeck] = useState([
     {
       value: 11,
@@ -1727,20 +1785,6 @@ function App() {
     setCutPosition(amount)
   }
 
-  // function deckShufflePosition() {
-  //   // The remaining cards not used should be about 0.7 to 0.85
-  //   if (deck != 52) {
-  //     // This will determine how many cards are remaining in the shoe between 70% and 85% of the total deck
-  //     let cutPoint = Math.floor(
-  //       (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) * deck.length
-  //     )
-  //     console.log(cutPoint)
-  //     shoeCount(cutPoint)
-  //   } else {
-  //     // Set method for single decks to use hands not cards remaining
-  //   }
-  // }
-
   const [discardPile, setDiscardPile] = useState([]) // discardPile is not iterable // Objects are outside the array
   const discardPileUpdate = value => {
     discardPile.push(value)
@@ -1749,20 +1793,14 @@ function App() {
     setDiscardPile(discardPile => [...discardPile, value])
   }
 
-  // const shuffleDeck = () => {
-  //   // Shuffle percentage 1 player to 5 hands for 1 deck,
-  //   let deckNew = [...deck, ...discardPile]
-  //   setDeck(deckNew)
-  // }
-
-  // if (discardPile.length >= cutPosition) {
-  //   shuffleDeck()
-  //   deckShufflePosition()
-  // }
-
   const [oldDiscardPile, setOldDiscardPile] = useState(discardPile)
   const oldDiscardPileUpdate = value => {
     setOldDiscardPile(value)
+  }
+
+  const [homeFlag, setHomeFlag] = useState(1)
+  const homeFlagSwitch = () => {
+    setHomeFlag(0)
   }
 
   // Used to determine if the startScreen should load.
@@ -1958,6 +1996,9 @@ function App() {
       playerHitAlt={playerHitAlt}
       deckUpdate={deckUpdate}
       doubleCard={doubleCard}
+      homeFlagSwitch={homeFlagSwitch}
+      buttonTheme={buttonTheme}
+      iconTheme={iconTheme}
     ></LoadOrder>
   )
 }
