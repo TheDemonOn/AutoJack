@@ -2,6 +2,7 @@ import React, { useState, useEffect, Component } from "react"
 import "./App.css"
 import Button from "./MinorComponents/Button.js"
 import GithubSVG from "./MinorComponents/GithubSVG.js"
+import ThemesIcon from "./MinorComponents/ThemesIcon.js"
 
 // Important thing perhaps is don't setState in a useEffect that I intend to use for a calculation in the same cycle
 
@@ -157,24 +158,19 @@ function Home({ homeFlagSwitch, buttonTheme, iconTheme }) {
       <h2>The Blackjack that plays itself.</h2>
       <div class="buttonWrapper">
         <div>
-          <Button
-            buttonTheme={buttonTheme}
-            content={"Manual"}
-            ID={"one"}
-          ></Button>
+          <Button buttonTheme={buttonTheme} content={"Manual"}></Button>
         </div>
         <div>
-          <Button
-            buttonTheme={buttonTheme}
-            content={"Automated"}
-            ID={"two"}
-          ></Button>
+          <Button buttonTheme={buttonTheme} content={"Automated"}></Button>
         </div>
       </div>
 
       <h3>Play the game by yourself</h3>
       <a href="#">
         <GithubSVG iconTheme={iconTheme}></GithubSVG>
+      </a>
+      <a href="#">
+        <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
       </a>
       {/* <h3>/</h3>
       <h3>Let the machine do it for you</h3> */}
@@ -1533,7 +1529,10 @@ function App() {
   // Format: object
   const [buttonTheme, setButtonTheme] = useState({
     textAlign: "center",
-    fontSize: "3em"
+    fontSize: "3em",
+    fontFamily: "whitman, serif",
+    fontStyle: "normal",
+    fontWeight: "600"
   })
 
   // Format: string

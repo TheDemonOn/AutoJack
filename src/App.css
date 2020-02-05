@@ -5,25 +5,28 @@
 }
 
 h1 {
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: whitman, serif;
+  font-style: normal;
+  font-weight: 600;
   font-size: 7em;
   text-align: center;
   padding-top: 2em;
 }
 
 h2 {
-  font-family: sans-serif;
-  font-size: 2em;
-  font-style: italic;
-  font-weight: lighter;
+  font-family: upgrade-lights, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 2.5em;
   text-align: center;
   margin-top: 0.5em;
 }
 
 h3 {
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: upgrade-lights, sans-serif;
+  font-weight: 500;
+  font-style: normal;
   font-size: 1.8em;
-  font-weight: lighter;
   text-align: center;
 }
 
