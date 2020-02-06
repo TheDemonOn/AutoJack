@@ -160,7 +160,7 @@ function Home({ homeFlagSwitch, buttonTheme, iconTheme, textColor }) {
       </header>
       <h2 style={textColor}>The Blackjack that plays itself.</h2>
       <div
-        class="buttonWrapper"
+        className="buttonWrapper"
         style={{ backgroundImage: "url(./Images/2.png)" }}
       >
         <div>
