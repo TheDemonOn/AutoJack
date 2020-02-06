@@ -4,8 +4,8 @@ import React from "react"
 export default function ThemesIcon({ iconTheme = "black" }) {
   return (
     <svg
-      width="5.8em"
-      height="5.8em"
+      width="7em"
+      height="7em"
       version="1.1"
       id="Layer_1"
       xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +13,7 @@ export default function ThemesIcon({ iconTheme = "black" }) {
       x="0"
       y="0"
       viewBox="0 0 500 500"
-      transform="translate(1320,180)"
+      //   transform="translate(1320,100)"
     >
       <path
         fill={iconTheme}

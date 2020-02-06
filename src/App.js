@@ -3,6 +3,7 @@ import "./App.css"
 import Button from "./MinorComponents/Button.js"
 import GithubSVG from "./MinorComponents/GithubSVG.js"
 import ThemesIcon from "./MinorComponents/ThemesIcon.js"
+import image2 from "./Images/2.png"
 
 // Important thing perhaps is don't setState in a useEffect that I intend to use for a calculation in the same cycle
 
@@ -55,7 +56,8 @@ function LoadOrder({
   doubleCard,
   homeFlagSwitch,
   buttonTheme,
-  iconTheme
+  iconTheme,
+  textColor
 }) {
   if (homeFlagSwitch) {
     return (
@@ -63,6 +65,7 @@ function LoadOrder({
         homeFlagSwitch={homeFlagSwitch}
         buttonTheme={buttonTheme}
         iconTheme={iconTheme}
+        textColor={textColor}
       ></Home>
     )
   }
@@ -149,14 +152,17 @@ function LoadOrder({
   }
 }
 
-function Home({ homeFlagSwitch, buttonTheme, iconTheme }) {
+function Home({ homeFlagSwitch, buttonTheme, iconTheme, textColor }) {
   return (
     <div>
       <header>
-        <h1>Autojack</h1>
+        <h1 style={textColor}>Autojack</h1>
       </header>
-      <h2>The Blackjack that plays itself.</h2>
-      <div class="buttonWrapper">
+      <h2 style={textColor}>The Blackjack that plays itself.</h2>
+      <div
+        class="buttonWrapper"
+        style={{ backgroundImage: "url(./Images/2.png)" }}
+      >
         <div>
           <Button buttonTheme={buttonTheme} content={"Manual"}></Button>
         </div>
@@ -164,12 +170,12 @@ function Home({ homeFlagSwitch, buttonTheme, iconTheme }) {
           <Button buttonTheme={buttonTheme} content={"Automated"}></Button>
         </div>
       </div>
-
-      <h3>Play the game by yourself</h3>
-      <a href="#">
+      {/* This h3 should be seen on the hover of the buttons between the two texts. Do it for the theme and the github buttons */}
+      <h3 style={textColor}>Play the game yourself.</h3>
+      <a id="one" href="#" target="_blank">
         <GithubSVG iconTheme={iconTheme}></GithubSVG>
       </a>
-      <a href="#">
+      <a id="two" href="#" target="_blank">
         <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
       </a>
       {/* <h3>/</h3>
@@ -178,6 +184,12 @@ function Home({ homeFlagSwitch, buttonTheme, iconTheme }) {
     </div>
   )
 }
+
+// function ThemeSettings({}) {
+//   return(
+
+//   )
+// }
 
 function StartScreen({
   theDeckCountValue,
@@ -1526,17 +1538,75 @@ function DealerBlackJack({
 function App() {
   console.log("Main is looped")
 
+  const goldTheme = {
+    borderColor: "#e7bd52",
+    backgroundColor: "rgba(40, 47, 93, .5)",
+    color: "#e7bd52"
+  }
+
+  const goldColor = {
+    color: "#e7bd52"
+  }
+
+  const purpleTheme = {
+    borderColor: "#392950",
+    backgroundColor: "#392950",
+    color: "white"
+  }
+
+  const purpleColor = {
+    color: "#392950"
+  }
+
+  const greenTheme = {
+    borderColor: "#48b74d",
+    backgroundColor: "rgba(42, 31, 73, .5)",
+    color: "#48b74d"
+  }
+
+  const greenColor = {
+    color: "#48b74d"
+  }
+
+  const redTheme = {
+    borderColor: "#595d67",
+    backgroundColor: "rgba(244, 244, 244, .2)",
+    color: "#c12f2f"
+  }
+
+  const redColor = {
+    color: "#c12f2f"
+  }
+
+  // This is just inserted into buttonTheme
+  const [themeColor, setThemeColor] = useState({
+    borderColor: "green",
+    backgroundColor: "black",
+    color: "green"
+  })
+
+  // The three states that affect everything are the textColor, buttonTheme, and iconTheme
+
+  const [textColor, setTextColor] = useState(purpleColor)
+
   // Format: object
   const [buttonTheme, setButtonTheme] = useState({
+    width: "6em",
     textAlign: "center",
-    fontSize: "3em",
-    fontFamily: "whitman, serif",
+    fontSize: "4em",
+    fontFamily: "whitman, arial",
     fontStyle: "normal",
-    fontWeight: "600"
+    fontWeight: "600",
+    lineHeight: "1.3",
+    // padding: "0 30px",
+    textDecoration: "none",
+    borderStyle: "solid",
+    borderRadius: "10px",
+    ...purpleTheme
   })
 
   // Format: string
-  const [iconTheme, setIconTheme] = useState("black")
+  const [iconTheme, setIconTheme] = useState("#392950")
 
   const [deck, setDeck] = useState([
     {
@@ -1998,6 +2068,7 @@ function App() {
       homeFlagSwitch={homeFlagSwitch}
       buttonTheme={buttonTheme}
       iconTheme={iconTheme}
+      textColor={textColor}
     ></LoadOrder>
   )
 }

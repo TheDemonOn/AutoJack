@@ -3,8 +3,8 @@ import React from "react"
 export default function GithubSVG({ iconTheme }) {
   return (
     <svg
-      width="5.5em"
-      height="5.5em"
+      width="7em"
+      height="7 em"
       version="1.1"
       id="Layer_1"
       xmlns="http://www.w3.org/2000/svg"
@@ -12,7 +12,7 @@ export default function GithubSVG({ iconTheme }) {
       x="0"
       y="0"
       viewBox="0 0 500 487"
-      transform="translate(100,180)"
+      //   transform="translate(100,100)"
     >
       <path
         fill={iconTheme}

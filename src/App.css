@@ -4,37 +4,88 @@
   padding: 0;
 }
 
+body {
+  background-image: url(./Images/2.png);
+  height: 100%;
+}
+
 h1 {
   font-family: whitman, serif;
   font-style: normal;
   font-weight: 600;
-  font-size: 7em;
+  font-size: 14em;
   text-align: center;
-  padding-top: 2em;
+  padding-top: 0.9em;
 }
 
 h2 {
   font-family: upgrade-lights, sans-serif;
   font-weight: 500;
   font-style: normal;
-  font-size: 2.5em;
+  font-size: 3.5em;
   text-align: center;
-  margin-top: 0.5em;
 }
 
 h3 {
   font-family: upgrade-lights, sans-serif;
   font-weight: 500;
   font-style: normal;
-  font-size: 1.8em;
+  font-size: 2.5em;
   text-align: center;
 }
 
 .buttonWrapper {
   display: grid;
   grid-auto-rows: minmax(6em, auto);
-  /* gap: 1em; */
+  gap: 1.5em;
   justify-items: center;
-  margin-top: 8em;
-  margin-bottom: 3em;
+  margin-top: 6em;
+  margin-bottom: 5em;
+}
+
+#one {
+  /* Try a different position other than absolute to see if the div extends with the svg */
+  position: relative;
+  /* position: sticky; */
+  /* margin-top: 21em; */
+  left: 7em;
+}
+
+#two {
+  /* position: absolute; */
+  /* position: -webkit-sticky;
+  position: sticky; */
+  /* margin-left: 90%; */
+  /* margin-left: 90%;
+  right: 5%; */
+  position: fixed;
+  right: 7.5em;
+}
+
+/* A media Query should be used to make sure it works on a mobile view */
+
+@media (max-height: 700px) {
+  #two {
+    position: absolute;
+  }
+}
+
+@media (max-width: 500px) {
+  h1 {
+    font-size: 8em;
+  }
+  h2 {
+    font-size: 2.8em;
+  }
+
+  #one {
+    top: 7.5em;
+  }
+  #two {
+    position: absolute;
+    margin-top: 7.1em;
+    right: 5.5em;
+    /* left: 45%;
+    top: 7.5em; */
+  }
 }
