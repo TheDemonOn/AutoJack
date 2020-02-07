@@ -4,6 +4,10 @@ import Button from "./MinorComponents/Button.js"
 import GithubSVG from "./MinorComponents/GithubSVG.js"
 import ThemesIcon from "./MinorComponents/ThemesIcon.js"
 import image2 from "./Images/2.png"
+import Button_Theme1 from "./Images/Button_Theme1.png"
+import Button_Theme2 from "./Images/Button_Theme2.png"
+import Button_Theme3 from "./Images/Button_Theme3.png"
+import Button_Theme4 from "./Images/Button_Theme4.png"
 
 // Important thing perhaps is don't setState in a useEffect that I intend to use for a calculation in the same cycle
 
@@ -57,15 +61,20 @@ function LoadOrder({
   homeFlagSwitch,
   buttonTheme,
   iconTheme,
-  textColor
+  textColor,
+  settingsFlag,
+  settingsFlagSwitch
 }) {
-  if (homeFlagSwitch) {
+  if (settingsFlag) {
+    return <ThemeSettings buttonTheme={buttonTheme}></ThemeSettings>
+  } else if (homeFlagSwitch) {
     return (
       <Home
         homeFlagSwitch={homeFlagSwitch}
         buttonTheme={buttonTheme}
         iconTheme={iconTheme}
         textColor={textColor}
+        settingsFlagSwitch={settingsFlagSwitch}
       ></Home>
     )
   }
@@ -152,17 +161,20 @@ function LoadOrder({
   }
 }
 
-function Home({ homeFlagSwitch, buttonTheme, iconTheme, textColor }) {
+function Home({
+  homeFlagSwitch,
+  buttonTheme,
+  iconTheme,
+  textColor,
+  settingsFlagSwitch
+}) {
   return (
     <div>
       <header>
         <h1 style={textColor}>Autojack</h1>
       </header>
       <h2 style={textColor}>The Blackjack that plays itself.</h2>
-      <div
-        className="buttonWrapper"
-        style={{ backgroundImage: "url(./Images/2.png)" }}
-      >
+      <div className="buttonWrapper">
         <div>
           <Button buttonTheme={buttonTheme} content={"Manual"}></Button>
         </div>
@@ -175,7 +187,7 @@ function Home({ homeFlagSwitch, buttonTheme, iconTheme, textColor }) {
       <a id="one" href="#" target="_blank">
         <GithubSVG iconTheme={iconTheme}></GithubSVG>
       </a>
-      <a id="two" href="#" target="_blank">
+      <a id="two" href="#" onClick={settingsFlagSwitch}>
         <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
       </a>
       {/* <h3>/</h3>
@@ -185,11 +197,60 @@ function Home({ homeFlagSwitch, buttonTheme, iconTheme, textColor }) {
   )
 }
 
-// function ThemeSettings({}) {
-//   return(
+function ThemeSettings({ buttonTheme, iconTheme }) {
+  return (
+    <div>
+              <a href="#">
+          <img
+            src={Button_Theme1}
+            height="150px"
+            width="150px"
+            alt="Blue and gold theme."
+          ></img>
+        </a>
+      <div className="themeSelector">
+        <a href="#">
+          <img
+            src={Button_Theme1}
+            height="150px"
+            width="150px"
+            alt="Blue and gold theme."
+          ></img>
+        </a>
 
-//   )
-// }
+        <a href="#">
+          <img
+            src={Button_Theme2}
+            height="150px"
+            width="150px"
+            alt="Purple theme."
+          ></img>
+        </a>
+
+        <a href="#">
+          <img
+            src={Button_Theme3}
+            height="150px"
+            width="150px"
+            alt="White and red theme."
+          ></img>
+        </a>
+
+        <a href="#">
+          <img
+            src={Button_Theme4}
+            height="150px"
+            width="150px"
+            alt="Space and green theme."
+          ></img>
+        </a>
+      </div>
+      <div id="three">
+        <Button buttonTheme={buttonTheme} content={"OK"}></Button>
+      </div>
+    </div>
+  )
+}
 
 function StartScreen({
   theDeckCountValue,
@@ -1538,6 +1599,16 @@ function DealerBlackJack({
 function App() {
   console.log("Main is looped")
 
+  const [settingsFlag, setSettingsFlag] = useState(0)
+  const settingsFlagSwitch = () => {
+    setSettingsFlag(1)
+  }
+
+  const [homeFlag, setHomeFlag] = useState(1)
+  const homeFlagSwitch = () => {
+    setHomeFlag(0)
+  }
+
   const goldTheme = {
     borderColor: "#e7bd52",
     backgroundColor: "rgba(40, 47, 93, .5)",
@@ -1867,11 +1938,6 @@ function App() {
     setOldDiscardPile(value)
   }
 
-  const [homeFlag, setHomeFlag] = useState(1)
-  const homeFlagSwitch = () => {
-    setHomeFlag(0)
-  }
-
   // Used to determine if the startScreen should load.
   const [startFlag, setStartFlag] = useState(1)
   const startFlagSwitch = () => {
@@ -2069,6 +2135,8 @@ function App() {
       buttonTheme={buttonTheme}
       iconTheme={iconTheme}
       textColor={textColor}
+      settingsFlag={settingsFlag}
+      settingsFlagSwitch={settingsFlagSwitch}
     ></LoadOrder>
   )
 }

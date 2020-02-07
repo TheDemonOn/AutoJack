@@ -62,6 +62,32 @@ h3 {
   right: 7.5em;
 }
 
+/* Theme selection */
+
+.themeSelector {
+  position: absolute;
+  right: 30em;
+  /* width: 30em; */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 7em;
+
+  /* justify-items: center;
+  align-items: center; */
+}
+
+/* .themeSelector > a {
+  width: 150px;
+  height: 150px;
+} */
+
+#three {
+  display: grid;
+  justify-items: center;
+  margin-top: 45em;
+}
+
 /* A media Query should be used to make sure it works on a mobile view */
 
 @media (max-height: 700px) {
