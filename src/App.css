@@ -67,6 +67,7 @@ h3 {
 .themeSelector {
   position: absolute;
   right: 30em;
+  bottom: 26em;
   /* width: 30em; */
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -85,7 +86,13 @@ h3 {
 #three {
   display: grid;
   justify-items: center;
-  margin-top: 45em;
+  margin-top: 58em;
+}
+
+.placeHolderCard {
+  position: absolute;
+  top: 14.5em;
+  left: 40em;
 }
 
 /* A media Query should be used to make sure it works on a mobile view */

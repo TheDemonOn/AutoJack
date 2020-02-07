@@ -8,7 +8,7 @@ import Button_Theme1 from "./Images/Button_Theme1.png"
 import Button_Theme2 from "./Images/Button_Theme2.png"
 import Button_Theme3 from "./Images/Button_Theme3.png"
 import Button_Theme4 from "./Images/Button_Theme4.png"
-import T1ace_club from "./Images/Card/T1/T1ace_club.png"
+import T2ace_spade from "./Images/Cards/T2/T2ace_spade.png"
 
 // Important thing perhaps is don't setState in a useEffect that I intend to use for a calculation in the same cycle
 
@@ -201,12 +201,12 @@ function Home({
 function ThemeSettings({ buttonTheme, iconTheme }) {
   return (
     <div>
-      <a href="#">
+      <a className="placeHolderCard">
         <img
-          src={T1ace_club}
-          height="432px"
-          width="632px"
-          alt="Blue and gold theme."
+          src={T2ace_spade}
+          height="379.2px"
+          width="259.2px"
+          alt="Ace of spades card."
         ></img>
       </a>
       <div className="themeSelector">
