@@ -64,10 +64,24 @@ function LoadOrder({
   iconTheme,
   textColor,
   settingsFlag,
-  settingsFlagSwitch
+  settingsFlagSwitch,
+  t1ThemeChange,
+  t2ThemeChange,
+  t3ThemeChange,
+  t4ThemeChange,
+  displayCard
 }) {
   if (settingsFlag) {
-    return <ThemeSettings buttonTheme={buttonTheme}></ThemeSettings>
+    return (
+      <ThemeSettings
+        buttonTheme={buttonTheme}
+        t1ThemeChange={t1ThemeChange}
+        t2ThemeChange={t2ThemeChange}
+        t3ThemeChange={t3ThemeChange}
+        t4ThemeChange={t4ThemeChange}
+        displayCard={displayCard}
+      ></ThemeSettings>
+    )
   } else if (homeFlagSwitch) {
     return (
       <Home
@@ -198,19 +212,26 @@ function Home({
   )
 }
 
-function ThemeSettings({ buttonTheme, iconTheme }) {
+function ThemeSettings({
+  buttonTheme,
+  t1ThemeChange,
+  t2ThemeChange,
+  t3ThemeChange,
+  t4ThemeChange,
+  displayCard
+}) {
   return (
     <div>
       <a className="placeHolderCard">
         <img
-          src={process.env.PUBLIC_URL + "./Cards/T2/T2ace_spade.png"}
+          src={process.env.PUBLIC_URL + displayCard}
           height="379.2px"
           width="259.2px"
           alt="Ace of spades card."
         ></img>
       </a>
       <div className="themeSelector">
-        <a href="#">
+        <a href="#" onClick={t1ThemeChange}>
           <img
             src={Button_Theme1}
             height="150px"
@@ -219,7 +240,7 @@ function ThemeSettings({ buttonTheme, iconTheme }) {
           ></img>
         </a>
 
-        <a href="#">
+        <a href="#" onClick={t2ThemeChange}>
           <img
             src={Button_Theme2}
             height="150px"
@@ -228,7 +249,7 @@ function ThemeSettings({ buttonTheme, iconTheme }) {
           ></img>
         </a>
 
-        <a href="#">
+        <a href="#" onClick={t3ThemeChange}>
           <img
             src={Button_Theme3}
             height="150px"
@@ -237,7 +258,7 @@ function ThemeSettings({ buttonTheme, iconTheme }) {
           ></img>
         </a>
 
-        <a href="#">
+        <a href="#" onClick={t4ThemeChange}>
           <img
             src={Button_Theme4}
             height="150px"
@@ -247,7 +268,7 @@ function ThemeSettings({ buttonTheme, iconTheme }) {
         </a>
       </div>
       <div id="three">
-        <Button buttonTheme={buttonTheme} content={"OK"}></Button>
+        <Button buttonTheme={buttonTheme} content={"Back"}></Button>
       </div>
     </div>
   )
@@ -1600,14 +1621,16 @@ function DealerBlackJack({
 function App() {
   console.log("Main is looped")
 
-  const [settingsFlag, setSettingsFlag] = useState(0)
-  const settingsFlagSwitch = () => {
-    setSettingsFlag(1)
-  }
+  // This is the current/default bodyTheme
+  const [bodyTheme, setBodyTheme] = useState("bodyTheme2")
 
-  const [homeFlag, setHomeFlag] = useState(1)
-  const homeFlagSwitch = () => {
-    setHomeFlag(0)
+  useEffect(() => {
+    document.body.classList.add(bodyTheme)
+  }, [])
+
+  const bodyChange = newBodyTheme => {
+    document.body.classList.remove(bodyTheme)
+    document.body.classList.add(newBodyTheme)
   }
 
   const goldTheme = {
@@ -1619,6 +1642,7 @@ function App() {
   const goldColor = {
     color: "#e7bd52"
   }
+  const goldColorString = "#e7bd52"
 
   const purpleTheme = {
     borderColor: "#392950",
@@ -1629,16 +1653,7 @@ function App() {
   const purpleColor = {
     color: "#392950"
   }
-
-  const greenTheme = {
-    borderColor: "#48b74d",
-    backgroundColor: "rgba(42, 31, 73, .5)",
-    color: "#48b74d"
-  }
-
-  const greenColor = {
-    color: "#48b74d"
-  }
+  const purpleColorString = "#392950"
 
   const redTheme = {
     borderColor: "#595d67",
@@ -1649,20 +1664,26 @@ function App() {
   const redColor = {
     color: "#c12f2f"
   }
+  const redColorString = "#c12f2f"
+
+  const greenTheme = {
+    borderColor: "#48b74d",
+    backgroundColor: "rgba(42, 31, 73, .5)",
+    color: "#48b74d"
+  }
+
+  const greenColor = {
+    color: "#48b74d"
+  }
+  const greenColorString = "#48b74d"
 
   // This is just inserted into buttonTheme
-  const [themeColor, setThemeColor] = useState({
-    borderColor: "green",
-    backgroundColor: "black",
-    color: "green"
-  })
+  // const [themeColor, setThemeColor] = useState(purpleTheme)
 
-  // The three states that affect everything are the textColor, buttonTheme, and iconTheme
-
+  // The three states that affect everything are the textColor, buttonTheme(themeColor), and iconTheme
   const [textColor, setTextColor] = useState(purpleColor)
 
-  // Format: object
-  const [buttonTheme, setButtonTheme] = useState({
+  const buttonSettings = {
     width: "6em",
     textAlign: "center",
     fontSize: "4em",
@@ -1673,12 +1694,77 @@ function App() {
     // padding: "0 30px",
     textDecoration: "none",
     borderStyle: "solid",
-    borderRadius: "10px",
+    borderRadius: "10px"
+  }
+
+  // Format: object; This should stay consistent
+  const [buttonTheme, setButtonTheme] = useState({
+    ...buttonSettings,
     ...purpleTheme
   })
 
   // Format: string
-  const [iconTheme, setIconTheme] = useState("#392950")
+  const [iconTheme, setIconTheme] = useState(purpleColorString)
+
+  const [displayCard, setDisplayCard] = useState(cards.t2.spade.ace.src)
+
+  const t1ThemeChange = () => {
+    setDisplayCard(cards.t1.spade.ace.src)
+    setButtonTheme({
+      ...buttonSettings,
+      ...goldTheme
+    })
+    setTextColor(goldColor)
+    setIconTheme(goldColorString)
+    bodyChange("bodyTheme1")
+    setBodyTheme("bodyTheme1")
+  }
+
+  const t2ThemeChange = () => {
+    setDisplayCard(cards.t2.spade.ace.src)
+    setButtonTheme({
+      ...buttonSettings,
+      ...purpleTheme
+    })
+    setTextColor(purpleColor)
+    setIconTheme(purpleColorString)
+    bodyChange("bodyTheme2")
+    setBodyTheme("bodyTheme2")
+  }
+
+  const t3ThemeChange = () => {
+    setDisplayCard(cards.t3.spade.ace.src)
+    setButtonTheme({
+      ...buttonSettings,
+      ...redTheme
+    })
+    setTextColor(redColor)
+    setIconTheme(redColorString)
+    bodyChange("bodyTheme3")
+    setBodyTheme("bodyTheme3")
+  }
+
+  const t4ThemeChange = () => {
+    setDisplayCard(cards.t4.spade.ace.src)
+    setButtonTheme({
+      ...buttonSettings,
+      ...greenTheme
+    })
+    setTextColor(greenColor)
+    setIconTheme(greenColorString)
+    bodyChange("bodyTheme4")
+    setBodyTheme("bodyTheme4")
+  }
+
+  const [settingsFlag, setSettingsFlag] = useState(0)
+  const settingsFlagSwitch = () => {
+    setSettingsFlag(1)
+  }
+
+  const [homeFlag, setHomeFlag] = useState(1)
+  const homeFlagSwitch = () => {
+    setHomeFlag(0)
+  }
 
   const [deck, setDeck] = useState([
     {
@@ -2138,6 +2224,11 @@ function App() {
       textColor={textColor}
       settingsFlag={settingsFlag}
       settingsFlagSwitch={settingsFlagSwitch}
+      t1ThemeChange={t1ThemeChange}
+      t2ThemeChange={t2ThemeChange}
+      t3ThemeChange={t3ThemeChange}
+      t4ThemeChange={t4ThemeChange}
+      displayCard={displayCard}
     ></LoadOrder>
   )
 }

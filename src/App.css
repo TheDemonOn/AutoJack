@@ -5,8 +5,21 @@
 }
 
 body {
+  /* background-image: url(./Images/2.png); */
+  /* height: 100%; */
+}
+
+.bodyTheme1 {
+  background-image: url(./Images/1.png);
+}
+.bodyTheme2 {
   background-image: url(./Images/2.png);
-  height: 100%;
+}
+.bodyTheme3 {
+  background-image: url(./Images/3.png);
+}
+.bodyTheme4 {
+  background-image: url(./Images/4.png);
 }
 
 h1 {
