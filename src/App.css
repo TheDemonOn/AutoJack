@@ -80,21 +80,12 @@ h3 {
 .themeSelector {
   position: absolute;
   right: 30em;
-  bottom: 26em;
-  /* width: 30em; */
+  top: 15em;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   gap: 7em;
-
-  /* justify-items: center;
-  align-items: center; */
 }
-
-/* .themeSelector > a {
-  width: 150px;
-  height: 150px;
-} */
 
 #three {
   display: grid;
@@ -109,6 +100,79 @@ h3 {
 }
 
 /* A media Query should be used to make sure it works on a mobile view */
+
+@media (max-width: 1400px) {
+  .themeSelector {
+    /* position: relative; */
+    /* right: 15em; */
+    right: 18%;
+  }
+  .placeHolderCard {
+    /* position: relative; */
+    left: 25%;
+
+    /* left: 25em; */
+  }
+}
+
+/* For this section figure out if I can center the two elements then set them down then apart */
+@media (max-width: 1200px) {
+  .themeSelector {
+    position: absolute;
+    right: 45%;
+    width: 5em;
+    top: 17.4em;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2em;
+  }
+
+  .placeHolderCard {
+    left: 20%;
+  }
+}
+
+@media (max-width: 920px) {
+  /* position: relative; */
+  .placeHolderCard {
+    top: 22em;
+    left: 17%;
+    height: 246.48px;
+    width: 168.48px;
+  }
+  /* left: 25em; */
+}
+
+@media (max-width: 620px) {
+  .themeSelector {
+    gap: 0;
+  }
+
+  .placeHolderCard {
+    left: 10%;
+  }
+}
+
+@media (max-width: 560px) {
+  .themeSelector {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    top: 2em;
+    left: 31%;
+  }
+
+  .placeHolderCard {
+    display: none;
+    left: 10%;
+  }
+
+  #three {
+    margin-top: 65em;
+    margin-bottom: 2em;
+  }
+}
 
 @media (max-height: 700px) {
   #two {

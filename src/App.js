@@ -222,50 +222,53 @@ function ThemeSettings({
 }) {
   return (
     <div>
-      <a className="placeHolderCard">
+      <a>
         <img
+          className="placeHolderCard"
           src={process.env.PUBLIC_URL + displayCard}
           height="379.2px"
           width="259.2px"
           alt="Ace of spades card."
         ></img>
       </a>
-      <div className="themeSelector">
-        <a href="#" onClick={t1ThemeChange}>
-          <img
-            src={Button_Theme1}
-            height="150px"
-            width="150px"
-            alt="Blue and gold theme."
-          ></img>
-        </a>
+      <div>
+        <div className="themeSelector">
+          <a href="#" onClick={t1ThemeChange}>
+            <img
+              src={Button_Theme1}
+              height="150px"
+              width="150px"
+              alt="Blue and gold theme."
+            ></img>
+          </a>
 
-        <a href="#" onClick={t2ThemeChange}>
-          <img
-            src={Button_Theme2}
-            height="150px"
-            width="150px"
-            alt="Purple theme."
-          ></img>
-        </a>
+          <a href="#" onClick={t2ThemeChange}>
+            <img
+              src={Button_Theme2}
+              height="150px"
+              width="150px"
+              alt="Purple theme."
+            ></img>
+          </a>
 
-        <a href="#" onClick={t3ThemeChange}>
-          <img
-            src={Button_Theme3}
-            height="150px"
-            width="150px"
-            alt="White and red theme."
-          ></img>
-        </a>
+          <a href="#" onClick={t3ThemeChange}>
+            <img
+              src={Button_Theme3}
+              height="150px"
+              width="150px"
+              alt="White and red theme."
+            ></img>
+          </a>
 
-        <a href="#" onClick={t4ThemeChange}>
-          <img
-            src={Button_Theme4}
-            height="150px"
-            width="150px"
-            alt="Space and green theme."
-          ></img>
-        </a>
+          <a href="#" onClick={t4ThemeChange}>
+            <img
+              src={Button_Theme4}
+              height="150px"
+              width="150px"
+              alt="Space and green theme."
+            ></img>
+          </a>
+        </div>
       </div>
       <div id="three">
         <Button buttonTheme={buttonTheme} content={"Back"}></Button>
