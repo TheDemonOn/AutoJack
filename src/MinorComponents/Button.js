@@ -12,10 +12,10 @@ import React, { useState } from "react"
 
 // Content should be the text
 
-function Button({ buttonTheme, content, ID }) {
+function Button({ buttonTheme, content, ID, func }) {
   return (
     // I can use a class here just to put in info that doesn't change between different themes
-    <button id={ID} style={buttonTheme}>
+    <button id={ID} style={buttonTheme} onClick={func}>
       {content}
     </button>
   )

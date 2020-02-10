@@ -59,12 +59,15 @@ function LoadOrder({
   realDiscardPileUpdate,
   deckUpdate,
   doubleCard,
+  homeFlag,
   homeFlagSwitch,
+  homeFlagSwitch1,
   buttonTheme,
   iconTheme,
   textColor,
   settingsFlag,
   settingsFlagSwitch,
+  settingsFlagSwitch0,
   t1ThemeChange,
   t2ThemeChange,
   t3ThemeChange,
@@ -80,16 +83,19 @@ function LoadOrder({
         t3ThemeChange={t3ThemeChange}
         t4ThemeChange={t4ThemeChange}
         displayCard={displayCard}
+        settingsFlagSwitch0={settingsFlagSwitch0}
       ></ThemeSettings>
     )
-  } else if (homeFlagSwitch) {
+  } else if (homeFlag) {
     return (
       <Home
         homeFlagSwitch={homeFlagSwitch}
+        homeFlagSwitch1={homeFlagSwitch1}
         buttonTheme={buttonTheme}
         iconTheme={iconTheme}
         textColor={textColor}
         settingsFlagSwitch={settingsFlagSwitch}
+        startFlagSwitch={startFlagSwitch}
       ></Home>
     )
   }
@@ -102,6 +108,9 @@ function LoadOrder({
         otherPlayersValue={otherPlayersValue}
         yourMoneyValue={yourMoneyValue}
         startFlagSwitch={startFlagSwitch}
+        buttonTheme={buttonTheme}
+        iconTheme={iconTheme}
+        textColor={textColor}
       ></StartScreen>
     )
   } else if (roundStartFlag) {
@@ -116,6 +125,9 @@ function LoadOrder({
         yourMoneyValue={yourMoneyValue}
         cutPosition={cutPosition}
         discardPile={discardPile}
+        buttonTheme={buttonTheme}
+        iconTheme={iconTheme}
+        textColor={textColor}
       ></RoundStart>
     )
   } else if (dealerCards[0].value + dealerCards[1].value === 21) {
@@ -130,6 +142,9 @@ function LoadOrder({
         discardPile={discardPile}
         yourCards={yourCards}
         dealerCards={dealerCards}
+        buttonTheme={buttonTheme}
+        iconTheme={iconTheme}
+        textColor={textColor}
       ></DealerBlackJack>
     )
   } else if (tableStart) {
@@ -171,6 +186,9 @@ function LoadOrder({
         realDiscardPileUpdate={realDiscardPileUpdate}
         deckUpdate={deckUpdate}
         doubleCard={doubleCard}
+        buttonTheme={buttonTheme}
+        iconTheme={iconTheme}
+        textColor={textColor}
       ></TableOptions>
     )
   }
@@ -181,7 +199,9 @@ function Home({
   buttonTheme,
   iconTheme,
   textColor,
-  settingsFlagSwitch
+  settingsFlagSwitch,
+  homeFlagSwitch1,
+  startFlagSwitch
 }) {
   return (
     <div>
@@ -191,7 +211,11 @@ function Home({
       <h2 style={textColor}>The Blackjack that plays itself.</h2>
       <div className="buttonWrapper">
         <div>
-          <Button buttonTheme={buttonTheme} content={"Manual"}></Button>
+          <Button
+            buttonTheme={buttonTheme}
+            content={"Manual"}
+            func={homeFlagSwitch}
+          ></Button>
         </div>
         <div>
           <Button buttonTheme={buttonTheme} content={"Automated"}></Button>
@@ -218,7 +242,8 @@ function ThemeSettings({
   t2ThemeChange,
   t3ThemeChange,
   t4ThemeChange,
-  displayCard
+  displayCard,
+  settingsFlagSwitch0
 }) {
   return (
     <div>
@@ -271,7 +296,11 @@ function ThemeSettings({
         </div>
       </div>
       <div id="three">
-        <Button buttonTheme={buttonTheme} content={"Back"}></Button>
+        <Button
+          buttonTheme={buttonTheme}
+          content={"Back"}
+          func={settingsFlagSwitch0}
+        ></Button>
       </div>
     </div>
   )
@@ -281,7 +310,10 @@ function StartScreen({
   theDeckCountValue,
   otherPlayersValue,
   yourMoneyValue,
-  startFlagSwitch
+  startFlagSwitch,
+  buttonTheme,
+  iconTheme,
+  textColor
 }) {
   const [deckCountValue, setDeckCountValue] = useState("")
 
@@ -306,7 +338,7 @@ function StartScreen({
   return (
     <div>
       <form onSubmit={handleDeckCount}>
-        How many decks do you want to use?{" "}
+        <h3 style={textColor}>How many decks do you want to use?</h3>
         <input
           type="number"
           value={deckCountValue}
@@ -317,7 +349,7 @@ function StartScreen({
         <br></br>
       </form>
       <form onSubmit={handleYourMoney}>
-        How much money do you want to start with?{" "}
+        <h3 style={textColor}>How much money do you want to start with?</h3>
         <input
           type="number"
           value={YourMoneyLocal}
@@ -326,7 +358,12 @@ function StartScreen({
           onChange={e => setYourMoneyLocal(e.target.value)}
         />
       </form>
-      <button onClick={startFlagSwitch}>Continue</button>
+      <Button
+        buttonTheme={buttonTheme}
+        content={"Play"}
+        func={startFlagSwitch}
+      ></Button>
+      {/* <button onClick={startFlagSwitch}>Continue</button> */}
     </div>
   )
 }
@@ -1627,6 +1664,7 @@ function App() {
   // This is the current/default bodyTheme
   const [bodyTheme, setBodyTheme] = useState("bodyTheme2")
 
+  // Sets the body to the default of bodyTheme2
   useEffect(() => {
     document.body.classList.add(bodyTheme)
   }, [])
@@ -1686,6 +1724,7 @@ function App() {
   // The three states that affect everything are the textColor, buttonTheme(themeColor), and iconTheme
   const [textColor, setTextColor] = useState(purpleColor)
 
+  // The hover state for the buttons will probably have to go into here
   const buttonSettings = {
     width: "6em",
     textAlign: "center",
@@ -1763,10 +1802,16 @@ function App() {
   const settingsFlagSwitch = () => {
     setSettingsFlag(1)
   }
+  const settingsFlagSwitch0 = () => {
+    setSettingsFlag(0)
+  }
 
   const [homeFlag, setHomeFlag] = useState(1)
   const homeFlagSwitch = () => {
     setHomeFlag(0)
+  }
+  const homeFlagSwitch1 = () => {
+    setHomeFlag(1)
   }
 
   const [deck, setDeck] = useState([
@@ -2221,12 +2266,15 @@ function App() {
       playerHitAlt={playerHitAlt}
       deckUpdate={deckUpdate}
       doubleCard={doubleCard}
+      homeFlag={homeFlag}
       homeFlagSwitch={homeFlagSwitch}
+      homeFlagSwitch1={homeFlagSwitch1}
       buttonTheme={buttonTheme}
       iconTheme={iconTheme}
       textColor={textColor}
       settingsFlag={settingsFlag}
       settingsFlagSwitch={settingsFlagSwitch}
+      settingsFlagSwitch0={settingsFlagSwitch0}
       t1ThemeChange={t1ThemeChange}
       t2ThemeChange={t2ThemeChange}
       t3ThemeChange={t3ThemeChange}
