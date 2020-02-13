@@ -140,7 +140,6 @@ function LoadOrder({
       ></RoundStart>
     )
   } else if (dealerCards[0].value + dealerCards[1].value === 21) {
-    // .value is undefined on continue press// Didn't deal to dealer// Ran out of cards
     return (
       <DealerBlackJack
         roundStartFlagReset={roundStartFlagReset}
@@ -350,6 +349,18 @@ function StartScreen({
 
   const [tableIconSize, setTableIconSize] = useState("130px")
 
+  const [parameterSection, setParameterSection] = useState(
+    <div className="parameterBox">
+      <h4 style={textColor}>Table Rules</h4>
+      <div className="parametersH5">
+        <h5 style={textColor}>Decks Used: 8</h5>
+        <h5 style={textColor}>Min Bet: 5</h5>
+        <h5 style={textColor}>Max Bet: 100</h5>
+      </div>
+      <h5 style={textColor}>Starting Money: 500</h5>
+    </div>
+  )
+
   return (
     <div>
       {/* <form onSubmit={handleDeckCount}>
@@ -380,6 +391,9 @@ function StartScreen({
           func={homeFlagSwitch1}
         ></Button>
       </div>
+      <div className="secondTitle">
+        <h6 style={textColor}>Autojack</h6>
+      </div>
       <div className="tableWrapper">
         {/* 
         This is a placeholder for the real icons.
@@ -392,16 +406,22 @@ function StartScreen({
         <a href="#">
           <img src={chip1} height={tableIconSize} width={tableIconSize}></img>
         </a>
+
         <a href="#">
           <img src={chip5} height={tableIconSize} width={tableIconSize}></img>
         </a>
+
         <a href="#">
           <img src={chip10} height={tableIconSize} width={tableIconSize}></img>
         </a>
+
         <a href="#">
           <img src={chip25} height={tableIconSize} width={tableIconSize}></img>
         </a>
       </div>
+
+      {parameterSection}
+
       <div className="tablePlay">
         <Button
           buttonTheme={buttonTheme}
@@ -1782,7 +1802,7 @@ function App() {
 
   // The hover state for the buttons will probably have to go into here
   const buttonSettings = {
-    width: "6em",
+    padding: "0 1em",
     textAlign: "center",
     fontSize: "4em",
     fontFamily: "whitman, arial",

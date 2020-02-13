@@ -187,8 +187,8 @@ h3 {
 
 .tableWrapper {
   position: absolute;
-  left: 30em;
-  top: 13em;
+  left: 25%;
+  top: 22em;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -196,17 +196,15 @@ h3 {
 }
 
 #four {
-  position: absolute;
+  position: relative;
   left: 7em;
-  bottom: 10.21em;
+  /* bottom: 9.9em; */
 }
 
 #five {
   position: absolute;
-  /* right: 7.5em;
-  bottom: 6.6em; */
   right: 7.5em;
-  bottom: 9.85em;
+  /* bottom: 9.85em; */
 }
 
 .tableBack {
@@ -218,5 +216,117 @@ h3 {
 .tablePlay {
   display: grid;
   justify-items: center;
-  margin-top: 58em;
+  margin-top: 42em;
+  margin-bottom: 3em;
+}
+
+h4 {
+  font-family: whitman, serif;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 4em;
+  text-align: left;
+}
+
+h5 {
+  font-family: upgrade-lights, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 2.8em;
+  text-align: left;
+  margin: 0.5em 0;
+  /* margin-left: 1em;   */
+}
+
+.parameterBox {
+  position: absolute;
+  /* border: solid; */
+  height: 33em;
+  width: 30em;
+  margin-left: 53.5%;
+  top: 22.5em;
+}
+
+.parametersH5 {
+  margin-top: 2em;
+  margin-bottom: 5em;
+}
+
+h6 {
+  font-family: whitman, serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 10em;
+  text-align: center;
+  margin-top: 0.7em;
+}
+
+@media (max-width: 1350px) {
+  .tableWrapper {
+    left: 25%;
+    gap: 4em;
+  }
+}
+
+@media (max-width: 1100px) {
+  .tableWrapper {
+    left: 15%;
+    gap: 4em;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .tableWrapper {
+    left: 12%;
+    gap: 4em;
+    /* grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr; */
+  }
+}
+
+@media (max-width: 750px) {
+  .tableWrapper {
+    left: 20%;
+    top: 20.7em;
+    gap: 0em;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+  }
+  .parameterBox {
+    position: absolute;
+    /* border: solid; */
+    height: 33em;
+    width: 20em;
+    margin-left: 53.5%;
+    top: 22.5em;
+  }
+  .tableWrapper a img {
+    width: 90px;
+    height: 90px;
+  }
+}
+
+@media (max-width: 450px) {
+  .secondTitle {
+    display: none;
+  }
+  .tablePlay {
+    margin-top: 54em;
+  }
+  .tableWrapper {
+    top: 13em;
+  }
+  .parameterBox {
+    height: 33em;
+    width: 16em;
+    margin-left: 53.5%;
+    top: 12.5em;
+  }
+  .tableBack {
+    left: 25%;
+    /* display: grid;
+    justify-items: center; */
+  }
 }

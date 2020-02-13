@@ -12,7 +12,6 @@ export default function GithubSVG({ iconTheme }) {
       x="0"
       y="0"
       viewBox="0 0 500 487"
-      //   transform="translate(100,100)"
     >
       <path
         fill={iconTheme}

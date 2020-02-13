@@ -13,7 +13,6 @@ export default function ThemesIcon({ iconTheme = "black" }) {
       x="0"
       y="0"
       viewBox="0 0 500 500"
-      //   transform="translate(1320,100)"
     >
       <path
         fill={iconTheme}
