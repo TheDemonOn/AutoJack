@@ -198,3 +198,15 @@ h3 {
     top: 7.5em; */
   }
 }
+
+/* StartScreen */
+
+.tableWrapper {
+  position: absolute;
+  right: 30em;
+  top: 15em;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 7em;
+}

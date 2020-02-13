@@ -9,6 +9,13 @@ import Button_Theme2 from "./Images/Button_Theme2.png"
 import Button_Theme3 from "./Images/Button_Theme3.png"
 import Button_Theme4 from "./Images/Button_Theme4.png"
 import cards from "./MinorComponents/cards.js"
+import chip1 from "./Images/chip1.png"
+import chip5 from "./Images/chip5.png"
+import chip10 from "./Images/chip10.png"
+import chip25 from "./Images/chip25.png"
+import chip50 from "./Images/chip50.png"
+import chip100 from "./Images/chip100.png"
+import chip500 from "./Images/chip500.png"
 
 // Important thing perhaps is don't setState in a useEffect that I intend to use for a calculation in the same cycle
 
@@ -111,6 +118,7 @@ function LoadOrder({
         buttonTheme={buttonTheme}
         iconTheme={iconTheme}
         textColor={textColor}
+        settingsFlagSwitch={settingsFlagSwitch}
       ></StartScreen>
     )
   } else if (roundStartFlag) {
@@ -208,6 +216,8 @@ function Home({
       <header>
         <h1 style={textColor}>Autojack</h1>
       </header>
+      {/* Have this be different texts on reload. */}
+      {/* It plays itself so you don't have to. */}
       <h2 style={textColor}>The Blackjack that plays itself.</h2>
       <div className="buttonWrapper">
         <div>
@@ -223,7 +233,7 @@ function Home({
       </div>
       {/* This h3 should be seen on the hover of the buttons between the two texts. Do it for the theme and the github buttons */}
       <h3 style={textColor}>Play the game yourself.</h3>
-      <a id="one" href="#" target="_blank">
+      <a id="one" href="https://github.com/TheDemonOn/AutoJack" target="_blank">
         <GithubSVG iconTheme={iconTheme}></GithubSVG>
       </a>
       <a id="two" href="#" onClick={settingsFlagSwitch}>
@@ -313,7 +323,8 @@ function StartScreen({
   startFlagSwitch,
   buttonTheme,
   iconTheme,
-  textColor
+  textColor,
+  settingsFlagSwitch
 }) {
   const [deckCountValue, setDeckCountValue] = useState("")
 
@@ -337,7 +348,7 @@ function StartScreen({
 
   return (
     <div>
-      <form onSubmit={handleDeckCount}>
+      {/* <form onSubmit={handleDeckCount}>
         <h3 style={textColor}>How many decks do you want to use?</h3>
         <input
           type="number"
@@ -357,12 +368,32 @@ function StartScreen({
           max="10000"
           onChange={e => setYourMoneyLocal(e.target.value)}
         />
-      </form>
+      </form> */}
+      <div className="tableWrapper">
+        <a href="#">
+          <img src={chip1} height="120px" width="120px"></img>
+        </a>
+        <a href="#">
+          <img src={chip5} height="120px" width="120px"></img>
+        </a>
+        <a href="#">
+          <img src={chip10} height="120px" width="120px"></img>
+        </a>
+        <a href="#">
+          <img src={chip25} height="120px" width="120px"></img>
+        </a>
+      </div>
       <Button
         buttonTheme={buttonTheme}
         content={"Play"}
         func={startFlagSwitch}
       ></Button>
+      <a id="one" href="https://github.com/TheDemonOn/AutoJack" target="_blank">
+        <GithubSVG iconTheme={iconTheme}></GithubSVG>
+      </a>
+      <a id="two" href="#" onClick={settingsFlagSwitch}>
+        <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
+      </a>
       {/* <button onClick={startFlagSwitch}>Continue</button> */}
     </div>
   )
