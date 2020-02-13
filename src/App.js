@@ -119,6 +119,7 @@ function LoadOrder({
         iconTheme={iconTheme}
         textColor={textColor}
         settingsFlagSwitch={settingsFlagSwitch}
+        homeFlagSwitch1={homeFlagSwitch1}
       ></StartScreen>
     )
   } else if (roundStartFlag) {
@@ -324,7 +325,8 @@ function StartScreen({
   buttonTheme,
   iconTheme,
   textColor,
-  settingsFlagSwitch
+  settingsFlagSwitch,
+  homeFlagSwitch1
 }) {
   const [deckCountValue, setDeckCountValue] = useState("")
 
@@ -345,6 +347,8 @@ function StartScreen({
     yourMoneyValue(YourMoneyLocal)
     setYourMoneyLocal("")
   }
+
+  const [tableIconSize, setTableIconSize] = useState("130px")
 
   return (
     <div>
@@ -369,29 +373,50 @@ function StartScreen({
           onChange={e => setYourMoneyLocal(e.target.value)}
         />
       </form> */}
+      <div className="tableBack">
+        <Button
+          buttonTheme={buttonTheme}
+          content={"Back"}
+          func={homeFlagSwitch1}
+        ></Button>
+      </div>
       <div className="tableWrapper">
+        {/* 
+        This is a placeholder for the real icons.
+        The way the state will be managed is that the different table options will have an onClick function that will change
+          the state that holds the element of the table parameters box, as well as setting the proper state for things like
+          deck size and bet sizes.
+        The custom will be different because the state changes are static for the 1-3 options whereas the custom will take in an input
+          and constantly update the state to reflect what is inside it to set the parameters to however you would like.
+        */}
         <a href="#">
-          <img src={chip1} height="120px" width="120px"></img>
+          <img src={chip1} height={tableIconSize} width={tableIconSize}></img>
         </a>
         <a href="#">
-          <img src={chip5} height="120px" width="120px"></img>
+          <img src={chip5} height={tableIconSize} width={tableIconSize}></img>
         </a>
         <a href="#">
-          <img src={chip10} height="120px" width="120px"></img>
+          <img src={chip10} height={tableIconSize} width={tableIconSize}></img>
         </a>
         <a href="#">
-          <img src={chip25} height="120px" width="120px"></img>
+          <img src={chip25} height={tableIconSize} width={tableIconSize}></img>
         </a>
       </div>
-      <Button
-        buttonTheme={buttonTheme}
-        content={"Play"}
-        func={startFlagSwitch}
-      ></Button>
-      <a id="one" href="https://github.com/TheDemonOn/AutoJack" target="_blank">
+      <div className="tablePlay">
+        <Button
+          buttonTheme={buttonTheme}
+          content={"Play"}
+          func={startFlagSwitch}
+        ></Button>
+      </div>
+      <a
+        id="four"
+        href="https://github.com/TheDemonOn/AutoJack"
+        target="_blank"
+      >
         <GithubSVG iconTheme={iconTheme}></GithubSVG>
       </a>
-      <a id="two" href="#" onClick={settingsFlagSwitch}>
+      <a id="five" href="#" onClick={settingsFlagSwitch}>
         <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
       </a>
       {/* <button onClick={startFlagSwitch}>Continue</button> */}

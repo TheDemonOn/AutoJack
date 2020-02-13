@@ -56,20 +56,11 @@ h3 {
 }
 
 #one {
-  /* Try a different position other than absolute to see if the div extends with the svg */
   position: relative;
-  /* position: sticky; */
-  /* margin-top: 21em; */
   left: 7em;
 }
 
 #two {
-  /* position: absolute; */
-  /* position: -webkit-sticky;
-  position: sticky; */
-  /* margin-left: 90%; */
-  /* margin-left: 90%;
-  right: 5%; */
   position: fixed;
   right: 7.5em;
 }
@@ -102,15 +93,10 @@ h3 {
 
 @media (max-width: 1400px) {
   .themeSelector {
-    /* position: relative; */
-    /* right: 15em; */
     right: 18%;
   }
   .placeHolderCard {
-    /* position: relative; */
     left: 25%;
-
-    /* left: 25em; */
   }
 }
 
@@ -133,14 +119,12 @@ h3 {
 }
 
 @media (max-width: 920px) {
-  /* position: relative; */
   .placeHolderCard {
     top: 22em;
     left: 17%;
     height: 246.48px;
     width: 168.48px;
   }
-  /* left: 25em; */
 }
 
 @media (max-width: 620px) {
@@ -203,10 +187,36 @@ h3 {
 
 .tableWrapper {
   position: absolute;
-  right: 30em;
-  top: 15em;
+  left: 30em;
+  top: 13em;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 7em;
+  gap: 8em;
+}
+
+#four {
+  position: absolute;
+  left: 7em;
+  bottom: 10.21em;
+}
+
+#five {
+  position: absolute;
+  /* right: 7.5em;
+  bottom: 6.6em; */
+  right: 7.5em;
+  bottom: 9.85em;
+}
+
+.tableBack {
+  position: absolute;
+  top: 3em;
+  left: 3em;
+}
+
+.tablePlay {
+  display: grid;
+  justify-items: center;
+  margin-top: 58em;
 }
