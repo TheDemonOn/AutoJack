@@ -234,22 +234,24 @@ h5 {
   font-style: normal;
   font-size: 2.8em;
   text-align: left;
-  margin: 0.5em 0;
+  margin: 0.1em 0;
   /* margin-left: 1em;   */
 }
 
 .parameterBox {
   position: absolute;
-  /* border: solid; */
-  height: 33em;
-  width: 30em;
+  border: solid;
+  height: 50em;
+  /* height: 33em; */
+  width: 50em;
+  /* width: 30em; */
   margin-left: 53.5%;
   top: 22.5em;
 }
 
 .parametersH5 {
   margin-top: 2em;
-  margin-bottom: 5em;
+  margin-bottom: 0em;
 }
 
 h6 {
@@ -259,6 +261,37 @@ h6 {
   font-size: 10em;
   text-align: center;
   margin-top: 0.7em;
+}
+
+input {
+  /* width: 15em;
+  height: 2em; */
+  font-size: 2.5em;
+  font-family: "upgrade-lights";
+  width: 6em;
+  padding: 0.15em 0;
+  padding-left: 0.5em;
+  /* padding: 12px 20px;
+  margin: 8px 0; */
+  box-sizing: border-box;
+
+  border: 2px solid red;
+  /* border-bottom: */
+  border-style: solid;
+  border-radius: 10px;
+
+  transition: 0.5s;
+
+  outline: none;
+
+  /* background-color: #3CBC8D;
+  color: white; */
+}
+/* input:hover {
+  border: 2px solid #555;
+} */
+input:focus {
+  border: 2px solid #555;
 }
 
 @media (max-width: 1350px) {

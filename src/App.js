@@ -349,17 +349,68 @@ function StartScreen({
 
   const [tableIconSize, setTableIconSize] = useState("130px")
 
-  const [parameterSection, setParameterSection] = useState(
-    <div className="parameterBox">
-      <h4 style={textColor}>Table Rules</h4>
-      <div className="parametersH5">
-        <h5 style={textColor}>Decks Used: 8</h5>
-        <h5 style={textColor}>Min Bet: 5</h5>
-        <h5 style={textColor}>Max Bet: 100</h5>
+  const [parameterSection, setParameterSection] = useState()
+
+  // Make lowEnd the default.
+  const lowEnd = () => {
+    setParameterSection(
+      <div className="parameterBox">
+        <h4 style={textColor}>Table Rules</h4>
+        <div className="parametersH5">
+          <h5 style={textColor}>Decks Used: 8</h5>
+          <h5 style={textColor}>Min Bet: 5</h5>
+          <h5 style={textColor}>Max Bet: 100</h5>
+        </div>
+        <h5 style={textColor}>Starting Money: 500</h5>
       </div>
-      <h5 style={textColor}>Starting Money: 500</h5>
-    </div>
-  )
+    )
+  }
+
+  const midEnd = () => {
+    setParameterSection(
+      <div className="parameterBox">
+        <h4 style={textColor}>Table Rules</h4>
+        <div className="parametersH5">
+          <h5 style={textColor}>Decks Used: 6</h5>
+          <h5 style={textColor}>Min Bet: 20</h5>
+          <h5 style={textColor}>Max Bet: 500</h5>
+        </div>
+        <h5 style={textColor}>Starting Money: 2000</h5>
+      </div>
+    )
+  }
+
+  const highEnd = () => {
+    setParameterSection(
+      <div className="parameterBox">
+        <h4 style={textColor}>Table Rules</h4>
+        <div className="parametersH5">
+          <h5 style={textColor}>Decks Used: 4</h5>
+          <h5 style={textColor}>Min Bet: 100</h5>
+          <h5 style={textColor}>Max Bet: 10000</h5>
+        </div>
+        <h5 style={textColor}>Starting Money: 10000</h5>
+      </div>
+    )
+  }
+
+  const custom = () => {
+    setParameterSection(
+      <div className="parameterBox">
+        <h4 style={textColor}>Table Rules</h4>
+        <div className="parametersH5">
+          <h5 style={textColor}>Decks Used: </h5>
+          <input type="number" min="1" max="100"></input>
+          <h5 style={textColor}>Min Bet: </h5>
+          <input type="number" min="1"></input>
+          <h5 style={textColor}>Max Bet: </h5>
+          <input type="number" min="1"></input>
+        </div>
+        <h5 style={textColor}>Starting Money: </h5>
+        <input type="number" min="1"></input>
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -404,19 +455,39 @@ function StartScreen({
           and constantly update the state to reflect what is inside it to set the parameters to however you would like.
         */}
         <a href="#">
-          <img src={chip1} height={tableIconSize} width={tableIconSize}></img>
+          <img
+            src={chip1}
+            height={tableIconSize}
+            width={tableIconSize}
+            onClick={lowEnd}
+          ></img>
         </a>
 
         <a href="#">
-          <img src={chip5} height={tableIconSize} width={tableIconSize}></img>
+          <img
+            src={chip5}
+            height={tableIconSize}
+            width={tableIconSize}
+            onClick={midEnd}
+          ></img>
         </a>
 
         <a href="#">
-          <img src={chip10} height={tableIconSize} width={tableIconSize}></img>
+          <img
+            src={chip10}
+            height={tableIconSize}
+            width={tableIconSize}
+            onClick={highEnd}
+          ></img>
         </a>
 
         <a href="#">
-          <img src={chip25} height={tableIconSize} width={tableIconSize}></img>
+          <img
+            src={chip25}
+            height={tableIconSize}
+            width={tableIconSize}
+            onClick={custom}
+          ></img>
         </a>
       </div>
 
@@ -1812,7 +1883,8 @@ function App() {
     // padding: "0 30px",
     textDecoration: "none",
     borderStyle: "solid",
-    borderRadius: "10px"
+    borderRadius: "10px",
+    outline: "none"
   }
 
   // Format: object; This should stay consistent
