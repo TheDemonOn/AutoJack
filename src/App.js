@@ -398,16 +398,26 @@ function StartScreen({
     setParameterSection(
       <div className="parameterBox">
         <h4 style={textColor}>Table Rules</h4>
-        <div className="parametersH5">
-          <h5 style={textColor}>Decks Used: </h5>
-          <input type="number" min="1" max="100"></input>
-          <h5 style={textColor}>Min Bet: </h5>
-          <input type="number" min="1"></input>
-          <h5 style={textColor}>Max Bet: </h5>
-          <input type="number" min="1"></input>
+        <div className="inputWrapper">
+          {/* <div className="parametersH5"> */}
+          <div>
+            <h5 style={textColor}>Decks Used: </h5>
+            <input type="number" min="1" max="100"></input>
+          </div>
+          <div>
+            <h5 style={textColor}>Min Bet: </h5>
+            <input type="number" min="1"></input>
+          </div>
+          <div>
+            <h5 style={textColor}>Max Bet: </h5>
+            <input type="number" min="1"></input>
+          </div>
+          {/* </div> */}
+          <div>
+            <h5 style={textColor}>Money: </h5>
+            <input type="number" min="1"></input>
+          </div>
         </div>
-        <h5 style={textColor}>Starting Money: </h5>
-        <input type="number" min="1"></input>
       </div>
     )
   }

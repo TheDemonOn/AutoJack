@@ -240,19 +240,28 @@ h5 {
 
 .parameterBox {
   position: absolute;
-  border: solid;
-  height: 50em;
+  /* overflow: normal; */
+  /* border: solid; */
+  height: 30em;
   /* height: 33em; */
-  width: 50em;
+  /* width: 43em; */
   /* width: 30em; */
   margin-left: 53.5%;
-  top: 22.5em;
+  top: 23em;
 }
 
-.parametersH5 {
+.inputWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 3em 4em;
+  margin-top: 3em;
+}
+
+/* .parametersH5 {
   margin-top: 2em;
   margin-bottom: 0em;
-}
+} */
 
 h6 {
   font-family: whitman, serif;
@@ -319,7 +328,7 @@ input:focus {
   }
 }
 
-@media (max-width: 750px) {
+@media (max-width: 780px) {
   .tableWrapper {
     left: 20%;
     top: 20.7em;
@@ -341,6 +350,26 @@ input:focus {
   }
 }
 
+@media (max-width: 780px) {
+  .parameterBox {
+    position: absolute;
+    /* overflow: normal; */
+    height: 30em;
+    /* height: 33em; */
+    width: 20em;
+    /* width: 30em; */
+    margin-left: 53.5%;
+    top: 19.5em;
+  }
+  .inputWrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0em 0em;
+    margin-top: 0em;
+  }
+}
+
 @media (max-width: 450px) {
   .secondTitle {
     display: none;
@@ -355,11 +384,18 @@ input:focus {
     height: 33em;
     width: 16em;
     margin-left: 53.5%;
-    top: 12.5em;
+    top: 10.5em;
   }
   .tableBack {
     left: 25%;
     /* display: grid;
     justify-items: center; */
+  }
+  h4 {
+    font-family: whitman, serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 3.3em;
+    text-align: left;
   }
 }
