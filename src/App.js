@@ -385,9 +385,15 @@ function StartScreen({
       <div className="parameterBox">
         <h4 style={textColor}>Table Rules</h4>
         <div className="parametersH5">
-          <h5 style={textColor}>Decks Used: 4</h5>
-          <h5 style={textColor}>Min Bet: 100</h5>
-          <h5 style={textColor}>Max Bet: 10000</h5>
+          <div>
+            <h5 style={textColor}>Decks Used: 4</h5>
+          </div>
+          <div>
+            <h5 style={textColor}>Min Bet: 100</h5>
+          </div>
+          <div>
+            <h5 style={textColor}>Max Bet: 10000</h5>
+          </div>
         </div>
         <h5 style={textColor}>Starting Money: 10000</h5>
       </div>
@@ -399,7 +405,6 @@ function StartScreen({
       <div className="parameterBox">
         <h4 style={textColor}>Table Rules</h4>
         <div className="inputWrapper">
-          {/* <div className="parametersH5"> */}
           <div>
             <h5 style={textColor}>Decks Used: </h5>
             <input type="number" min="1" max="100"></input>
@@ -412,7 +417,6 @@ function StartScreen({
             <h5 style={textColor}>Max Bet: </h5>
             <input type="number" min="1"></input>
           </div>
-          {/* </div> */}
           <div>
             <h5 style={textColor}>Money: </h5>
             <input type="number" min="1"></input>

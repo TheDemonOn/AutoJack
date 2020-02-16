@@ -192,7 +192,7 @@ h3 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 8em;
+  gap: 6em;
 }
 
 #four {
@@ -248,6 +248,13 @@ h5 {
   /* width: 30em; */
   margin-left: 53.5%;
   top: 23em;
+}
+
+.parametersH5 {
+  display: grid;
+  gap: 2em 0;
+  margin-top: 1em;
+  margin-bottom: 3em;
 }
 
 .inputWrapper {
