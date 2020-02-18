@@ -211,6 +211,25 @@ function Home({
   homeFlagSwitch1,
   startFlagSwitch
 }) {
+  const [subText, setSubText] = useState(
+    <h2 style={textColor}>The Blackjack that plays itself.</h2>
+  )
+
+  useEffect(() => {
+    let random = Math.random()
+    if (random > 0.66) {
+      setSubText(<h2 style={textColor}>The Blackjack that plays itself.</h2>)
+    } else if (random < 0.33) {
+      setSubText(
+        <h2 style={textColor}>It plays itself so you don't have to.</h2>
+      )
+    } else {
+      setSubText(<h2 style={textColor}>Blackjack. It's Blackjack.</h2>)
+    }
+  }, [])
+
+  // const [hoverText, setHoverText] = useState()
+
   return (
     <div>
       <header>
@@ -218,27 +237,45 @@ function Home({
       </header>
       {/* Have this be different texts on reload. */}
       {/* It plays itself so you don't have to. */}
-      <h2 style={textColor}>The Blackjack that plays itself.</h2>
+      {subText}
       <div className="buttonWrapper">
-        <div>
+        <div id="manual">
           <Button
             buttonTheme={buttonTheme}
             content={"Manual"}
             func={homeFlagSwitch}
           ></Button>
         </div>
-        <div>
+        <div id="automated">
           <Button buttonTheme={buttonTheme} content={"Automated"}></Button>
         </div>
+
+        {/* This h3 should be seen on the hover of the buttons between the two texts. Do it for the theme and the github buttons */}
+        <div className="hoverText" id="hoverManual">
+          <h3 style={textColor}>Play the game yourself.</h3>
+        </div>
+        <div className="hoverText" id="hoverAutomated">
+          <h3 style={textColor}>Let the machine do the work for you.</h3>
+        </div>
       </div>
-      {/* This h3 should be seen on the hover of the buttons between the two texts. Do it for the theme and the github buttons */}
-      <h3 style={textColor}>Play the game yourself.</h3>
-      <a id="one" href="https://github.com/TheDemonOn/AutoJack" target="_blank">
-        <GithubSVG iconTheme={iconTheme}></GithubSVG>
-      </a>
-      <a id="two" href="#" onClick={settingsFlagSwitch}>
-        <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
-      </a>
+
+      <div id="one">
+        <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
+          <GithubSVG iconTheme={iconTheme}></GithubSVG>
+        </a>
+      </div>
+      <div id="two">
+        <a href="#" onClick={settingsFlagSwitch}>
+          <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
+        </a>
+      </div>
+
+      <div className="hoverText2" id="hoverGithub">
+        <h3 style={textColor}>Github link.</h3>
+      </div>
+      <div className="hoverText2" id="hoverTheme">
+        <h3 style={textColor}>Theme options.</h3>
+      </div>
       {/* <h3>/</h3>
       <h3>Let the machine do it for you</h3> */}
       {/* Github button image and setting button here */}
@@ -327,30 +364,45 @@ function StartScreen({
   settingsFlagSwitch,
   homeFlagSwitch1
 }) {
-  const [deckCountValue, setDeckCountValue] = useState("")
+  // const [deckCountValue, setDeckCountValue] = useState("")
 
-  const [YourMoneyLocal, setYourMoneyLocal] = useState("")
+  // const [YourMoneyLocal, setYourMoneyLocal] = useState("")
 
-  const handleDeckCount = e => {
-    e.preventDefault()
-    if (!deckCountValue) return
-    console.log(deckCountValue)
-    theDeckCountValue(deckCountValue)
-    setDeckCountValue("")
-  }
+  // const handleDeckCount = e => {
+  //   e.preventDefault()
+  //   if (!deckCountValue) return
+  //   console.log(deckCountValue)
+  //   theDeckCountValue(deckCountValue)
+  //   setDeckCountValue("")
+  // }
 
-  const handleYourMoney = e => {
-    e.preventDefault()
-    if (!YourMoneyLocal) return
-    console.log(YourMoneyLocal)
-    yourMoneyValue(YourMoneyLocal)
-    setYourMoneyLocal("")
-  }
+  // const handleYourMoney = e => {
+  //   e.preventDefault()
+  //   if (!YourMoneyLocal) return
+  //   console.log(YourMoneyLocal)
+  //   yourMoneyValue(YourMoneyLocal)
+  //   setYourMoneyLocal("")
+  // }
+
+  // Add functionality for min bet and max bet
+
+  const [deckSize, setDeckSize] = useState(1)
 
   const [tableIconSize, setTableIconSize] = useState("130px")
 
-  const [parameterSection, setParameterSection] = useState()
+  const [parameterSection, setParameterSection] = useState(
+    <div className="parameterBox">
+      <h4 style={textColor}>Table Rules</h4>
+      <div className="parametersH5">
+        <h5 style={textColor}>Decks Used: 8</h5>
+        <h5 style={textColor}>Min Bet: 5</h5>
+        <h5 style={textColor}>Max Bet: 100</h5>
+      </div>
+      <h5 style={textColor}>Starting Money: 500</h5>
+    </div>
+  )
 
+  // In the initial values set them to the values of the lowEnd
   // Make lowEnd the default.
   const lowEnd = () => {
     setParameterSection(
@@ -364,6 +416,8 @@ function StartScreen({
         <h5 style={textColor}>Starting Money: 500</h5>
       </div>
     )
+    theDeckCountValue(8)
+    yourMoneyValue(500)
   }
 
   const midEnd = () => {
@@ -378,6 +432,8 @@ function StartScreen({
         <h5 style={textColor}>Starting Money: 2000</h5>
       </div>
     )
+    theDeckCountValue(6)
+    yourMoneyValue(2000)
   }
 
   const highEnd = () => {
@@ -398,7 +454,24 @@ function StartScreen({
         <h5 style={textColor}>Starting Money: 10000</h5>
       </div>
     )
+    theDeckCountValue(4)
+    yourMoneyValue(10000)
   }
+
+  // let numReg = /[0-9]/gi
+
+  // An issue is that for the onChange when a character is deleted the first time the onChange does not trigger. Find out why.
+  // It occurs because it wasn't directly changing.
+
+  // const deckChange = e => {
+  //   if (numReg.test(e)) {
+  //     theDeckCountValue(e)
+  //   } else {
+  //     return
+  //   }
+  // }
+
+  const [deckValue, setDeckValue] = useState()
 
   const custom = () => {
     setParameterSection(
@@ -407,7 +480,17 @@ function StartScreen({
         <div className="inputWrapper">
           <div>
             <h5 style={textColor}>Decks Used: </h5>
-            <input type="number" min="1" max="100"></input>
+            {/* Figure out if type="number" can use maxLength or a variant */}
+            {/* Also figure out if you can restrict the inputed value being higher than the max */}
+            <input
+              type="number"
+              min="1"
+              max="100"
+              maxLength="3"
+              value={deckValue}
+              onChange={e => theDeckCountValue(e.target.value)}
+              // onChange={e => theDeckCountValue(e.target.value)}
+            ></input>
           </div>
           <div>
             <h5 style={textColor}>Min Bet: </h5>
@@ -419,11 +502,20 @@ function StartScreen({
           </div>
           <div>
             <h5 style={textColor}>Money: </h5>
-            <input type="number" min="1"></input>
+            <input
+              type="number"
+              min="1"
+              onChange={e => yourMoneyValue(e.target.value)}
+            ></input>
           </div>
         </div>
       </div>
     )
+  }
+
+  const startAndUpdateDeck = () => {
+    homeFlagSwitch1()
+    theDeckCountValue(deckSize)
   }
 
   return (
@@ -453,7 +545,7 @@ function StartScreen({
         <Button
           buttonTheme={buttonTheme}
           content={"Back"}
-          func={homeFlagSwitch1}
+          func={startAndUpdateDeck}
         ></Button>
       </div>
       <div className="secondTitle">
@@ -809,6 +901,7 @@ function TableOptions({
 
   if (cutPosition === "none") {
     // If the position is not set then set it to a random point between 70% and 85% of the total deck
+    console.log(deck.length)
     shoeCount(
       Math.floor(
         (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) * deck.length
@@ -2210,6 +2303,7 @@ function App() {
     // If deck is ever manually updated update the deck
     if (deckCount !== 1) {
       let localDeck = deck
+      deck.length = 52
       for (let i = 1; i < deckCount; i++) {
         deck.push(...localDeck.slice(0, 52))
       }

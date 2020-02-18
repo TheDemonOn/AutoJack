@@ -56,13 +56,48 @@ h3 {
 }
 
 #one {
-  position: relative;
+  position: absolute;
   left: 7em;
+  /* width: 10%; */
 }
 
 #two {
   position: fixed;
-  right: 7.5em;
+  right: 7em;
+}
+
+.hoverText {
+  display: none;
+  position: absolute;
+  width: 100%;
+  margin-top: 17em;
+}
+
+.hoverText2 {
+  display: none;
+  /* border: solid; */
+  position: absolute;
+  width: 100%;
+  /* margin-right: -5em; */
+  top: 57em;
+}
+/* #hoverManual {
+  display: block;
+} */
+
+/* Can you set a hover state for an element and modify another? */
+/* Yes you can but that have to directly related to each other */
+#manual:hover ~ #hoverManual {
+  display: block;
+}
+#automated:hover ~ #hoverAutomated {
+  display: block;
+}
+#one:hover ~ #hoverGithub {
+  display: block;
+}
+#two:hover ~ #hoverTheme {
+  display: block;
 }
 
 /* Theme selection */
@@ -172,14 +207,63 @@ h3 {
   }
 
   #one {
-    top: 7.5em;
+    top: 52em;
   }
   #two {
     position: absolute;
-    margin-top: 7.1em;
+    /* margin-top: 7.1em; */
+    top: 52em;
     right: 5.5em;
     /* left: 45%;
     top: 7.5em; */
+  }
+  .hoverText2 {
+    display: none;
+    /* border: solid; */
+    position: absolute;
+    width: 100%;
+    /* margin-right: -5em; */
+    top: 43.5em;
+  }
+
+  #manual:hover ~ #hoverManual {
+    display: none;
+  }
+  #automated:hover ~ #hoverAutomated {
+    display: none;
+  }
+  #one:hover ~ #hoverGithub {
+    display: none;
+  }
+  #two:hover ~ #hoverTheme {
+    display: none;
+  }
+}
+
+@media (max-height: 570px) {
+  #one {
+    top: 48em;
+  }
+  #two {
+    position: absolute;
+    /* margin-top: 7.1em; */
+    top: 48em;
+    right: 5.5em;
+    /* left: 45%;
+    top: 7.5em; */
+  }
+
+  #manual:hover ~ #hoverManual {
+    display: none;
+  }
+  #automated:hover ~ #hoverAutomated {
+    display: none;
+  }
+  #one:hover ~ #hoverGithub {
+    display: none;
+  }
+  #two:hover ~ #hoverTheme {
+    display: none;
   }
 }
 
@@ -209,7 +293,7 @@ h3 {
 
 .tableBack {
   position: absolute;
-  top: 3em;
+  top: 2em;
   left: 3em;
 }
 
@@ -328,14 +412,14 @@ input:focus {
 
 @media (max-width: 900px) {
   .tableWrapper {
-    left: 12%;
+    left: 10%;
     gap: 4em;
     /* grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr; */
   }
 }
 
-@media (max-width: 780px) {
+@media (max-width: 750px) {
   .tableWrapper {
     left: 20%;
     top: 20.7em;
@@ -343,30 +427,9 @@ input:focus {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
   }
-  .parameterBox {
-    position: absolute;
-    /* border: solid; */
-    height: 33em;
-    width: 20em;
-    margin-left: 53.5%;
-    top: 22.5em;
-  }
   .tableWrapper a img {
     width: 90px;
     height: 90px;
-  }
-}
-
-@media (max-width: 780px) {
-  .parameterBox {
-    position: absolute;
-    /* overflow: normal; */
-    height: 30em;
-    /* height: 33em; */
-    width: 20em;
-    /* width: 30em; */
-    margin-left: 53.5%;
-    top: 19.5em;
   }
   .inputWrapper {
     display: grid;
@@ -375,14 +438,35 @@ input:focus {
     gap: 0em 0em;
     margin-top: 0em;
   }
+
+  .parameterBox {
+    position: absolute;
+    /* overflow: normal; */
+    height: 30em;
+    /* height: 33em; */
+    width: 20em;
+    /* width: 30em; */
+    margin-left: 53.5%;
+    top: 20.5em;
+  }
+
+  .tablePlay {
+    display: grid;
+    justify-items: center;
+    margin-top: 43em;
+    margin-bottom: 3em;
+  }
 }
 
 @media (max-width: 450px) {
+  .tableBack {
+    top: 3em;
+  }
   .secondTitle {
     display: none;
   }
   .tablePlay {
-    margin-top: 54em;
+    margin-top: 50em;
   }
   .tableWrapper {
     top: 13em;
@@ -391,12 +475,18 @@ input:focus {
     height: 33em;
     width: 16em;
     margin-left: 53.5%;
-    top: 10.5em;
+    top: 13em;
   }
   .tableBack {
-    left: 25%;
-    /* display: grid;
-    justify-items: center; */
+    position: relative;
+    display: grid;
+    justify-items: center;
+    margin-right: 5.5em;
+    /* margin-top: 42em; */
+    /* margin-bottom: 3em; */
+    /* top: 3em; */
+
+    /* left: 25%; */
   }
   h4 {
     font-family: whitman, serif;
@@ -404,5 +494,23 @@ input:focus {
     font-style: normal;
     font-size: 3.3em;
     text-align: left;
+  }
+}
+
+@media (max-width: 380px) {
+  .tableWrapper {
+    left: 3em;
+  }
+
+  .parameterBox {
+    height: 33em;
+    width: 16em;
+    margin-left: 45%;
+  }
+}
+
+@media (max-height: 700px) {
+  .tablePlay {
+    margin-top: 48em;
   }
 }
