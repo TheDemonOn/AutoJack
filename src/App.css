@@ -427,7 +427,7 @@ input:focus {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
   }
-  .tableWrapper a img {
+  .tableWrapper img {
     width: 90px;
     height: 90px;
   }
@@ -473,7 +473,7 @@ input:focus {
   }
   .parameterBox {
     height: 33em;
-    width: 16em;
+    width: 17.5em;
     margin-left: 53.5%;
     top: 13em;
   }
@@ -504,7 +504,7 @@ input:focus {
 
   .parameterBox {
     height: 33em;
-    width: 16em;
+    width: 17.5em;
     margin-left: 45%;
   }
 }
@@ -513,4 +513,52 @@ input:focus {
   .tablePlay {
     margin-top: 48em;
   }
+}
+
+/* Round Start */
+
+p {
+  font-family: upgrade-lights, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 3em;
+}
+
+#underRemaining {
+  font-size: 2.6em;
+}
+
+.remainingCards {
+  position: relative;
+  /* border: solid; */
+  display: block;
+  text-align: center;
+  width: 25em;
+  top: 8em;
+  left: 20em;
+}
+
+.remainingCards img {
+  position: relative;
+  top: 0em;
+  left: 0em;
+}
+
+.remainingCards p {
+  text-align: center;
+}
+
+.block {
+  text-align: center;
+  /* border: solid; */
+  width: 100%;
+}
+
+.chips {
+  /* border: solid; */
+  position: relative;
+  display: inline-block;
+  /* direction: rtl; */
+  width: 40em;
+  margin-top: 7em;
 }

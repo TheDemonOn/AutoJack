@@ -137,6 +137,8 @@ function LoadOrder({
         buttonTheme={buttonTheme}
         iconTheme={iconTheme}
         textColor={textColor}
+        shoeCount={shoeCount}
+        deck={deck}
       ></RoundStart>
     )
   } else if (dealerCards[0].value + dealerCards[1].value === 21) {
@@ -294,15 +296,13 @@ function ThemeSettings({
 }) {
   return (
     <div>
-      <a>
-        <img
-          className="placeHolderCard"
-          src={process.env.PUBLIC_URL + displayCard}
-          height="379.2px"
-          width="259.2px"
-          alt="Ace of spades card."
-        ></img>
-      </a>
+      <img
+        className="placeHolderCard"
+        src={process.env.PUBLIC_URL + displayCard}
+        height="379.2px"
+        width="259.2px"
+        alt="Ace of spades card."
+      ></img>
       <div>
         <div className="themeSelector">
           <a href="#" onClick={t1ThemeChange}>
@@ -630,7 +630,9 @@ function RoundStart({
   yourMoney,
   yourMoneyValue,
   cutPosition,
-  discardPile
+  discardPile,
+  shoeCount,
+  deck
 }) {
   // So it appears that even when thr function is called from the child it still executes in the location it was defined (the parent) and had access to everything it would normally.
   const [playerBetHandle, setPlayerBetHandle] = useState("")
@@ -641,123 +643,143 @@ function RoundStart({
     roundStartFlagSwitch()
   }
 
-  const betHandle = e => {
-    e.preventDefault()
-    if (!playerBetHandle) return
-    console.log(playerBetHandle)
-    playerBetUpdate(playerBetHandle)
-    yourMoneyValue(yourMoney - playerBetHandle)
-    deal()
-  }
+  // const betHandle = e => {
+  //   e.preventDefault()
+  //   if (!playerBetHandle) return
+  //   console.log(playerBetHandle)
+  //   playerBetUpdate(playerBetHandle)
+  //   yourMoneyValue(yourMoney - playerBetHandle)
+  //   deal()
+  // }
 
-  const betOne = () => {
-    playerBetUpdate(1)
-    yourMoneyValue(yourMoney - 1)
-    deal()
-  }
-  const betFive = () => {
-    playerBetUpdate(5)
-    yourMoneyValue(yourMoney - 5)
-    deal()
-  }
-  const betTen = () => {
-    playerBetUpdate(10)
-    yourMoneyValue(yourMoney - 10)
-    deal()
-  }
-  const betTwentyFive = () => {
-    playerBetUpdate(25)
-    yourMoneyValue(yourMoney - 25)
-    deal()
-  }
-  const betFifty = () => {
-    playerBetUpdate(50)
-    yourMoneyValue(yourMoney - 50)
-    deal()
-  }
-  const betOneHundred = () => {
-    playerBetUpdate(100)
-    yourMoneyValue(yourMoney - 100)
-    deal()
-  }
-  const betFiveHundred = () => {
-    playerBetUpdate(500)
-    yourMoneyValue(yourMoney - 500)
-    deal()
-  }
+  // const betOne = () => {
+  //   playerBetUpdate(1)
+  //   yourMoneyValue(yourMoney - 1)
+  //   deal()
+  // }
+  // const betFive = () => {
+  //   playerBetUpdate(5)
+  //   yourMoneyValue(yourMoney - 5)
+  //   deal()
+  // }
+  // const betTen = () => {
+  //   playerBetUpdate(10)
+  //   yourMoneyValue(yourMoney - 10)
+  //   deal()
+  // }
+  // const betTwentyFive = () => {
+  //   playerBetUpdate(25)
+  //   yourMoneyValue(yourMoney - 25)
+  //   deal()
+  // }
+  // const betFifty = () => {
+  //   playerBetUpdate(50)
+  //   yourMoneyValue(yourMoney - 50)
+  //   deal()
+  // }
+  // const betOneHundred = () => {
+  //   playerBetUpdate(100)
+  //   yourMoneyValue(yourMoney - 100)
+  //   deal()
+  // }
+  // const betFiveHundred = () => {
+  //   playerBetUpdate(500)
+  //   yourMoneyValue(yourMoney - 500)
+  //   deal()
+  // }
+
+  // const [one, setOne] = useState()
+  // const [five, setFive] = useState()
+  // const [ten, setTen] = useState()
+  // const [twentyFive, setTwentyFive] = useState()
+  // const [fifty, setFifty] = useState()
+  // const [oneHundred, setOneHundred] = useState()
+  // const [fiveHundred, setFiveHundred] = useState()
+
+  // useEffect(() => {
+  //   if (yourMoney >= 1) {
+  //     setOne(<button onClick={betOne}>Bet 1</button>)
+  //   }
+  //   if (yourMoney >= 5) {
+  //     setFive(<button onClick={betFive}>Bet 5</button>)
+  //   }
+  //   if (yourMoney >= 10) {
+  //     setTen(<button onClick={betTen}>Bet 10</button>)
+  //   }
+  //   if (yourMoney >= 25) {
+  //     setTwentyFive(<button onClick={betTwentyFive}>Bet 25</button>)
+  //   }
+  //   if (yourMoney >= 50) {
+  //     setFifty(<button onClick={betFifty}>Bet 50</button>)
+  //   }
+  //   if (yourMoney >= 100) {
+  //     setOneHundred(<button onClick={betOneHundred}>Bet 100</button>)
+  //   }
+  //   if (yourMoney >= 500) {
+  //     setFiveHundred(<button onClick={betFiveHundred}>Bet 500</button>)
+  //   }
+  // }, [])
 
   const [cardsLeft, setCardsLeft] = useState()
-  const [one, setOne] = useState()
-  const [five, setFive] = useState()
-  const [ten, setTen] = useState()
-  const [twentyFive, setTwentyFive] = useState()
-  const [fifty, setFifty] = useState()
-  const [oneHundred, setOneHundred] = useState()
-  const [fiveHundred, setFiveHundred] = useState()
 
-  useEffect(() => {
-    if (yourMoney >= 1) {
-      setOne(<button onClick={betOne}>Bet 1</button>)
-    }
-    if (yourMoney >= 5) {
-      setFive(<button onClick={betFive}>Bet 5</button>)
-    }
-    if (yourMoney >= 10) {
-      setTen(<button onClick={betTen}>Bet 10</button>)
-    }
-    if (yourMoney >= 25) {
-      setTwentyFive(<button onClick={betTwentyFive}>Bet 25</button>)
-    }
-    if (yourMoney >= 50) {
-      setFifty(<button onClick={betFifty}>Bet 50</button>)
-    }
-    if (yourMoney >= 100) {
-      setOneHundred(<button onClick={betOneHundred}>Bet 100</button>)
-    }
-    if (yourMoney >= 500) {
-      setFiveHundred(<button onClick={betFiveHundred}>Bet 500</button>)
-    }
-  }, [])
+  // THIS ENTIRE SECTION IS FILLED WITH BS TO MAKE IT APPEAR PROPER FOR DESIGN AND ALIGNMENTS
+  let cutPositione = 100
+  let discardPilee = []
+  discardPilee.length = 68
 
+  // If the game hasn't looped to main once then the remaining cards does not display (or exist)
   useEffect(() => {
-    if (cutPosition - discardPile.length) {
+    if (cutPositione - discardPilee.length) {
       setCardsLeft(
-        <div>Remaining Cards: {cutPosition - discardPile.length}</div>
+        <div>
+          <p>{cutPositione - discardPilee.length}</p>
+          <p id="underRemaining">Cards Remaining</p>
+        </div>
       )
     }
   }, [])
 
+  console.log(cardsLeft)
+  console.log(cutPosition)
+  console.log(discardPile.length)
+
   return (
-    <div>
-      <div>
-        <p>Money: {yourMoney}</p>
-        <form onSubmit={betHandle}>
-          Enter bet
-          <input
-            type="number"
-            min="1"
-            max={yourMoney}
-            value={playerBetHandle}
-            onChange={e => setPlayerBetHandle(e.target.value)}
-          />{" "}
-          <br></br>
-        </form>
-        {cardsLeft}
+    <div className="block">
+      <div className="remainingCards">
+        <div>
+          <img
+            className="placeHolderCard"
+            src={process.env.PUBLIC_URL + cards.t2.spade.ace.src}
+            height="153.576px"
+            width="104.976px"
+            alt="Ace of spades card."
+          ></img>
+        </div>
+        <div>{cardsLeft}</div>
       </div>
-      <div>
-        {one}
-        <br></br>
-        {five}
-        <br></br>
-        {ten}
-        <br></br>
-        {twentyFive}
-        <br></br>
-        {fifty}
-        <br></br>
-        {oneHundred}
-        <br></br>
-        {fiveHundred}
+
+      <div className="chips">
+        <a href="#">
+          <img src={chip1} height="100px" width="100px" alt="Chip 1"></img>
+        </a>
+        <a href="#">
+          <img src={chip5} height="100px" width="100px" alt="Chip 1"></img>
+        </a>
+        <a href="#">
+          <img src={chip10} height="100px" width="100px" alt="Chip 1"></img>
+        </a>
+        <a href="#">
+          <img src={chip25} height="100px" width="100px" alt="Chip 1"></img>
+        </a>
+        <a href="#">
+          <img src={chip50} height="100px" width="100px" alt="Chip 1"></img>
+        </a>
+        <a href="#">
+          <img src={chip100} height="100px" width="100px" alt="Chip 1"></img>
+        </a>
+        <a href="#">
+          <img src={chip500} height="100px" width="100px" alt="Chip 1"></img>
+        </a>
       </div>
     </div>
   )
