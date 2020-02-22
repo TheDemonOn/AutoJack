@@ -526,6 +526,7 @@ p {
 
 #underRemaining {
   font-size: 2.6em;
+  margin-top: -0.3em;
 }
 
 .remainingCards {
@@ -555,10 +556,74 @@ p {
 }
 
 .chips {
-  /* border: solid; */
+  border: solid;
   position: relative;
   display: inline-block;
-  /* direction: rtl; */
-  width: 40em;
+  /* margin-top: 7em; */
+}
+
+.test {
+  text-align: center;
+  /* border: solid; */
+  width: 100%;
+}
+
+.topContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.chipsTop {
+  display: flex;
+  flex-direction: row;
   margin-top: 7em;
+  justify-content: space-evenly;
+  width: 39.5em;
+
+  /* position: relative;
+  display: grid;
+  margin-top: 7em;
+  width: 37em;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr; */
+}
+
+.botContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.chipsBot {
+  position: relative;
+  display: grid;
+  width: 50em;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+}
+
+.underWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5em;
+}
+
+.underChipSection {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  /* border: solid; */
+  width: 60em;
+  /* height: 5em; */
+}
+
+#bet {
+  font-family: upgrade-lights, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 4em;
+}
+
+#currentBet {
+  margin-top: -0.3em;
+  font-size: 2.5em;
 }

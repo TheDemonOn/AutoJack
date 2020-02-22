@@ -632,7 +632,10 @@ function RoundStart({
   cutPosition,
   discardPile,
   shoeCount,
-  deck
+  deck,
+  buttonTheme,
+  iconTheme,
+  textColor
 }) {
   // So it appears that even when thr function is called from the child it still executes in the location it was defined (the parent) and had access to everything it would normally.
   const [playerBetHandle, setPlayerBetHandle] = useState("")
@@ -720,6 +723,8 @@ function RoundStart({
   //   }
   // }, [])
 
+  const [currentBet, setCurrentBet] = useState(123)
+
   const [cardsLeft, setCardsLeft] = useState()
 
   // THIS ENTIRE SECTION IS FILLED WITH BS TO MAKE IT APPEAR PROPER FOR DESIGN AND ALIGNMENTS
@@ -758,28 +763,45 @@ function RoundStart({
         <div>{cardsLeft}</div>
       </div>
 
-      <div className="chips">
-        <a href="#">
-          <img src={chip1} height="100px" width="100px" alt="Chip 1"></img>
-        </a>
-        <a href="#">
-          <img src={chip5} height="100px" width="100px" alt="Chip 1"></img>
-        </a>
-        <a href="#">
-          <img src={chip10} height="100px" width="100px" alt="Chip 1"></img>
-        </a>
-        <a href="#">
-          <img src={chip25} height="100px" width="100px" alt="Chip 1"></img>
-        </a>
-        <a href="#">
-          <img src={chip50} height="100px" width="100px" alt="Chip 1"></img>
-        </a>
-        <a href="#">
-          <img src={chip100} height="100px" width="100px" alt="Chip 1"></img>
-        </a>
-        <a href="#">
-          <img src={chip500} height="100px" width="100px" alt="Chip 1"></img>
-        </a>
+      <div className="topContainer">
+        <div className="chipsTop">
+          <a href="#">
+            <img src={chip1} height="100px" width="100px" alt="Chip 1"></img>
+          </a>
+          <a href="#">
+            <img src={chip5} height="100px" width="100px" alt="Chip 1"></img>
+          </a>
+          <a href="#">
+            <img src={chip10} height="100px" width="100px" alt="Chip 1"></img>
+          </a>
+        </div>
+      </div>
+
+      <div className="botContainer">
+        <div className="chipsBot">
+          <a href="#">
+            <img src={chip25} height="100px" width="100px" alt="Chip 1"></img>
+          </a>
+          <a href="#">
+            <img src={chip50} height="100px" width="100px" alt="Chip 1"></img>
+          </a>
+          <a href="#">
+            <img src={chip100} height="100px" width="100px" alt="Chip 1"></img>
+          </a>
+          <a href="#">
+            <img src={chip500} height="100px" width="100px" alt="Chip 1"></img>
+          </a>
+        </div>
+      </div>
+
+      <div className="underWrapper">
+        <div className="underChipSection">
+          <div className="bet">
+            <p id="bet">${currentBet}</p>
+            <p id="currentBet">Current bet</p>
+          </div>
+          <Button buttonTheme={buttonTheme} content={"Play"}></Button>
+        </div>
       </div>
     </div>
   )
