@@ -79,7 +79,10 @@ function LoadOrder({
   t2ThemeChange,
   t3ThemeChange,
   t4ThemeChange,
-  displayCard
+  displayCard,
+  altButtonTheme,
+  altButtonThemeActive,
+  playerBetModify
 }) {
   if (settingsFlag) {
     return (
@@ -139,6 +142,10 @@ function LoadOrder({
         textColor={textColor}
         shoeCount={shoeCount}
         deck={deck}
+        altButtonTheme={altButtonTheme}
+        settingsFlagSwitch={settingsFlagSwitch}
+        altButtonThemeActive={altButtonThemeActive}
+        playerBetModify={playerBetModify}
       ></RoundStart>
     )
   } else if (dealerCards[0].value + dealerCards[1].value === 21) {
@@ -635,7 +642,11 @@ function RoundStart({
   deck,
   buttonTheme,
   iconTheme,
-  textColor
+  textColor,
+  altButtonTheme,
+  settingsFlagSwitch,
+  altButtonThemeActive,
+  playerBetModify
 }) {
   // So it appears that even when thr function is called from the child it still executes in the location it was defined (the parent) and had access to everything it would normally.
   const [playerBetHandle, setPlayerBetHandle] = useState("")
@@ -737,8 +748,10 @@ function RoundStart({
     if (cutPositione - discardPilee.length) {
       setCardsLeft(
         <div>
-          <p>{cutPositione - discardPilee.length}</p>
-          <p id="underRemaining">Cards Remaining</p>
+          <p style={textColor}>{cutPositione - discardPilee.length}</p>
+          <p style={textColor} id="underRemaining">
+            Cards Remaining
+          </p>
         </div>
       )
     }
@@ -748,12 +761,80 @@ function RoundStart({
   console.log(cutPosition)
   console.log(discardPile.length)
 
+  // These states and functions control the active state for the plus and minus buttons toggling between the two
+
+  const [activeState, setActiveState] = useState(altButtonThemeActive)
+
+  const [activeStateOpposite, setActiveStateOpposite] = useState(altButtonTheme)
+
+  const switchActive = () => {
+    setActiveState(altButtonTheme)
+    setActiveStateOpposite(altButtonThemeActive)
+  }
+
+  const switchActiveBack = () => {
+    setActiveState(altButtonThemeActive)
+    setActiveStateOpposite(altButtonTheme)
+  }
+
+  //
+
+  const one = () => {
+    if (activeState === altButtonThemeActive) {
+      playerBetModify("add", 1)
+    } else {
+      playerBetModify("subtract", 1)
+    }
+  }
+  const five = () => {
+    if (activeState === altButtonThemeActive) {
+      playerBetModify("add", 5)
+    } else {
+      playerBetModify("subtract", 5)
+    }
+  }
+  const ten = () => {
+    if (activeState === altButtonThemeActive) {
+      playerBetModify("add", 10)
+    } else {
+      playerBetModify("subtract", 10)
+    }
+  }
+  const twentyFive = () => {
+    if (activeState === altButtonThemeActive) {
+      playerBetModify("add", 25)
+    } else {
+      playerBetModify("subtract", 25)
+    }
+  }
+  const fifty = () => {
+    if (activeState === altButtonThemeActive) {
+      playerBetModify("add", 50)
+    } else {
+      playerBetModify("subtract", 50)
+    }
+  }
+  const oneHundred = () => {
+    if (activeState === altButtonThemeActive) {
+      playerBetModify("add", 100)
+    } else {
+      playerBetModify("subtract", 100)
+    }
+  }
+  const fiveHundred = () => {
+    if (activeState === altButtonThemeActive) {
+      playerBetModify("add", 500)
+    } else {
+      playerBetModify("subtract", 500)
+    }
+  }
+
   return (
     <div className="block">
       <div className="remainingCards">
         <div>
           <img
-            className="placeHolderCard"
+            className="drawPile"
             src={process.env.PUBLIC_URL + cards.t2.spade.ace.src}
             height="153.576px"
             width="104.976px"
@@ -763,15 +844,24 @@ function RoundStart({
         <div>{cardsLeft}</div>
       </div>
 
+      <div className="moneyWrapper">
+        <p style={textColor} id="bet">
+          ${yourMoney}
+        </p>
+        <p style={textColor} id="currentBet">
+          Your Money
+        </p>
+      </div>
+
       <div className="topContainer">
         <div className="chipsTop">
-          <a href="#">
+          <a href="#" onClick={one}>
             <img src={chip1} height="100px" width="100px" alt="Chip 1"></img>
           </a>
-          <a href="#">
+          <a href="#" onClick={five}>
             <img src={chip5} height="100px" width="100px" alt="Chip 1"></img>
           </a>
-          <a href="#">
+          <a href="#" onClick={ten}>
             <img src={chip10} height="100px" width="100px" alt="Chip 1"></img>
           </a>
         </div>
@@ -779,16 +869,16 @@ function RoundStart({
 
       <div className="botContainer">
         <div className="chipsBot">
-          <a href="#">
+          <a href="#" onClick={twentyFive}>
             <img src={chip25} height="100px" width="100px" alt="Chip 1"></img>
           </a>
-          <a href="#">
+          <a href="#" onClick={fifty}>
             <img src={chip50} height="100px" width="100px" alt="Chip 1"></img>
           </a>
-          <a href="#">
+          <a href="#" onClick={oneHundred}>
             <img src={chip100} height="100px" width="100px" alt="Chip 1"></img>
           </a>
-          <a href="#">
+          <a href="#" onClick={fiveHundred}>
             <img src={chip500} height="100px" width="100px" alt="Chip 1"></img>
           </a>
         </div>
@@ -796,12 +886,42 @@ function RoundStart({
 
       <div className="underWrapper">
         <div className="underChipSection">
+          <Button
+            buttonTheme={activeStateOpposite}
+            func={switchActive}
+            ID="minus"
+            content={"−"}
+          ></Button>
+
           <div className="bet">
-            <p id="bet">${currentBet}</p>
-            <p id="currentBet">Current bet</p>
+            <p style={textColor} id="bet">
+              ${playerBet}
+            </p>
+            <p style={textColor} id="currentBet">
+              Current bet
+            </p>
           </div>
+          <Button
+            buttonTheme={activeState}
+            func={switchActiveBack}
+            ID="plus"
+            content={"+"}
+          ></Button>
+
           <Button buttonTheme={buttonTheme} content={"Play"}></Button>
         </div>
+      </div>
+
+      <div id="githubSvgRoundStart">
+        <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
+          <GithubSVG iconTheme={iconTheme}></GithubSVG>
+        </a>
+      </div>
+
+      <div id="themeIconRoundStart">
+        <a href="#" onClick={settingsFlagSwitch}>
+          <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
+        </a>
       </div>
     </div>
   )
@@ -2038,10 +2158,38 @@ function App() {
     outline: "none"
   }
 
+  const altButtonSettings = {
+    padding: "0 0.5em",
+    textAlign: "center",
+    fontSize: "3.5em",
+    fontFamily: "upgrade, sans-serif",
+    fontStyle: "normal",
+    fontWeight: "600",
+    lineHeight: "1",
+    // padding: "0 30px",
+    textDecoration: "none",
+    borderStyle: "solid",
+    borderRadius: "10px",
+    outline: "none"
+  }
+
   // Format: object; This should stay consistent
   const [buttonTheme, setButtonTheme] = useState({
     ...buttonSettings,
     ...purpleTheme
+  })
+
+  const [altButtonTheme, setAltButtonTheme] = useState({
+    ...altButtonSettings,
+    ...purpleTheme
+  })
+
+  // Need to add the change to the function theme change
+  const [altButtonThemeActive, setAltButtonThemeActive] = useState({
+    ...altButtonSettings,
+    ...purpleTheme,
+    backgroundColor: "#DBD8DF",
+    color: "#392950"
   })
 
   // Format: string
@@ -2055,6 +2203,16 @@ function App() {
       ...buttonSettings,
       ...goldTheme
     })
+    setAltButtonTheme({
+      ...altButtonSettings,
+      ...goldTheme
+    })
+    setAltButtonThemeActive({
+      ...altButtonSettings,
+      ...goldTheme,
+      backgroundColor: "#e7bd52",
+      color: "rgba(40, 47, 93, 1)"
+    })
     setTextColor(goldColor)
     setIconTheme(goldColorString)
     bodyChange("bodyTheme1")
@@ -2066,6 +2224,16 @@ function App() {
     setButtonTheme({
       ...buttonSettings,
       ...purpleTheme
+    })
+    setAltButtonTheme({
+      ...altButtonSettings,
+      ...purpleTheme
+    })
+    setAltButtonThemeActive({
+      ...altButtonSettings,
+      ...purpleTheme,
+      backgroundColor: "#DBD8DF",
+      color: "#392950"
     })
     setTextColor(purpleColor)
     setIconTheme(purpleColorString)
@@ -2079,6 +2247,16 @@ function App() {
       ...buttonSettings,
       ...redTheme
     })
+    setAltButtonTheme({
+      ...altButtonSettings,
+      ...redTheme
+    })
+    setAltButtonThemeActive({
+      ...altButtonSettings,
+      ...redTheme,
+      backgroundColor: "#c12f2f",
+      color: "#fff"
+    })
     setTextColor(redColor)
     setIconTheme(redColorString)
     bodyChange("bodyTheme3")
@@ -2090,6 +2268,17 @@ function App() {
     setButtonTheme({
       ...buttonSettings,
       ...greenTheme
+    })
+    setAltButtonTheme({
+      ...altButtonSettings,
+      ...greenTheme
+    })
+    setAltButtonThemeActive({
+      ...altButtonSettings,
+      ...greenTheme,
+      borderColor: "rgba(42, 31, 73, 1)",
+      backgroundColor: "#48b74d",
+      color: "rgba(42, 31, 73, 1)"
     })
     setTextColor(greenColor)
     setIconTheme(greenColorString)
@@ -2448,6 +2637,21 @@ function App() {
     setPlayerBet(value)
   }
 
+  function playerBetModify(action, value) {
+    if (action === "add") {
+      setPlayerBet(prevBet => prevBet + value)
+    } else if (action === "subtract") {
+      setPlayerBet(prevBet => prevBet - value)
+    }
+  }
+
+  // const playerBetAdd = value => {
+  //   setPlayerBet(prevBet => prevBet + value)
+  // }
+  // const playerBetSubtract = value => {
+  //   setPlayerBet(prevBet => prevBet - value)
+  // }
+
   const playerHit = () => {
     // deck + discard became NaN
 
@@ -2580,6 +2784,9 @@ function App() {
       t3ThemeChange={t3ThemeChange}
       t4ThemeChange={t4ThemeChange}
       displayCard={displayCard}
+      altButtonTheme={altButtonTheme}
+      altButtonThemeActive={altButtonThemeActive}
+      playerBetModify={playerBetModify}
     ></LoadOrder>
   )
 }

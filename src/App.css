@@ -535,8 +535,8 @@ p {
   display: block;
   text-align: center;
   width: 25em;
-  top: 8em;
-  left: 20em;
+  top: 5em;
+  left: 15%;
 }
 
 .remainingCards img {
@@ -547,6 +547,12 @@ p {
 
 .remainingCards p {
   text-align: center;
+}
+
+.moneyWrapper {
+  position: fixed;
+  right: 22%;
+  top: 12em;
 }
 
 .block {
@@ -616,6 +622,9 @@ p {
   /* height: 5em; */
 }
 
+#plus {
+}
+
 #bet {
   font-family: upgrade-lights, sans-serif;
   font-weight: 500;
@@ -626,4 +635,14 @@ p {
 #currentBet {
   margin-top: -0.3em;
   font-size: 2.5em;
+}
+
+#githubSvgRoundStart {
+  position: absolute;
+  left: 7em;
+}
+
+#themeIconRoundStart {
+  position: fixed;
+  right: 7em;
 }
