@@ -643,3 +643,94 @@ p {
   position: fixed;
   right: 7em;
 }
+
+/* Table Options */
+
+.dealerCardsWrap {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 11em;
+  width: 100%;
+  /* border: solid; */
+}
+
+/* 
+IN THE EVENT OF A SPLIT THE STRUCTURE IS GOING TO CHANGE FROM CARDS ADDING HORIZONTALLY, TO TWO
+COLUMNS going vertically
+*/
+
+.playerCardsWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 16em;
+  width: 100%;
+  /* border: solid; */
+}
+.firstCard {
+  /* border: solid; */
+}
+.otherCard {
+  /* border: solid; */
+  width: 13.6em;
+  position: relative;
+  margin-left: -9.7em;
+}
+.thirdCard {
+  display: none;
+
+  width: 13.6em;
+  position: relative;
+  margin-left: -9.7em;
+}
+.fourthCard {
+  display: none;
+
+  width: 13.6em;
+  position: relative;
+  margin-left: -9.7em;
+}
+.fifthCard {
+  display: none;
+
+  width: 13.6em;
+  position: relative;
+  margin-left: -9.7em;
+}
+.sixthCard {
+  display: none;
+
+  width: 13.6em;
+  position: relative;
+  margin-left: -9.7em;
+}
+.seventhCard {
+  display: none;
+
+  width: 13.6em;
+  position: relative;
+  margin-left: -9.7em;
+}
+.eighthCard {
+  display: none;
+
+  width: 13.6em;
+  position: relative;
+  margin-left: -9.7em;
+}
+
+.playerActions {
+  /* border: solid; */
+  display: grid;
+  position: absolute;
+  margin-top: -15em;
+  right: 10em;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  width: 44em;
+}
+
+.moneyWrapperTable {
+  position: fixed;
+  right: 22%;
+  top: 12em;
+}

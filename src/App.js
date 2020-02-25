@@ -85,7 +85,8 @@ function LoadOrder({
   playerBetModify,
   betRange,
   maxBet,
-  minBet
+  minBet,
+  cardThemeNum
 }) {
   if (settingsFlag) {
     return (
@@ -213,6 +214,8 @@ function LoadOrder({
         buttonTheme={buttonTheme}
         iconTheme={iconTheme}
         textColor={textColor}
+        settingsFlagSwitch={settingsFlagSwitch}
+        cardThemeNum={cardThemeNum}
       ></TableOptions>
     )
   }
@@ -298,6 +301,8 @@ function Home({
     </div>
   )
 }
+
+// Perhaps add a random theme button so that the drawn cards are a mix of all the themes
 
 function ThemeSettings({
   buttonTheme,
@@ -664,8 +669,6 @@ function RoundStart({
 
   const [cardsLeft, setCardsLeft] = useState()
 
-  // THIS ENTIRE SECTION IS FILLED WITH BS TO MAKE IT APPEAR PROPER FOR DESIGN AND ALIGNMENTS
-
   // If the game hasn't looped to main once then the remaining cards does not display (or exist)
   useEffect(() => {
     if (cutPosition - discardPile.length) {
@@ -778,14 +781,6 @@ function RoundStart({
     }
   }
 
-  // useEffect(() => {
-  //   if (playerBet < minBet) {
-  //     playerBetUpdate(minBet)
-  //   } else if (playerBet > maxBet) {
-  //     playerBetUpdate(maxBet)
-  //   }
-  // }, [playerBet])
-
   return (
     <div className="block">
       <div className="remainingCards">
@@ -868,7 +863,7 @@ function RoundStart({
           <Button
             buttonTheme={buttonTheme}
             func={deal}
-            content={"Play"}
+            content={"Deal"}
           ></Button>
         </div>
       </div>
@@ -934,7 +929,12 @@ function TableOptions({
   playerHitAlt,
   realDiscardPileUpdate,
   deckUpdate,
-  doubleCard
+  doubleCard,
+  buttonTheme,
+  iconTheme,
+  textColor,
+  settingsFlagSwitch,
+  cardThemeNum
 }) {
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
 
@@ -979,6 +979,7 @@ function TableOptions({
     console.log("discard length: " + discardPile.length)
     console.log("deck + discard: " + (deck.length + discardPile.length))
     console.log("deck length: " + deck.length)
+    console.log(dealerCards.map(x => x.name))
     console.log(yourCards.map(x => x.name))
     console.log(yourCards2.map(x => x.name))
   }, [deck, discardPile, yourCards, yourCards2])
@@ -1749,198 +1750,290 @@ function TableOptions({
     }
   }, [yourCards2])
 
-  if (splitFlag === 0) {
-    // Split flag triggered
-    if (handOneEnd === 1) {
-      // First hand
-      console.log("First Hand")
-      return (
+  // Bust
+  // If you bust then run a check for shuffling the deck
+  // deckShuffleFunction()
+
+  // Also remove DealerBlackJack and combine here
+
+  const [cardsLeft, setCardsLeft] = useState()
+
+  // If the game hasn't looped to main once then the remaining cards does not display (or exist)
+  useEffect(() => {
+    if (cutPosition - discardPile.length) {
+      setCardsLeft(
         <div>
-          <button onClick={playerHit}>Hit</button>
-          <br></br>
-          {doubleDownElement}
-          <button onClick={stand}>Stand</button>
-          <br></br>
-          Remaining Cards: {cutPosition - discardPile.length}
-          <br></br>
-          <p>Money: {yourMoney}</p>
-          <p>Your Bet: {playerBet}</p>
-          <p>Second Bet: {playerBet2}</p>
-          <br></br>
-          <p>
-            Your First Hand: {yourCards.map(x => x.name).join(", ")}
-            <br></br>
-            Total: {cardTotal}
+          <p style={textColor}>{cutPosition - discardPile.length}</p>
+          <p style={textColor} id="underRemaining">
+            Cards Remaining
           </p>
-          <br></br>
-          <p>
-            Your Second Hand: {yourCards2.map(x => x.name).join(", ")}
-            <br></br>
-            Total: {cardTotal2}
-          </p>
-          <br></br>
-          <p>
-            Dealer Card: {localDealerCards[0].name}
-            <br></br>
-            Value: {localDealerCards[0].value}
-          </p>
-        </div>
-      )
-    } else if (endTurnFlag === 1) {
-      // when the final stand occurs this is no longer true and gives next screen
-      // Second hand
-      console.log("Second Hand")
-      return (
-        <div>
-          <button onClick={playerHit2}>Hit</button>
-          <br></br>
-          {doubleDownElement2}
-          <button onClick={stand}>Stand</button>
-          <br></br>
-          Remaining Cards: {cutPosition - discardPile.length}
-          <br></br>
-          <p>Money: {yourMoney}</p>
-          <p>Your Bet: {playerBet}</p>
-          <p>Second Bet: {playerBet2}</p>
-          <br></br>
-          <p>
-            Your First Hand: {yourCards.map(x => x.name).join(", ")}
-            <br></br>
-            Total: {cardTotal}
-          </p>
-          <br></br>
-          <p>
-            Your Second Hand: {yourCards2.map(x => x.name).join(", ")}
-            <br></br>
-            Total: {cardTotal2}
-          </p>
-          <br></br>
-          <p>
-            Dealer Card: {localDealerCards[0].name}
-            <br></br>
-            Value: {localDealerCards[0].value}
-          </p>
-          <h1>{handResult1}</h1>
-        </div>
-      )
-    } else {
-      return (
-        // Split hand full resolved
-        <div>
-          <button onClick={splitRoundReset}>Continue</button>
-          <br></br>
-          Remaining Cards: {cutPosition - discardPile.length}
-          <br></br>
-          <p>Money: {yourMoney}</p>
-          <p>Your Bet: {playerBet}</p>
-          <p>Second Bet: {playerBet2}</p>
-          <br></br>
-          <p>
-            Your First Hand: {yourCards.map(x => x.name).join(", ")}
-            <br></br>
-            Total: {cardTotal}
-          </p>
-          <br></br>
-          <p>
-            Your Second Hand: {yourCards2.map(x => x.name).join(", ")}
-            <br></br>
-            Total: {cardTotal2}
-          </p>
-          <br></br>
-          <p>
-            Dealer Card: {localDealerCards.map(x => x.name).join(", ")}
-            <br></br>
-            Value: {dealerCardTotal}
-          </p>
-          <h1>
-            Hand 1:{handResult1}
-            <br></br>
-            Hand 2:{handResult2}
-          </h1>
         </div>
       )
     }
-  } else if (bust) {
-    // Bust
-    // If you bust then run a check for shuffling the deck
-    deckShuffleFunction()
-    return (
-      <div>
-        <button onClick={roundStartFlagReset}>Continue</button>
-        <br></br>
-        Remaining Cards: {cutPosition - discardPile.length}
-        <br></br>
-        <p>Money: {yourMoney}</p>
-        <p>Your Bet: {playerBet}</p>
-        <br></br>
-        <p>
-          Your Cards: {yourCards.map(x => x.name).join(", ")}
-          <br></br>
-          Total: {cardTotal}
-        </p>
-        <br></br>
-        <p>
-          Dealer Card: {localDealerCards[0].name}
-          <br></br>
-          Value: {localDealerCards[0].value}
-        </p>
-        <h1>You bust</h1>
+  }, [cutPosition, discardPile])
+
+  // I could make the class names be a state that can also be a variant for a double down so the final card in that set will be horizontal
+  // instead of vertical
+
+  return (
+    <div className="block">
+      <div className="remainingCards">
+        <div>
+          <img
+            className="drawPile"
+            src={process.env.PUBLIC_URL + cards.t2.spade.ace.src}
+            height="153.576px"
+            width="104.976px"
+            alt="Ace of spades card."
+          ></img>
+        </div>
+        <div>{cardsLeft}</div>
       </div>
-    )
-  } else if (endTurnFlag) {
-    // Normal hand
-    return (
-      <div>
-        <button onClick={playerHit}>Hit</button>
-        <br></br>
-        {doubleDownElement}
-        <button onClick={stand}>Stand</button>
-        {splitElement}
-        <br></br>
-        Remaining Cards: {cutPosition - discardPile.length}
-        <br></br>
-        <p>Money: {yourMoney}</p>
-        <p>Your Bet: {playerBet}</p>
-        <br></br>
-        <p>
-          Your Cards: {yourCards.map(x => x.name).join(", ")}
-          <br></br>
-          Total: {cardTotal}
+
+      <div className="dealerCardsWrap">
+        <div className="firstCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={
+              cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].alt
+            }
+          ></img>
+        </div>
+        <div className="otherCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={
+              cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].alt
+            }
+          ></img>
+        </div>
+        <div className="thirdCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={
+              cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].alt
+            }
+          ></img>
+        </div>
+        <div className="fourthCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={
+              cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].alt
+            }
+          ></img>
+        </div>
+        <div className="fifthCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={
+              cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].alt
+            }
+          ></img>
+        </div>
+        <div className="sixthCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={
+              cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].alt
+            }
+          ></img>
+        </div>
+        <div className="seventhCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={
+              cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].alt
+            }
+          ></img>
+        </div>
+        <div className="eighthCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][dealerCards[7].suit][dealerCards[7].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={
+              cards[cardThemeNum][dealerCards[7].suit][dealerCards[7].card].alt
+            }
+          ></img>
+        </div>
+      </div>
+
+      <div className="playerCardsWrap">
+        <div className="firstCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt}
+          ></img>
+        </div>
+        <div className="otherCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].alt}
+          ></img>
+        </div>
+        <div className="thirdCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].alt}
+          ></img>
+        </div>
+        <div className="fourthCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].alt}
+          ></img>
+        </div>
+        <div className="fifthCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].alt}
+          ></img>
+        </div>
+        <div className="sixthCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt}
+          ></img>
+        </div>
+        <div className="seventhCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt}
+          ></img>
+        </div>
+        <div className="eighthCard">
+          <img
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][yourCards[7].suit][yourCards[7].card].src
+            }
+            height="199.6488px"
+            width="136.4688px"
+            alt={cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt}
+          ></img>
+        </div>
+      </div>
+
+      <div className="playerActions">
+        <a href="#">
+          <img src={chip25} height="100px" width="100px" alt="Chip 1"></img>
+        </a>
+        <a href="#">
+          <img src={chip50} height="100px" width="100px" alt="Chip 1"></img>
+        </a>
+        <a href="#">
+          <img src={chip100} height="100px" width="100px" alt="Chip 1"></img>
+        </a>
+        <a href="#">
+          <img src={chip500} height="100px" width="100px" alt="Chip 1"></img>
+        </a>
+      </div>
+
+      <div className="moneyWrapperTable">
+        <p style={textColor} id="bet">
+          ${yourMoney}
         </p>
-        <br></br>
-        <p>
-          Dealer Card: {localDealerCards[0].name}
-          <br></br>
-          Value: {localDealerCards[0].value}
+        <p style={textColor} id="currentBet">
+          Your Money
         </p>
       </div>
-    )
-  } else {
-    return (
-      // Normal hand resolve
+
       <div>
-        <button onClick={roundStartFlagReset}>Continue</button>
-        <br></br>
-        Remaining Cards: {cutPosition - discardPile.length}
-        <br></br>
-        <p>Money: {yourMoney}</p>
-        <p>Your Bet: {playerBet}</p>
-        <br></br>
-        <p>
-          Your Cards: {yourCards.map(x => x.name).join(", ")}
-          <br></br>
-          Total: {cardTotal}
+        <p style={textColor} id="bet">
+          ${playerBet}
         </p>
-        <br></br>
-        <p>
-          Dealer Cards: {localDealerCards.map(x => x.name).join(", ")}
-          <br></br>
-          Value: {dealerCardTotal}
+        <p style={textColor} id="currentBet">
+          Current bet
         </p>
-        <h1>{roundResult}</h1>
       </div>
-    )
-  }
+
+      <div id="githubSvgRoundStart">
+        <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
+          <GithubSVG iconTheme={iconTheme}></GithubSVG>
+        </a>
+      </div>
+
+      <div id="themeIconRoundStart">
+        <a href="#" onClick={settingsFlagSwitch}>
+          <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
+        </a>
+      </div>
+    </div>
+  )
 }
 
 function DealerBlackJack({
@@ -2156,7 +2249,11 @@ function App() {
   // Format: string
   const [iconTheme, setIconTheme] = useState(purpleColorString)
 
-  const [displayCard, setDisplayCard] = useState(cards.t2.spade.ace.src)
+  const [cardThemeNum, setCardThemeNum] = useState("t2")
+
+  const [displayCard, setDisplayCard] = useState(
+    cards[cardThemeNum].spade.ace.src
+  )
 
   const t1ThemeChange = () => {
     setDisplayCard(cards.t1.spade.ace.src)
@@ -2178,6 +2275,7 @@ function App() {
     setIconTheme(goldColorString)
     bodyChange("bodyTheme1")
     setBodyTheme("bodyTheme1")
+    setCardThemeNum("t1")
   }
 
   const t2ThemeChange = () => {
@@ -2200,6 +2298,7 @@ function App() {
     setIconTheme(purpleColorString)
     bodyChange("bodyTheme2")
     setBodyTheme("bodyTheme2")
+    setCardThemeNum("t2")
   }
 
   const t3ThemeChange = () => {
@@ -2222,6 +2321,7 @@ function App() {
     setIconTheme(redColorString)
     bodyChange("bodyTheme3")
     setBodyTheme("bodyTheme3")
+    setCardThemeNum("t3")
   }
 
   const t4ThemeChange = () => {
@@ -2245,6 +2345,7 @@ function App() {
     setIconTheme(greenColorString)
     bodyChange("bodyTheme4")
     setBodyTheme("bodyTheme4")
+    setCardThemeNum("t4")
   }
 
   const [settingsFlag, setSettingsFlag] = useState(0)
@@ -2267,214 +2368,318 @@ function App() {
     {
       value: 11,
       value2: 1,
-      name: "Ace of Clubs"
+      name: "Ace of Clubs",
+      suit: "club",
+      card: "ace"
     },
     {
       value: 2,
-      name: "Two of Clubs"
+      name: "Two of Clubs",
+      suit: "club",
+      card: "two"
     },
     {
       value: 3,
-      name: "Three of Clubs"
+      name: "Three of Clubs",
+      suit: "club",
+      card: "three"
     },
     {
       value: 4,
-      name: "Four of Clubs"
+      name: "Four of Clubs",
+      suit: "club",
+      card: "four"
     },
     {
       value: 5,
-      name: "Five of Clubs"
+      name: "Five of Clubs",
+      suit: "club",
+      card: "five"
     },
     {
       value: 6,
-      name: "Six of Clubs"
+      name: "Six of Clubs",
+      suit: "club",
+      card: "six"
     },
     {
       value: 7,
-      name: "Seven of Clubs"
+      name: "Seven of Clubs",
+      suit: "club",
+      card: "seven"
     },
     {
       value: 8,
-      name: "Eight of Clubs"
+      name: "Eight of Clubs",
+      suit: "club",
+      card: "eight"
     },
     {
       value: 9,
-      name: "Nine of Clubs"
+      name: "Nine of Clubs",
+      suit: "club",
+      card: "nine"
     },
     {
       value: 10,
-      name: "Ten of Clubs"
+      name: "Ten of Clubs",
+      suit: "club",
+      card: "ten"
     },
     {
       value: 10,
-      name: "Jack of Clubs"
+      name: "Jack of Clubs",
+      suit: "club",
+      card: "jack"
     },
     {
       value: 10,
-      name: "Queen of Clubs"
+      name: "Queen of Clubs",
+      suit: "club",
+      card: "queen"
     },
     {
       value: 10,
-      name: "King of Clubs"
+      name: "King of Clubs",
+      suit: "club",
+      card: "king"
     },
     {
       value: 11,
       value2: 1,
-      name: "Ace of Diamonds"
+      name: "Ace of Diamonds",
+      suit: "diamond",
+      card: "ace"
     },
     {
       value: 2,
-      name: "Two of Diamonds"
+      name: "Two of Diamonds",
+      suit: "diamond",
+      card: "two"
     },
     {
       value: 3,
-      name: "Three of Diamonds"
+      name: "Three of Diamonds",
+      suit: "diamond",
+      card: "three"
     },
     {
       value: 4,
-      name: "Four of Diamonds"
+      name: "Four of Diamonds",
+      suit: "diamond",
+      card: "four"
     },
     {
       value: 5,
-      name: "Five of Diamonds"
+      name: "Five of Diamonds",
+      suit: "diamond",
+      card: "five"
     },
     {
       value: 6,
-      name: "Six of Diamonds"
+      name: "Six of Diamonds",
+      suit: "diamond",
+      card: "six"
     },
     {
       value: 7,
-      name: "Seven of Diamonds"
+      name: "Seven of Diamonds",
+      suit: "diamond",
+      card: "seven"
     },
     {
       value: 8,
-      name: "Eight of Diamonds"
+      name: "Eight of Diamonds",
+      suit: "diamond",
+      card: "eight"
     },
     {
       value: 9,
-      name: "Nine of Diamonds"
+      name: "Nine of Diamonds",
+      suit: "diamond",
+      card: "nine"
     },
     {
       value: 10,
-      name: "Ten of Diamonds"
+      name: "Ten of Diamonds",
+      suit: "diamond",
+      card: "ten"
     },
     {
       value: 10,
-      name: "Jack of Diamonds"
+      name: "Jack of Diamonds",
+      suit: "diamond",
+      card: "jack"
     },
     {
       value: 10,
-      name: "Queen of Diamonds"
+      name: "Queen of Diamonds",
+      suit: "diamond",
+      card: "queen"
     },
     {
       value: 10,
-      name: "King of Diamonds"
+      name: "King of Diamonds",
+      suit: "diamond",
+      card: "king"
     },
     {
       value: 11,
       value2: 1,
-      name: "Ace of Hearts"
+      name: "Ace of Hearts",
+      suit: "heart",
+      card: "ace"
     },
     {
       value: 2,
-      name: "Two of Hearts"
+      name: "Two of Hearts",
+      suit: "heart",
+      card: "two"
     },
     {
       value: 3,
-      name: "Three of Hearts"
+      name: "Three of Hearts",
+      suit: "heart",
+      card: "three"
     },
     {
       value: 4,
-      name: "Four of Hearts"
+      name: "Four of Hearts",
+      suit: "heart",
+      card: "four"
     },
     {
       value: 5,
-      name: "Five of Hearts"
+      name: "Five of Hearts",
+      suit: "heart",
+      card: "five"
     },
     {
       value: 6,
-      name: "Six of Hearts"
+      name: "Six of Hearts",
+      suit: "heart",
+      card: "six"
     },
     {
       value: 7,
-      name: "Seven of Hearts"
+      name: "Seven of Hearts",
+      suit: "heart",
+      card: "seven"
     },
     {
       value: 8,
-      name: "Eight of Hearts"
+      name: "Eight of Hearts",
+      suit: "heart",
+      card: "eight"
     },
     {
       value: 9,
-      name: "Nine of Hearts"
+      name: "Nine of Hearts",
+      suit: "heart",
+      card: "nine"
     },
     {
       value: 10,
-      name: "Ten of Hearts"
+      name: "Ten of Hearts",
+      suit: "heart",
+      card: "ten"
     },
     {
       value: 10,
-      name: "Jack of Hearts"
+      name: "Jack of Hearts",
+      suit: "heart",
+      card: "jack"
     },
     {
       value: 10,
-      name: "Queen of Hearts"
+      name: "Queen of Hearts",
+      suit: "heart",
+      card: "queen"
     },
     {
       value: 10,
-      name: "King of Hearts"
+      name: "King of Hearts",
+      suit: "heart",
+      card: "king"
     },
     {
       value: 11,
       value2: 1,
-      name: "Ace of Spades"
+      name: "Ace of Spades",
+      suit: "spade",
+      card: "ace"
     },
     {
       value: 2,
-      name: "Two of Spades"
+      name: "Two of Spades",
+      suit: "spade",
+      card: "two"
     },
     {
       value: 3,
-      name: "Three of Spades"
+      name: "Three of Spades",
+      suit: "spade",
+      card: "three"
     },
     {
       value: 4,
-      name: "Four of Spades"
+      name: "Four of Spades",
+      suit: "spade",
+      card: "four"
     },
     {
       value: 5,
-      name: "Five of Spades"
+      name: "Five of Spades",
+      suit: "spade",
+      card: "five"
     },
     {
       value: 6,
-      name: "Six of Spades"
+      name: "Six of Spades",
+      suit: "spade",
+      card: "six"
     },
     {
       value: 7,
-      name: "Seven of Spades"
+      name: "Seven of Spades",
+      suit: "spade",
+      card: "seven"
     },
     {
       value: 8,
-      name: "Eight of Spades"
+      name: "Eight of Spades",
+      suit: "spade",
+      card: "eight"
     },
     {
       value: 9,
-      name: "Nine of Spades"
+      name: "Nine of Spades",
+      suit: "spade",
+      card: "nine"
     },
     {
       value: 10,
-      name: "Ten of Spades"
+      name: "Ten of Spades",
+      suit: "spade",
+      card: "ten"
     },
     {
       value: 10,
-      name: "Jack of Spades"
+      name: "Jack of Spades",
+      suit: "spade",
+      card: "jack"
     },
     {
       value: 10,
-      name: "Queen of Spades"
+      name: "Queen of Spades",
+      suit: "spade",
+      card: "queen"
     },
     {
       value: 10,
-      name: "King of Spades"
+      name: "King of Spades",
+      suit: "spade",
+      card: "king"
     }
   ])
   const deckUpdate = value => {
@@ -2756,6 +2961,7 @@ function App() {
       betRange={betRange}
       maxBet={maxBet}
       minBet={minBet}
+      cardThemeNum={cardThemeNum}
     ></LoadOrder>
   )
 }
