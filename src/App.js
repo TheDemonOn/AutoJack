@@ -82,7 +82,10 @@ function LoadOrder({
   displayCard,
   altButtonTheme,
   altButtonThemeActive,
-  playerBetModify
+  playerBetModify,
+  betRange,
+  maxBet,
+  minBet
 }) {
   if (settingsFlag) {
     return (
@@ -123,6 +126,8 @@ function LoadOrder({
         textColor={textColor}
         settingsFlagSwitch={settingsFlagSwitch}
         homeFlagSwitch1={homeFlagSwitch1}
+        betRange={betRange}
+        playerBetUpdate={playerBetUpdate}
       ></StartScreen>
     )
   } else if (roundStartFlag) {
@@ -146,6 +151,8 @@ function LoadOrder({
         settingsFlagSwitch={settingsFlagSwitch}
         altButtonThemeActive={altButtonThemeActive}
         playerBetModify={playerBetModify}
+        maxBet={maxBet}
+        minBet={minBet}
       ></RoundStart>
     )
   } else if (dealerCards[0].value + dealerCards[1].value === 21) {
@@ -369,31 +376,13 @@ function StartScreen({
   iconTheme,
   textColor,
   settingsFlagSwitch,
-  homeFlagSwitch1
+  homeFlagSwitch1,
+  betRange,
+  playerBetUpdate
 }) {
-  // const [deckCountValue, setDeckCountValue] = useState("")
-
-  // const [YourMoneyLocal, setYourMoneyLocal] = useState("")
-
-  // const handleDeckCount = e => {
-  //   e.preventDefault()
-  //   if (!deckCountValue) return
-  //   console.log(deckCountValue)
-  //   theDeckCountValue(deckCountValue)
-  //   setDeckCountValue("")
-  // }
-
-  // const handleYourMoney = e => {
-  //   e.preventDefault()
-  //   if (!YourMoneyLocal) return
-  //   console.log(YourMoneyLocal)
-  //   yourMoneyValue(YourMoneyLocal)
-  //   setYourMoneyLocal("")
-  // }
-
   // Add functionality for min bet and max bet
 
-  const [deckSize, setDeckSize] = useState(1)
+  const [deckSize, setDeckSize] = useState(8)
 
   const [tableIconSize, setTableIconSize] = useState("130px")
 
@@ -425,6 +414,9 @@ function StartScreen({
     )
     theDeckCountValue(8)
     yourMoneyValue(500)
+    playerBetUpdate(5)
+    betRange("min", 5)
+    betRange("max", 100)
   }
 
   const midEnd = () => {
@@ -441,6 +433,9 @@ function StartScreen({
     )
     theDeckCountValue(6)
     yourMoneyValue(2000)
+    playerBetUpdate(20)
+    betRange("min", 20)
+    betRange("max", 500)
   }
 
   const highEnd = () => {
@@ -463,23 +458,14 @@ function StartScreen({
     )
     theDeckCountValue(4)
     yourMoneyValue(10000)
+    playerBetUpdate(100)
+    betRange("min", 100)
+    betRange("max", 10000)
   }
-
-  // let numReg = /[0-9]/gi
-
-  // An issue is that for the onChange when a character is deleted the first time the onChange does not trigger. Find out why.
-  // It occurs because it wasn't directly changing.
-
-  // const deckChange = e => {
-  //   if (numReg.test(e)) {
-  //     theDeckCountValue(e)
-  //   } else {
-  //     return
-  //   }
-  // }
 
   const [deckValue, setDeckValue] = useState()
 
+  // Need to set a default value for bet on custom
   const custom = () => {
     setParameterSection(
       <div className="parameterBox">
@@ -490,10 +476,11 @@ function StartScreen({
             {/* Figure out if type="number" can use maxLength or a variant */}
             {/* Also figure out if you can restrict the inputed value being higher than the max */}
             <input
-              type="number"
-              min="1"
-              max="100"
+              type="text"
+              // min="1"
+              // max="100"
               maxLength="3"
+              placeholder="1"
               value={deckValue}
               onChange={e => theDeckCountValue(e.target.value)}
               // onChange={e => theDeckCountValue(e.target.value)}
@@ -501,23 +488,39 @@ function StartScreen({
           </div>
           <div>
             <h5 style={textColor}>Min Bet: </h5>
-            <input type="number" min="1"></input>
+            <input
+              type="number"
+              min="1"
+              placeholder="5"
+              onChange={e => betRange("min", e.target.value)}
+            ></input>
           </div>
           <div>
             <h5 style={textColor}>Max Bet: </h5>
-            <input type="number" min="1"></input>
+            <input
+              type="number"
+              min="1"
+              placeholder="100"
+              onChange={e => betRange("max", e.target.value)}
+            ></input>
           </div>
           <div>
             <h5 style={textColor}>Money: </h5>
             <input
               type="number"
               min="1"
+              placeholder="100"
               onChange={e => yourMoneyValue(e.target.value)}
             ></input>
           </div>
         </div>
       </div>
     )
+    theDeckCountValue(1)
+    yourMoneyValue(100)
+    playerBetUpdate(5)
+    betRange("min", 5)
+    betRange("max", 100)
   }
 
   const startAndUpdateDeck = () => {
@@ -646,109 +649,29 @@ function RoundStart({
   altButtonTheme,
   settingsFlagSwitch,
   altButtonThemeActive,
-  playerBetModify
+  playerBetModify,
+  maxBet,
+  minBet
 }) {
   // So it appears that even when thr function is called from the child it still executes in the location it was defined (the parent) and had access to everything it would normally.
-  const [playerBetHandle, setPlayerBetHandle] = useState("")
 
   const deal = e => {
+    yourMoneyValue(yourMoney - playerBet)
     playerDeal()
     dealerDeal()
     roundStartFlagSwitch()
   }
 
-  // const betHandle = e => {
-  //   e.preventDefault()
-  //   if (!playerBetHandle) return
-  //   console.log(playerBetHandle)
-  //   playerBetUpdate(playerBetHandle)
-  //   yourMoneyValue(yourMoney - playerBetHandle)
-  //   deal()
-  // }
-
-  // const betOne = () => {
-  //   playerBetUpdate(1)
-  //   yourMoneyValue(yourMoney - 1)
-  //   deal()
-  // }
-  // const betFive = () => {
-  //   playerBetUpdate(5)
-  //   yourMoneyValue(yourMoney - 5)
-  //   deal()
-  // }
-  // const betTen = () => {
-  //   playerBetUpdate(10)
-  //   yourMoneyValue(yourMoney - 10)
-  //   deal()
-  // }
-  // const betTwentyFive = () => {
-  //   playerBetUpdate(25)
-  //   yourMoneyValue(yourMoney - 25)
-  //   deal()
-  // }
-  // const betFifty = () => {
-  //   playerBetUpdate(50)
-  //   yourMoneyValue(yourMoney - 50)
-  //   deal()
-  // }
-  // const betOneHundred = () => {
-  //   playerBetUpdate(100)
-  //   yourMoneyValue(yourMoney - 100)
-  //   deal()
-  // }
-  // const betFiveHundred = () => {
-  //   playerBetUpdate(500)
-  //   yourMoneyValue(yourMoney - 500)
-  //   deal()
-  // }
-
-  // const [one, setOne] = useState()
-  // const [five, setFive] = useState()
-  // const [ten, setTen] = useState()
-  // const [twentyFive, setTwentyFive] = useState()
-  // const [fifty, setFifty] = useState()
-  // const [oneHundred, setOneHundred] = useState()
-  // const [fiveHundred, setFiveHundred] = useState()
-
-  // useEffect(() => {
-  //   if (yourMoney >= 1) {
-  //     setOne(<button onClick={betOne}>Bet 1</button>)
-  //   }
-  //   if (yourMoney >= 5) {
-  //     setFive(<button onClick={betFive}>Bet 5</button>)
-  //   }
-  //   if (yourMoney >= 10) {
-  //     setTen(<button onClick={betTen}>Bet 10</button>)
-  //   }
-  //   if (yourMoney >= 25) {
-  //     setTwentyFive(<button onClick={betTwentyFive}>Bet 25</button>)
-  //   }
-  //   if (yourMoney >= 50) {
-  //     setFifty(<button onClick={betFifty}>Bet 50</button>)
-  //   }
-  //   if (yourMoney >= 100) {
-  //     setOneHundred(<button onClick={betOneHundred}>Bet 100</button>)
-  //   }
-  //   if (yourMoney >= 500) {
-  //     setFiveHundred(<button onClick={betFiveHundred}>Bet 500</button>)
-  //   }
-  // }, [])
-
-  const [currentBet, setCurrentBet] = useState(123)
-
   const [cardsLeft, setCardsLeft] = useState()
 
   // THIS ENTIRE SECTION IS FILLED WITH BS TO MAKE IT APPEAR PROPER FOR DESIGN AND ALIGNMENTS
-  let cutPositione = 100
-  let discardPilee = []
-  discardPilee.length = 68
 
   // If the game hasn't looped to main once then the remaining cards does not display (or exist)
   useEffect(() => {
-    if (cutPositione - discardPilee.length) {
+    if (cutPosition - discardPile.length) {
       setCardsLeft(
         <div>
-          <p style={textColor}>{cutPositione - discardPilee.length}</p>
+          <p style={textColor}>{cutPosition - discardPile.length}</p>
           <p style={textColor} id="underRemaining">
             Cards Remaining
           </p>
@@ -777,57 +700,91 @@ function RoundStart({
     setActiveStateOpposite(altButtonTheme)
   }
 
-  //
+  // Instead of using a useEffect to put the value of the bet to the respective max range when exceeded, this way will remove the single
+  // tick of the value being wrong before being corrected
+  const rangeCheckMax = value => {
+    if (playerBet + value > maxBet) {
+      playerBetUpdate(maxBet)
+    }
+  }
+
+  const rangeCheckMin = value => {
+    if (playerBet - value < minBet) {
+      playerBetUpdate(minBet)
+    }
+  }
 
   const one = () => {
     if (activeState === altButtonThemeActive) {
       playerBetModify("add", 1)
+      rangeCheckMax(1)
     } else {
       playerBetModify("subtract", 1)
+      rangeCheckMin(1)
     }
   }
   const five = () => {
     if (activeState === altButtonThemeActive) {
       playerBetModify("add", 5)
+      rangeCheckMax(5)
     } else {
       playerBetModify("subtract", 5)
+      rangeCheckMin(5)
     }
   }
   const ten = () => {
     if (activeState === altButtonThemeActive) {
       playerBetModify("add", 10)
+      rangeCheckMax(10)
     } else {
       playerBetModify("subtract", 10)
+      rangeCheckMin(10)
     }
   }
   const twentyFive = () => {
     if (activeState === altButtonThemeActive) {
       playerBetModify("add", 25)
+      rangeCheckMax(25)
     } else {
       playerBetModify("subtract", 25)
+      rangeCheckMin(25)
     }
   }
   const fifty = () => {
     if (activeState === altButtonThemeActive) {
       playerBetModify("add", 50)
+      rangeCheckMax(50)
     } else {
       playerBetModify("subtract", 50)
+      rangeCheckMin(50)
     }
   }
   const oneHundred = () => {
     if (activeState === altButtonThemeActive) {
       playerBetModify("add", 100)
+      rangeCheckMax(100)
     } else {
       playerBetModify("subtract", 100)
+      rangeCheckMin(100)
     }
   }
   const fiveHundred = () => {
     if (activeState === altButtonThemeActive) {
       playerBetModify("add", 500)
+      rangeCheckMax(500)
     } else {
       playerBetModify("subtract", 500)
+      rangeCheckMin(500)
     }
   }
+
+  // useEffect(() => {
+  //   if (playerBet < minBet) {
+  //     playerBetUpdate(minBet)
+  //   } else if (playerBet > maxBet) {
+  //     playerBetUpdate(maxBet)
+  //   }
+  // }, [playerBet])
 
   return (
     <div className="block">
@@ -908,7 +865,11 @@ function RoundStart({
             content={"+"}
           ></Button>
 
-          <Button buttonTheme={buttonTheme} content={"Play"}></Button>
+          <Button
+            buttonTheme={buttonTheme}
+            func={deal}
+            content={"Play"}
+          ></Button>
         </div>
       </div>
 
@@ -2632,7 +2593,7 @@ function App() {
     // An issue for seeing the results I had was that after setYourCards was finished viewing yourCards through the console wasn't correctly updated until the next update.
   }
 
-  const [playerBet, setPlayerBet] = useState(1)
+  const [playerBet, setPlayerBet] = useState(5)
   const playerBetUpdate = value => {
     setPlayerBet(value)
   }
@@ -2645,12 +2606,17 @@ function App() {
     }
   }
 
-  // const playerBetAdd = value => {
-  //   setPlayerBet(prevBet => prevBet + value)
-  // }
-  // const playerBetSubtract = value => {
-  //   setPlayerBet(prevBet => prevBet - value)
-  // }
+  const [maxBet, setMaxBet] = useState(100)
+
+  const [minBet, setMinBet] = useState(5)
+
+  function betRange(range, value) {
+    if (range === "max") {
+      setMaxBet(value)
+    } else if (range === "min") {
+      setMinBet(value)
+    }
+  }
 
   const playerHit = () => {
     // deck + discard became NaN
@@ -2787,6 +2753,9 @@ function App() {
       altButtonTheme={altButtonTheme}
       altButtonThemeActive={altButtonThemeActive}
       playerBetModify={playerBetModify}
+      betRange={betRange}
+      maxBet={maxBet}
+      minBet={minBet}
     ></LoadOrder>
   )
 }
