@@ -671,10 +671,16 @@ function RoundStart({
 
   // If the game hasn't looped to main once then the remaining cards does not display (or exist)
   useEffect(() => {
-    if (cutPosition - discardPile.length) {
+    if (
+      // cutPosition - discardPile.length
+      1 === 1
+    ) {
       setCardsLeft(
         <div>
-          <p style={textColor}>{cutPosition - discardPile.length}</p>
+          <p style={textColor}>
+            {/* {cutPosition - discardPile.length} */}
+            32
+          </p>
           <p style={textColor} id="underRemaining">
             Cards Remaining
           </p>
@@ -864,6 +870,7 @@ function RoundStart({
             buttonTheme={buttonTheme}
             func={deal}
             content={"Deal"}
+            ID={"mobileDeal"}
           ></Button>
         </div>
       </div>
@@ -1697,8 +1704,10 @@ function TableOptions({
     }
   }, [cardTotal])
 
-  const [splitElement, setSplitElement] = useState()
-
+  const [splitElement, setSplitElement] = useState(
+    // The default for the split will be the greyed out version because most of the time it won't be active
+    <img src={chip1} height="100px" width="100px" alt="Chip 1"></img>
+  )
   // Sets split element
   useEffect(() => {
     if (
@@ -1707,28 +1716,45 @@ function TableOptions({
       yourCards[2] === undefined
     ) {
       setSplitElement(
-        <div>
-          <button onClick={splitting}>Split</button>
-        </div>
+        // Normal split element
+        <a href="#" onclick={splitting}>
+          <img src={chip500} height="100px" width="100px" alt="Chip 1"></img>
+        </a>
+      )
+    } else {
+      setSplitElement(
+        // This will be the lowered opacity, or greyed out version of the split icon
+        <img src={chip1} height="100px" width="100px" alt="Chip 1"></img>
       )
     }
   }, [yourCards])
 
-  const [doubleDownElement, setDoubleDownElement] = useState()
+  const [doubleDownElement, setDoubleDownElement] = useState(
+    <a href="#" onclick={doubleDown}>
+      <img src={chip100} height="100px" width="100px" alt="Chip 1"></img>
+    </a>
+  )
 
   // Sets double down element
   useEffect(() => {
     if (playerBet <= yourMoney) {
       setDoubleDownElement(
-        <div>
-          <button onClick={doubleDown}>Double Down</button>
-          <br></br>
-        </div>
+        <a href="#" onclick={doubleDown}>
+          <img src={chip100} height="100px" width="100px" alt="Chip 1"></img>
+        </a>
+      )
+    } else {
+      setDoubleDownElement(
+        // Unusable version
+        <img src={chip1} height="100px" width="100px" alt="Chip 1"></img>
       )
     }
-    // Removes the option to double on split if you have already hit
+    // Removes the option to double on split if you have already hit, too many bugs if allowed
     if (splitFlag === 0 && yourCards.length > 2) {
-      setDoubleDownElement()
+      setDoubleDownElement(
+        // Unusable version
+        <img src={chip1} height="100px" width="100px" alt="Chip 1"></img>
+      )
     }
   }, [yourCards])
 
@@ -1775,6 +1801,77 @@ function TableOptions({
   // I could make the class names be a state that can also be a variant for a double down so the final card in that set will be horizontal
   // instead of vertical
 
+  // This section is based on the hypothesis that just having the img tags point to undefined values will cause them to throw an error,
+  // even if the card is not displayed. Test this when the cards are received.
+
+  // The below code starts with the values being empty rather than undefined, see what that results in.
+
+  //Also see the effect of the img tag being set to "//:0" as opposed to nothing or an empty string
+
+  // If making the img tag nothing still throws errors then a last resort could be just using a 1 pixel transparent image.
+
+  // Also if the assumed code works, a version for yourCards will also be needed.
+
+  // Also also can you test an if statement by setting it to undefined, I thought there was some weird interaction
+
+  const dealerThirdConst =
+    process.env.PUBLIC_URL +
+    cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].src
+
+  const dealerThirdAltConst =
+    cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].alt
+
+  const [dealerThird, setDealerThird] = useState()
+  const [dealerThirdAlt, setDealerThirdAlt] = useState()
+  useEffect(() => {
+    if (dealerThirdConst === undefined) {
+      setDealerThird("//:0")
+      setDealerThirdAlt("")
+    } else {
+      setDealerThird(dealerThirdConst)
+      setDealerThirdAlt(dealerThirdAltConst)
+    }
+  }, [dealerCards])
+  //
+  const dealerFourthConst =
+    process.env.PUBLIC_URL +
+    cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src
+
+  const dealerFourthAltConst =
+    cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].alt
+
+  const [dealerFourth, setDealerFourth] = useState()
+  const [dealerFourthAlt, setDealerFourthAlt] = useState()
+  useEffect(() => {
+    if (dealerFourthConst === undefined) {
+      setDealerFourth("//:0")
+      setDealerFourthAlt("")
+    } else {
+      setDealerFourth(dealerFourthConst)
+      setDealerFourthAlt(dealerFourthAltConst)
+    }
+  }, [dealerCards])
+  //
+  const dealerFifthConst =
+    process.env.PUBLIC_URL +
+    cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src
+
+  const dealerFifthAltConst =
+    cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].alt
+
+  const [dealerFifth, setDealerFifth] = useState()
+  const [dealerFifthAlt, setDealerFifthAlt] = useState()
+  useEffect(() => {
+    if (dealerFifthConst === undefined) {
+      setDealerFifth("//:0")
+      setDealerFifthAlt("")
+    } else {
+      setDealerFifth(dealerFifthConst)
+      setDealerFifthAlt(dealerFifthAltConst)
+    }
+  }, [dealerCards])
+  //
+
   return (
     <div className="block">
       <div className="remainingCards">
@@ -1819,44 +1916,29 @@ function TableOptions({
         </div>
         <div className="thirdCard">
           <img
-            src={
-              process.env.PUBLIC_URL +
-              cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].src
-            }
+            src={dealerThird}
             height="199.6488px"
             width="136.4688px"
-            alt={
-              cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].alt
-            }
+            alt={dealerThirdAlt}
           ></img>
         </div>
         <div className="fourthCard">
           <img
-            src={
-              process.env.PUBLIC_URL +
-              cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src
-            }
+            src={dealerFourth}
             height="199.6488px"
             width="136.4688px"
-            alt={
-              cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].alt
-            }
+            alt={dealerFourthAlt}
           ></img>
         </div>
         <div className="fifthCard">
           <img
-            src={
-              process.env.PUBLIC_URL +
-              cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src
-            }
+            src={dealerFifth}
             height="199.6488px"
             width="136.4688px"
-            alt={
-              cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].alt
-            }
+            alt={dealerFifthAlt}
           ></img>
         </div>
-        <div className="sixthCard">
+        {/* <div className="sixthCard">
           <img
             src={
               process.env.PUBLIC_URL +
@@ -1894,7 +1976,7 @@ function TableOptions({
               cards[cardThemeNum][dealerCards[7].suit][dealerCards[7].card].alt
             }
           ></img>
-        </div>
+        </div> */}
       </div>
 
       <div className="playerCardsWrap">
@@ -1989,18 +2071,14 @@ function TableOptions({
       </div>
 
       <div className="playerActions">
-        <a href="#">
+        <a href="#" onClick={stand}>
           <img src={chip25} height="100px" width="100px" alt="Chip 1"></img>
         </a>
-        <a href="#">
+        <a href="#" onClick={playerHit}>
           <img src={chip50} height="100px" width="100px" alt="Chip 1"></img>
         </a>
-        <a href="#">
-          <img src={chip100} height="100px" width="100px" alt="Chip 1"></img>
-        </a>
-        <a href="#">
-          <img src={chip500} height="100px" width="100px" alt="Chip 1"></img>
-        </a>
+        {doubleDownElement}
+        {splitElement}
       </div>
 
       <div className="moneyWrapperTable">

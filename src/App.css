@@ -644,6 +644,115 @@ p {
   right: 7em;
 }
 
+@media (max-width: 800px) {
+  .remainingCards {
+    position: relative;
+    /* border: solid; */
+    display: block;
+    text-align: center;
+    width: 25em;
+    top: 5em;
+    left: 5%;
+  }
+  .moneyWrapper {
+    position: fixed;
+    right: 15%;
+    top: 12em;
+  }
+  #githubSvgRoundStart {
+    position: absolute;
+    margin-top: 5em;
+    left: 7em;
+  }
+  #themeIconRoundStart {
+    position: fixed;
+    margin-top: 5em;
+    right: 7em;
+  }
+}
+
+@media (max-width: 390px) {
+  .chipsTop {
+    display: flex;
+    flex-direction: row;
+    margin-top: 3em;
+    margin-left: 4%;
+    justify-content: space-evenly;
+    width: 39.5em;
+  }
+  .chipsTop img {
+    width: 77px;
+    height: 77px;
+  }
+  .chipsBot {
+    position: relative;
+    display: grid;
+    width: 50em;
+    margin-left: 4%;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+  }
+  .chipsBot img {
+    width: 77px;
+    height: 77px;
+  }
+}
+
+@media (max-height: 700px) and (max-width: 320px) {
+  .moneyWrapper {
+    position: absolute;
+    right: 2em;
+    top: 6em;
+  }
+  #githubSvgRoundStart {
+    position: absolute;
+    margin-top: 0em;
+    left: 7em;
+  }
+  #themeIconRoundStart {
+    position: absolute;
+    margin-top: 0em;
+    right: 7em;
+  }
+  .remainingCards {
+    position: relative;
+    /* border: solid; */
+    display: block;
+    text-align: center;
+    width: 20em;
+    top: 2em;
+    left: 0;
+  }
+  .remainingCards img {
+    height: 118.25352px;
+    width: 80.83152px;
+  }
+  .underChipSection {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    /* border: solid; */
+    width: 60em;
+    /* height: 5em; */
+  }
+  #mobileDeal {
+    margin-bottom: 0.3em;
+  }
+  #underRemaining {
+    display: none;
+  }
+  #plus {
+    position: absolute;
+    margin-top: 0.6em;
+    right: 20%;
+  }
+  #minus {
+    position: absolute;
+    margin-top: 0.6em;
+    left: 20%;
+  }
+}
+
 /* Table Options */
 
 .dealerCardsWrap {
