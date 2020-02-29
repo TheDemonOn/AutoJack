@@ -57,13 +57,16 @@ h3 {
 
 #one {
   position: absolute;
-  left: 7em;
+  left: 6.2em;
+
   /* width: 10%; */
 }
 
 #two {
   position: fixed;
   right: 7em;
+  width: 7m;
+  height: 7em;
 }
 
 .hoverText {
@@ -282,12 +285,16 @@ h3 {
 #four {
   position: relative;
   left: 7em;
+  width: 7m;
+  height: 7em;
   /* bottom: 9.9em; */
 }
 
 #five {
   position: absolute;
   right: 7.5em;
+  width: 7m;
+  height: 7em;
   /* bottom: 9.85em; */
 }
 
@@ -637,11 +644,15 @@ p {
 #githubSvgRoundStart {
   position: absolute;
   left: 7em;
+  width: 7em;
+  height: 7em;
 }
 
 #themeIconRoundStart {
   position: fixed;
   right: 7em;
+  width: 7em;
+  height: 7em;
 }
 
 @media (max-width: 800px) {
@@ -676,9 +687,9 @@ p {
     display: flex;
     flex-direction: row;
     margin-top: 3em;
-    margin-left: 4%;
+    margin-left: 0;
     justify-content: space-evenly;
-    width: 39.5em;
+    width: 24.4em;
   }
   .chipsTop img {
     width: 77px;
@@ -688,7 +699,7 @@ p {
     position: relative;
     display: grid;
     width: 50em;
-    margin-left: 4%;
+    margin-left: 0%;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr;
   }
@@ -699,6 +710,9 @@ p {
 }
 
 @media (max-height: 700px) and (max-width: 320px) {
+  .underWrapper {
+    margin-bottom: -3em;
+  }
   .moneyWrapper {
     position: absolute;
     right: 2em;
@@ -707,12 +721,15 @@ p {
   #githubSvgRoundStart {
     position: absolute;
     margin-top: 0em;
-    left: 7em;
+    left: 1em;
   }
   #themeIconRoundStart {
     position: absolute;
     margin-top: 0em;
-    right: 7em;
+    right: 1em;
+  }
+  svg {
+    width: 5em;
   }
   .remainingCards {
     position: relative;
@@ -736,6 +753,8 @@ p {
     /* height: 5em; */
   }
   #mobileDeal {
+    height: 1.3em;
+    width: 4.2em;
     margin-bottom: 0.3em;
   }
   #underRemaining {
@@ -744,16 +763,30 @@ p {
   #plus {
     position: absolute;
     margin-top: 0.6em;
-    right: 20%;
+    right: 15%;
   }
   #minus {
     position: absolute;
     margin-top: 0.6em;
-    left: 20%;
+    left: 15%;
   }
 }
 
 /* Table Options */
+
+.dealerTotal {
+  position: absolute;
+  /* border: solid; */
+  top: 6.2em;
+  left: 49%;
+}
+
+.playerTotal {
+  position: absolute;
+  /* border: solid; */
+  top: 33.6em;
+  left: 49%;
+}
 
 .dealerCardsWrap {
   display: flex;
@@ -783,14 +816,13 @@ COLUMNS going vertically
   /* border: solid; */
   width: 13.6em;
   position: relative;
-  margin-left: -9.7em;
+  margin-left: -9.3em;
 }
 .thirdCard {
   display: none;
-
   width: 13.6em;
   position: relative;
-  margin-left: -9.7em;
+  margin-left: -9.3em;
 }
 .fourthCard {
   display: none;

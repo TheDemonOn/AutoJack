@@ -1813,63 +1813,124 @@ function TableOptions({
   // Also if the assumed code works, a version for yourCards will also be needed.
 
   // Also also can you test an if statement by setting it to undefined, I thought there was some weird interaction
+  //////////////////////////
+  // Errors are thrown when the src points to undefined because of TypeError: Cannot read property x of undefined
+  // As well as defining a variable to be the same hopeful src attribute TypeError: Cannot read property x of undefined
+  // So a common theme seems to be to not access a property which is not defined yet
+  // So I need to run a check to see if it exists, then use that as my condition statement
+
+  // I could try displaying all the cards after the first card to be the second card in the same position so you can't tell,
+  // then when a card is drawn iterate and display properly?
+
+  // I will use this to control when the card path is referenced so the error doesn't occur
+
+  const [thirdDisplay, setThirdDisplay] = useState({ display: "none" })
+
+  const [playerThirdCardFlag, setPlayerThirdCardFlag] = useState("//:0")
+
+  useEffect(() => {
+    if (yourCards[2]) {
+      setPlayerThirdCardFlag()
+      setThirdDisplay({ display: "block" })
+    }
+  }, [yourCards])
+
+  const [playerThird, setPlayerThird] = useState(
+    playerThirdCardFlag ||
+      cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src
+  )
+
+  useEffect(() => {
+    setPlayerThird(
+      playerThirdCardFlag ||
+        cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src
+    )
+  })
+
+  const [playerThirdAlt, setPlayerThirdAlt] = useState()
+
+  // useEffect(() => {
+  //   if (typeof yourCards[2] !== undefined) {
+  //     setPlayerThird(
+  //       playerThirdCardFlag ||
+  //         cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src
+  //     )
+  //     setPlayerThirdAlt(
+  //       playerThirdCardFlag ||
+  //         cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].alt
+  //     )
+  //   }
+  // }, [yourCards])
+
+  //
+
+  const [dealerThirdCardFlag, setDealerThirdCardFlag] = useState("//:0")
+
+  useEffect(() => {
+    if (typeof dealerCards[2] === undefined) {
+      setDealerThirdCardFlag(undefined)
+    }
+  }, [dealerCards])
 
   const dealerThirdConst =
-    process.env.PUBLIC_URL +
+    dealerThirdCardFlag ||
     cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].src
 
-  const dealerThirdAltConst =
-    cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].alt
+  // console.log(dealerThirdConst)
 
   const [dealerThird, setDealerThird] = useState()
   const [dealerThirdAlt, setDealerThirdAlt] = useState()
   useEffect(() => {
-    if (dealerThirdConst === undefined) {
-      setDealerThird("//:0")
-      setDealerThirdAlt("")
-    } else {
-      setDealerThird(dealerThirdConst)
-      setDealerThirdAlt(dealerThirdAltConst)
+    if (typeof dealerCards[2] !== undefined) {
+      setDealerThird(
+        dealerThirdCardFlag ||
+          cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].src
+      )
+      setDealerThirdAlt(
+        dealerThirdCardFlag ||
+          cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].alt
+      )
     }
   }, [dealerCards])
+
   //
-  const dealerFourthConst =
-    process.env.PUBLIC_URL +
-    cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src
+  // const dealerFourthConst =
+  //   process.env.PUBLIC_URL +
+  //   cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src
 
-  const dealerFourthAltConst =
-    cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].alt
+  // const dealerFourthAltConst =
+  //   cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].alt
 
-  const [dealerFourth, setDealerFourth] = useState()
-  const [dealerFourthAlt, setDealerFourthAlt] = useState()
-  useEffect(() => {
-    if (dealerFourthConst === undefined) {
-      setDealerFourth("//:0")
-      setDealerFourthAlt("")
-    } else {
-      setDealerFourth(dealerFourthConst)
-      setDealerFourthAlt(dealerFourthAltConst)
-    }
-  }, [dealerCards])
+  // const [dealerFourth, setDealerFourth] = useState()
+  // const [dealerFourthAlt, setDealerFourthAlt] = useState()
+  // useEffect(() => {
+  //   if (dealerFourthConst === undefined) {
+  //     setDealerFourth("//:0")
+  //     setDealerFourthAlt("")
+  //   } else {
+  //     setDealerFourth(dealerFourthConst)
+  //     setDealerFourthAlt(dealerFourthAltConst)
+  //   }
+  // }, [dealerCards])
   //
-  const dealerFifthConst =
-    process.env.PUBLIC_URL +
-    cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src
+  // const dealerFifthConst =
+  //   process.env.PUBLIC_URL +
+  //   cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src
 
-  const dealerFifthAltConst =
-    cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].alt
+  // const dealerFifthAltConst =
+  //   cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].alt
 
-  const [dealerFifth, setDealerFifth] = useState()
-  const [dealerFifthAlt, setDealerFifthAlt] = useState()
-  useEffect(() => {
-    if (dealerFifthConst === undefined) {
-      setDealerFifth("//:0")
-      setDealerFifthAlt("")
-    } else {
-      setDealerFifth(dealerFifthConst)
-      setDealerFifthAlt(dealerFifthAltConst)
-    }
-  }, [dealerCards])
+  // const [dealerFifth, setDealerFifth] = useState()
+  // const [dealerFifthAlt, setDealerFifthAlt] = useState()
+  // useEffect(() => {
+  //   if (dealerFifthConst === undefined) {
+  //     setDealerFifth("//:0")
+  //     setDealerFifthAlt("")
+  //   } else {
+  //     setDealerFifth(dealerFifthConst)
+  //     setDealerFifthAlt(dealerFifthAltConst)
+  //   }
+  // }, [dealerCards])
   //
 
   return (
@@ -1885,6 +1946,13 @@ function TableOptions({
           ></img>
         </div>
         <div>{cardsLeft}</div>
+      </div>
+
+      <div className="dealerTotal">
+        <p style={textColor}>{dealerCardTotal}</p>
+      </div>
+      <div className="playerTotal">
+        <p style={textColor}>{cardTotal}</p>
       </div>
 
       <div className="dealerCardsWrap">
@@ -1914,30 +1982,36 @@ function TableOptions({
             }
           ></img>
         </div>
-        <div className="thirdCard">
+        {/* <div className="thirdCard">
           <img
-            src={dealerThird}
+            src={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].src
+            }
             height="199.6488px"
             width="136.4688px"
-            alt={dealerThirdAlt}
+            alt={
+              process.env.PUBLIC_URL +
+              cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].alt
+            }
           ></img>
-        </div>
-        <div className="fourthCard">
+        </div> */}
+        {/* <div className="fourthCard">
           <img
             src={dealerFourth}
             height="199.6488px"
             width="136.4688px"
             alt={dealerFourthAlt}
           ></img>
-        </div>
-        <div className="fifthCard">
+        </div> */}
+        {/* <div className="fifthCard">
           <img
             src={dealerFifth}
             height="199.6488px"
             width="136.4688px"
             alt={dealerFifthAlt}
           ></img>
-        </div>
+        </div> */}
         {/* <div className="sixthCard">
           <img
             src={
@@ -2002,18 +2076,15 @@ function TableOptions({
             alt={cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].alt}
           ></img>
         </div>
-        <div className="thirdCard">
+        <div className="thirdCard" style={thirdDisplay}>
           <img
-            src={
-              process.env.PUBLIC_URL +
-              cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src
-            }
+            src={playerThird}
             height="199.6488px"
             width="136.4688px"
-            alt={cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].alt}
+            alt={playerThirdAlt}
           ></img>
         </div>
-        <div className="fourthCard">
+        {/* <div className="fourthCard">
           <img
             src={
               process.env.PUBLIC_URL +
@@ -2067,7 +2138,7 @@ function TableOptions({
             width="136.4688px"
             alt={cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt}
           ></img>
-        </div>
+        </div> */}
       </div>
 
       <div className="playerActions">
