@@ -3,7 +3,12 @@ import "./App.css"
 import Button from "./MinorComponents/Button.js"
 import GithubSVG from "./MinorComponents/GithubSVG.js"
 import ThemesIcon from "./MinorComponents/ThemesIcon.js"
-import image2 from "./Images/2.png"
+
+import HitIcon from "./MinorComponents/HitIcon.js"
+import StandIcon from "./MinorComponents/StandIcon.js"
+import DoubleIcon from "./MinorComponents/DoubleIcon.js"
+import SplitIcon from "./MinorComponents/SplitIcon.js"
+
 import Button_Theme1 from "./Images/Button_Theme1.png"
 import Button_Theme2 from "./Images/Button_Theme2.png"
 import Button_Theme3 from "./Images/Button_Theme3.png"
@@ -671,16 +676,10 @@ function RoundStart({
 
   // If the game hasn't looped to main once then the remaining cards does not display (or exist)
   useEffect(() => {
-    if (
-      // cutPosition - discardPile.length
-      1 === 1
-    ) {
+    if (cutPosition - discardPile.length) {
       setCardsLeft(
         <div>
-          <p style={textColor}>
-            {/* {cutPosition - discardPile.length} */}
-            32
-          </p>
+          <p style={textColor}>{cutPosition - discardPile.length}</p>
           <p style={textColor} id="underRemaining">
             Cards Remaining
           </p>
@@ -1715,20 +1714,20 @@ function TableOptions({
       setSplitElement(
         // Normal split element
         <a href="#" onClick={splitting}>
-          <img src={chip500} height="100px" width="100px" alt="Chip 1"></img>
+          <SplitIcon iconTheme={iconTheme}></SplitIcon>
         </a>
       )
     } else {
       setSplitElement(
         // This will be the lowered opacity, or greyed out version of the split icon
-        <img src={chip1} height="100px" width="100px" alt="Chip 1"></img>
+        <SplitIcon iconTheme={iconTheme} opacity={"50%"}></SplitIcon>
       )
     }
   }, [yourCards])
 
   const [doubleDownElement, setDoubleDownElement] = useState(
     <a href="#" onClick={doubleDown}>
-      <img src={chip100} height="100px" width="100px" alt="Chip 1"></img>
+      <DoubleIcon iconTheme={iconTheme}></DoubleIcon>
     </a>
   )
 
@@ -1737,20 +1736,20 @@ function TableOptions({
     if (playerBet <= yourMoney) {
       setDoubleDownElement(
         <a href="#" onClick={doubleDown}>
-          <img src={chip100} height="100px" width="100px" alt="Chip 1"></img>
+          <DoubleIcon iconTheme={iconTheme}></DoubleIcon>
         </a>
       )
     } else {
       setDoubleDownElement(
         // Unusable version
-        <img src={chip1} height="100px" width="100px" alt="Chip 1"></img>
+        <DoubleIcon iconTheme={iconTheme} opacity={"50%"}></DoubleIcon>
       )
     }
     // Removes the option to double on split if you have already hit, too many bugs if allowed
     if (splitFlag === 0 && yourCards.length > 2) {
       setDoubleDownElement(
         // Unusable version
-        <img src={chip1} height="100px" width="100px" alt="Chip 1"></img>
+        <DoubleIcon iconTheme={iconTheme} opacity={"50%"}></DoubleIcon>
       )
     }
   }, [yourCards])
@@ -2316,10 +2315,10 @@ function TableOptions({
 
       <div className="playerActions">
         <a href="#" onClick={stand}>
-          <img src={chip25} height="100px" width="100px" alt="Chip 1"></img>
+          <StandIcon iconTheme={iconTheme}></StandIcon>
         </a>
         <a href="#" onClick={playerHit}>
-          <img src={chip50} height="100px" width="100px" alt="Chip 1"></img>
+          <HitIcon iconTheme={iconTheme}></HitIcon>
         </a>
         {doubleDownElement}
         {splitElement}
