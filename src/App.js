@@ -980,7 +980,6 @@ function TableOptions({
   //////////////////////////////////////////////////////
   // ISSUE: When busting after drawing a card then doubling down while the dealer does not bust the cards they drew does not show up, but should.
   // Double Down causes the bug, don't know for split
-  console.log(yourCards2.map(x => x.name))
 
   useEffect(() => {
     console.log("discard length: " + discardPile.length)
@@ -1362,8 +1361,6 @@ function TableOptions({
       }
     }
   }
-
-  console.log("SplitFlag position: " + splitFlag)
   // If splitting the game should continue its normal flow then after stand switch your cards2 into your cards and play it out
 
   function deckShuffleFunction() {
@@ -1717,7 +1714,7 @@ function TableOptions({
     ) {
       setSplitElement(
         // Normal split element
-        <a href="#" onclick={splitting}>
+        <a href="#" onClick={splitting}>
           <img src={chip500} height="100px" width="100px" alt="Chip 1"></img>
         </a>
       )
@@ -1730,7 +1727,7 @@ function TableOptions({
   }, [yourCards])
 
   const [doubleDownElement, setDoubleDownElement] = useState(
-    <a href="#" onclick={doubleDown}>
+    <a href="#" onClick={doubleDown}>
       <img src={chip100} height="100px" width="100px" alt="Chip 1"></img>
     </a>
   )
@@ -1739,7 +1736,7 @@ function TableOptions({
   useEffect(() => {
     if (playerBet <= yourMoney) {
       setDoubleDownElement(
-        <a href="#" onclick={doubleDown}>
+        <a href="#" onClick={doubleDown}>
           <img src={chip100} height="100px" width="100px" alt="Chip 1"></img>
         </a>
       )
@@ -1828,10 +1825,11 @@ function TableOptions({
 
   const [playerThirdCardFlag, setPlayerThirdCardFlag] = useState("//:0")
 
+  const [playerThirdAlt, setPlayerThirdAlt] = useState()
+
   useEffect(() => {
     if (yourCards[2]) {
       setPlayerThirdCardFlag()
-      setThirdDisplay({ display: "block" })
     }
   }, [yourCards])
 
@@ -1845,93 +1843,320 @@ function TableOptions({
       playerThirdCardFlag ||
         cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src
     )
-  })
-
-  const [playerThirdAlt, setPlayerThirdAlt] = useState()
-
-  // useEffect(() => {
-  //   if (typeof yourCards[2] !== undefined) {
-  //     setPlayerThird(
-  //       playerThirdCardFlag ||
-  //         cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src
-  //     )
-  //     setPlayerThirdAlt(
-  //       playerThirdCardFlag ||
-  //         cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].alt
-  //     )
-  //   }
-  // }, [yourCards])
+    if (playerThirdCardFlag != "//:0") {
+      setThirdDisplay({ display: "block" })
+      setPlayerThirdAlt(
+        cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].alt
+      )
+    }
+  }, [yourCards, playerThirdCardFlag])
 
   //
+
+  const [fourthDisplay, setFourthDisplay] = useState({ display: "none" })
+
+  const [playerFourthCardFlag, setPlayerFourthCardFlag] = useState("//:0")
+
+  const [playerFourthAlt, setPlayerFourthAlt] = useState()
+
+  useEffect(() => {
+    if (yourCards[3]) {
+      setPlayerFourthCardFlag()
+    }
+  }, [yourCards])
+
+  const [playerFourth, setPlayerFourth] = useState(
+    playerFourthCardFlag ||
+      cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].src
+  )
+
+  useEffect(() => {
+    setPlayerFourth(
+      playerFourthCardFlag ||
+        cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].src
+    )
+    if (playerFourthCardFlag != "//:0") {
+      setFourthDisplay({ display: "block" })
+      setPlayerFourthAlt(
+        cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].alt
+      )
+    }
+  }, [yourCards, playerFourthCardFlag])
+
+  //
+
+  const [fifthDisplay, setFifthDisplay] = useState({ display: "none" })
+
+  const [playerFifthCardFlag, setPlayerFifthCardFlag] = useState("//:0")
+
+  const [playerFifthAlt, setPlayerFifthAlt] = useState()
+
+  useEffect(() => {
+    if (yourCards[4]) {
+      setPlayerFifthCardFlag()
+    }
+  }, [yourCards])
+
+  const [playerFifth, setPlayerFifth] = useState(
+    playerFifthCardFlag ||
+      cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src
+  )
+
+  useEffect(() => {
+    setPlayerFifth(
+      playerFifthCardFlag ||
+        cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src
+    )
+    if (playerFifthCardFlag != "//:0") {
+      setFifthDisplay({ display: "block" })
+      setPlayerFifthAlt(
+        cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].alt
+      )
+    }
+  }, [yourCards, playerFifthCardFlag])
+
+  //
+
+  const [sixthDisplay, setSixthDisplay] = useState({ display: "none" })
+
+  const [playerSixthCardFlag, setPlayerSixthCardFlag] = useState("//:0")
+
+  const [playerSixthAlt, setPlayerSixthAlt] = useState()
+
+  useEffect(() => {
+    if (yourCards[5]) {
+      setPlayerSixthCardFlag()
+    }
+  }, [yourCards])
+
+  const [playerSixth, setPlayerSixth] = useState(
+    playerSixthCardFlag ||
+      cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src
+  )
+
+  useEffect(() => {
+    setPlayerSixth(
+      playerSixthCardFlag ||
+        cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src
+    )
+    if (playerSixthCardFlag != "//:0") {
+      setSixthDisplay({ display: "block" })
+      setPlayerSixthAlt(
+        cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].alt
+      )
+    }
+  }, [yourCards, playerSixthCardFlag])
+
+  //
+
+  const [seventhDisplay, setSeventhDisplay] = useState({ display: "none" })
+
+  const [playerSeventhCardFlag, setPlayerSeventhCardFlag] = useState("//:0")
+
+  const [playerSeventhAlt, setPlayerSeventhAlt] = useState()
+
+  useEffect(() => {
+    if (yourCards[6]) {
+      setPlayerSeventhCardFlag()
+    }
+  }, [yourCards])
+
+  const [playerSeventh, setPlayerSeventh] = useState(
+    playerSeventhCardFlag ||
+      cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src
+  )
+
+  useEffect(() => {
+    setPlayerSeventh(
+      playerSeventhCardFlag ||
+        cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src
+    )
+    if (playerSeventhCardFlag != "//:0") {
+      setSeventhDisplay({ display: "block" })
+      setPlayerSeventhAlt(
+        cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].alt
+      )
+    }
+  }, [yourCards, playerSeventhCardFlag])
+
+  //
+  //
+  //
+
+  const [thirdDealerDisplay, setThirdDealerDisplay] = useState({
+    display: "none"
+  })
 
   const [dealerThirdCardFlag, setDealerThirdCardFlag] = useState("//:0")
 
-  useEffect(() => {
-    if (typeof dealerCards[2] === undefined) {
-      setDealerThirdCardFlag(undefined)
-    }
-  }, [dealerCards])
-
-  const dealerThirdConst =
-    dealerThirdCardFlag ||
-    cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].src
-
-  // console.log(dealerThirdConst)
-
-  const [dealerThird, setDealerThird] = useState()
   const [dealerThirdAlt, setDealerThirdAlt] = useState()
+
   useEffect(() => {
-    if (typeof dealerCards[2] !== undefined) {
-      setDealerThird(
-        dealerThirdCardFlag ||
-          cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].src
-      )
+    if (localDealerCards[2] || dealerCards[2]) {
+      setDealerThirdCardFlag()
+    }
+  }, [dealerCards, localDealerCards, endPlayerTurn])
+
+  const [dealerThird, setDealerThird] = useState(
+    dealerThirdCardFlag ||
+      cards[cardThemeNum][localDealerCards[2].suit][localDealerCards[2].card]
+        .src
+  )
+
+  useEffect(() => {
+    setDealerThird(
+      dealerThirdCardFlag ||
+        cards[cardThemeNum][localDealerCards[2].suit][localDealerCards[2].card]
+          .src
+    )
+    if (dealerThirdCardFlag != "//:0") {
+      setThirdDealerDisplay({ display: "block" })
       setDealerThirdAlt(
-        dealerThirdCardFlag ||
-          cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].alt
+        cards[cardThemeNum][localDealerCards[2].suit][localDealerCards[2].card]
+          .alt
       )
     }
-  }, [dealerCards])
+  }, [dealerThirdCardFlag])
 
   //
-  // const dealerFourthConst =
-  //   process.env.PUBLIC_URL +
-  //   cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src
 
-  // const dealerFourthAltConst =
-  //   cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].alt
+  const [fourthDealerDisplay, setFourthDealerDisplay] = useState({
+    display: "none"
+  })
 
-  // const [dealerFourth, setDealerFourth] = useState()
-  // const [dealerFourthAlt, setDealerFourthAlt] = useState()
-  // useEffect(() => {
-  //   if (dealerFourthConst === undefined) {
-  //     setDealerFourth("//:0")
-  //     setDealerFourthAlt("")
-  //   } else {
-  //     setDealerFourth(dealerFourthConst)
-  //     setDealerFourthAlt(dealerFourthAltConst)
-  //   }
-  // }, [dealerCards])
+  const [dealerFourthCardFlag, setDealerFourthCardFlag] = useState("//:0")
+
+  const [dealerFourthAlt, setDealerFourthAlt] = useState()
+
+  useEffect(() => {
+    if (dealerCards[3]) {
+      setDealerFourthCardFlag()
+    }
+  }, [dealerCards, endPlayerTurn])
+
+  const [dealerFourth, setDealerFourth] = useState(
+    dealerFourthCardFlag ||
+      cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src
+  )
+
+  useEffect(() => {
+    setDealerFourth(
+      dealerFourthCardFlag ||
+        cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src
+    )
+    if (dealerFourthCardFlag != "//:0") {
+      setFourthDealerDisplay({ display: "block" })
+      setDealerFourthAlt(
+        cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].alt
+      )
+    }
+  }, [dealerCards, dealerFourthCardFlag])
+
   //
-  // const dealerFifthConst =
-  //   process.env.PUBLIC_URL +
-  //   cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src
 
-  // const dealerFifthAltConst =
-  //   cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].alt
+  const [fifthDealerDisplay, setFifthDealerDisplay] = useState({
+    display: "none"
+  })
 
-  // const [dealerFifth, setDealerFifth] = useState()
-  // const [dealerFifthAlt, setDealerFifthAlt] = useState()
-  // useEffect(() => {
-  //   if (dealerFifthConst === undefined) {
-  //     setDealerFifth("//:0")
-  //     setDealerFifthAlt("")
-  //   } else {
-  //     setDealerFifth(dealerFifthConst)
-  //     setDealerFifthAlt(dealerFifthAltConst)
-  //   }
-  // }, [dealerCards])
+  const [dealerFifthCardFlag, setDealerFifthCardFlag] = useState("//:0")
+
+  const [dealerFifthAlt, setDealerFifthAlt] = useState()
+
+  useEffect(() => {
+    if (dealerCards[4]) {
+      setDealerFifthCardFlag()
+    }
+  }, [dealerCards, endPlayerTurn])
+
+  const [dealerFifth, setDealerFifth] = useState(
+    dealerFifthCardFlag ||
+      cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src
+  )
+
+  useEffect(() => {
+    setDealerFifth(
+      dealerFifthCardFlag ||
+        cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src
+    )
+    if (dealerFifthCardFlag != "//:0") {
+      setFifthDealerDisplay({ display: "block" })
+      setDealerFifthAlt(
+        cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].alt
+      )
+    }
+  }, [dealerCards, dealerFifthCardFlag])
+
   //
+
+  const [sixthDealerDisplay, setSixthDealerDisplay] = useState({
+    display: "none"
+  })
+
+  const [dealerSixthCardFlag, setDealerSixthCardFlag] = useState("//:0")
+
+  const [dealerSixthAlt, setDealerSixthAlt] = useState()
+
+  useEffect(() => {
+    if (dealerCards[5]) {
+      setDealerSixthCardFlag()
+    }
+  }, [dealerCards, endPlayerTurn])
+
+  const [dealerSixth, setDealerSixth] = useState(
+    dealerSixthCardFlag ||
+      cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src
+  )
+
+  useEffect(() => {
+    setDealerSixth(
+      dealerSixthCardFlag ||
+        cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src
+    )
+    if (dealerSixthCardFlag != "//:0") {
+      setSixthDealerDisplay({ display: "block" })
+      setDealerSixthAlt(
+        cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].alt
+      )
+    }
+  }, [dealerCards, dealerSixthCardFlag])
+
+  //
+
+  const [seventhDealerDisplay, setSeventhDealerDisplay] = useState({
+    display: "none"
+  })
+
+  const [dealerSeventhCardFlag, setDealerSeventhCardFlag] = useState("//:0")
+
+  const [dealerSeventhAlt, setDealerSeventhAlt] = useState()
+
+  useEffect(() => {
+    if (dealerCards[6]) {
+      setDealerSeventhCardFlag()
+    }
+  }, [dealerCards, endPlayerTurn])
+
+  const [dealerSeventh, setDealerSeventh] = useState(
+    dealerSeventhCardFlag ||
+      cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src
+  )
+
+  useEffect(() => {
+    setDealerSeventh(
+      dealerSeventhCardFlag ||
+        cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src
+    )
+    if (dealerSeventhCardFlag != "//:0") {
+      setSeventhDealerDisplay({ display: "block" })
+      setDealerSeventhAlt(
+        cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].alt
+      )
+    }
+  }, [dealerCards, dealerSeventhCardFlag])
+
+  useEffect(() => {
+    console.log(dealerCards)
+  })
 
   return (
     <div className="block">
@@ -1982,75 +2207,46 @@ function TableOptions({
             }
           ></img>
         </div>
-        {/* <div className="thirdCard">
+        <div className="thirdCard" style={thirdDealerDisplay}>
           <img
-            src={
-              process.env.PUBLIC_URL +
-              cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].src
-            }
+            src={dealerThird}
             height="199.6488px"
             width="136.4688px"
-            alt={
-              process.env.PUBLIC_URL +
-              cards[cardThemeNum][dealerCards[2].suit][dealerCards[2].card].alt
-            }
+            alt={dealerThirdAlt}
           ></img>
-        </div> */}
-        {/* <div className="fourthCard">
+        </div>
+        <div className="fourthCard" style={fourthDealerDisplay}>
           <img
             src={dealerFourth}
             height="199.6488px"
             width="136.4688px"
             alt={dealerFourthAlt}
           ></img>
-        </div> */}
-        {/* <div className="fifthCard">
+        </div>
+        <div className="fifthCard" style={fifthDealerDisplay}>
           <img
             src={dealerFifth}
             height="199.6488px"
             width="136.4688px"
             alt={dealerFifthAlt}
           ></img>
-        </div> */}
-        {/* <div className="sixthCard">
+        </div>
+        <div className="sixthCard" style={sixthDealerDisplay}>
           <img
-            src={
-              process.env.PUBLIC_URL +
-              cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].src
-            }
+            src={dealerSixth}
             height="199.6488px"
             width="136.4688px"
-            alt={
-              cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].alt
-            }
+            alt={dealerSixthAlt}
           ></img>
         </div>
-        <div className="seventhCard">
+        <div className="seventhCard" style={seventhDealerDisplay}>
           <img
-            src={
-              process.env.PUBLIC_URL +
-              cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].src
-            }
+            src={dealerSeventh}
             height="199.6488px"
             width="136.4688px"
-            alt={
-              cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].alt
-            }
+            alt={dealerSeventhAlt}
           ></img>
         </div>
-        <div className="eighthCard">
-          <img
-            src={
-              process.env.PUBLIC_URL +
-              cards[cardThemeNum][dealerCards[7].suit][dealerCards[7].card].src
-            }
-            height="199.6488px"
-            width="136.4688px"
-            alt={
-              cards[cardThemeNum][dealerCards[7].suit][dealerCards[7].card].alt
-            }
-          ></img>
-        </div> */}
       </div>
 
       <div className="playerCardsWrap">
@@ -2084,61 +2280,38 @@ function TableOptions({
             alt={playerThirdAlt}
           ></img>
         </div>
-        {/* <div className="fourthCard">
+        <div className="fourthCard" style={fourthDisplay}>
           <img
-            src={
-              process.env.PUBLIC_URL +
-              cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].src
-            }
+            src={playerFourth}
             height="199.6488px"
             width="136.4688px"
-            alt={cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].alt}
+            alt={playerFourthAlt}
           ></img>
         </div>
-        <div className="fifthCard">
+        <div className="fifthCard" style={fifthDisplay}>
           <img
-            src={
-              process.env.PUBLIC_URL +
-              cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src
-            }
+            src={playerFifth}
             height="199.6488px"
             width="136.4688px"
-            alt={cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].alt}
+            alt={playerFifthAlt}
           ></img>
         </div>
-        <div className="sixthCard">
+        <div className="sixthCard" style={sixthDisplay}>
           <img
-            src={
-              process.env.PUBLIC_URL +
-              cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src
-            }
+            src={playerSixth}
             height="199.6488px"
             width="136.4688px"
-            alt={cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt}
+            alt={playerSixthAlt}
           ></img>
         </div>
-        <div className="seventhCard">
+        <div className="seventhCard" style={seventhDisplay}>
           <img
-            src={
-              process.env.PUBLIC_URL +
-              cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src
-            }
+            src={playerSeventh}
             height="199.6488px"
             width="136.4688px"
-            alt={cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt}
+            alt={playerSeventhAlt}
           ></img>
         </div>
-        <div className="eighthCard">
-          <img
-            src={
-              process.env.PUBLIC_URL +
-              cards[cardThemeNum][yourCards[7].suit][yourCards[7].card].src
-            }
-            height="199.6488px"
-            width="136.4688px"
-            alt={cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt}
-          ></img>
-        </div> */}
       </div>
 
       <div className="playerActions">

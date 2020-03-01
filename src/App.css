@@ -819,7 +819,7 @@ COLUMNS going vertically
   margin-left: -9.3em;
 }
 .thirdCard {
-  display: none;
+  display: block;
   width: 13.6em;
   position: relative;
   margin-left: -9.3em;
@@ -829,35 +829,28 @@ COLUMNS going vertically
 
   width: 13.6em;
   position: relative;
-  margin-left: -9.7em;
+  margin-left: -9.3em;
 }
 .fifthCard {
   display: none;
 
   width: 13.6em;
   position: relative;
-  margin-left: -9.7em;
+  margin-left: -9.3em;
 }
 .sixthCard {
   display: none;
 
   width: 13.6em;
   position: relative;
-  margin-left: -9.7em;
+  margin-left: -9.3em;
 }
 .seventhCard {
   display: none;
 
   width: 13.6em;
   position: relative;
-  margin-left: -9.7em;
-}
-.eighthCard {
-  display: none;
-
-  width: 13.6em;
-  position: relative;
-  margin-left: -9.7em;
+  margin-left: -9.3em;
 }
 
 .playerActions {
