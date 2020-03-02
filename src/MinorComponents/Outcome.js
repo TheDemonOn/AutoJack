@@ -16,13 +16,43 @@ function Outcome({ textColor, content, effect }) {
         z[0].style.color = "aqua"
         break
       case "#392950": // Purple
-        //
+        let z = document.getElementsByClassName("boxPosition")
+        z[0].style.backgroundColor = "black"
+        z[0].style.color = "black"
         break
       case "#c12f2f": // Red
-        //
+        let z = document.getElementsByClassName("boxPosition")
+        z[0].style.backgroundColor = "black"
+        z[0].style.color = "black"
         break
       case "#48b74d": // Green
-        //
+        let z = document.getElementsByClassName("boxPosition")
+        z[0].style.backgroundColor = "black"
+        z[0].style.color = "black"
+        break
+    }
+  } else {
+    // negative event
+    switch (textColor["color"]) {
+      case "#e7bd52": // Gold
+        let z = document.getElementsByClassName("boxPosition")
+        z[0].style.backgroundColor = "rgba(40, 47, 93, 1)"
+        z[0].style.color = "aqua"
+        break
+      case "#392950": // Purple
+        let z = document.getElementsByClassName("boxPosition")
+        z[0].style.backgroundColor = "black"
+        z[0].style.color = "black"
+        break
+      case "#c12f2f": // Red
+        let z = document.getElementsByClassName("boxPosition")
+        z[0].style.backgroundColor = "black"
+        z[0].style.color = "black"
+        break
+      case "#48b74d": // Green
+        let z = document.getElementsByClassName("boxPosition")
+        z[0].style.backgroundColor = "black"
+        z[0].style.color = "black"
         break
     }
   }

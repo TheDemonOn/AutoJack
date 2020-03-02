@@ -2228,32 +2228,46 @@ function TableOptions({
     window.setTimeout(roundStartFlagReset(), 5000)
   }
 
+  const [outcomeContent, setOutcomeContent] = useState()
+  const [outcomeEffect, setOutcomeEffect] = useState()
+
   // This will
   useEffect(() => {
     switch (roundResultKey) {
       case "won":
+        setOutcomeContent("You Won")
+        setOutcomeEffect("positive")
         backgroundBlur()
         roundEndAuto()
         break
       case "lost":
+        setOutcomeContent("You Lost")
+        setOutcomeEffect("negative")
         backgroundBlur()
         roundEndAuto()
         break
       case "push":
+        setOutcomeContent("Push")
+        setOutcomeEffect("neutral")
         backgroundBlur()
         roundEndAuto()
         break
       case "blackjack":
+        setOutcomeContent("Blackjack")
+        setOutcomeEffect("positive")
         backgroundBlur()
         roundEndAuto()
         break
       case "bust":
         // I don't think this is used
-
+        setOutcomeContent("You Bust")
+        setOutcomeEffect("negative")
         backgroundBlur()
         roundEndAuto()
         break
       case "dealerBust":
+        setOutcomeContent("Dealer Bust")
+        setOutcomeEffect("positive")
         backgroundBlur()
         roundEndAuto()
         break
@@ -2262,7 +2276,7 @@ function TableOptions({
 
   useEffect(() => {
     let a = document.getElementById("playerWin")
-    // wonClass just turn it on
+    // wonClass just turns it on
     a.className += " wonClass"
     let z = document.getElementsByClassName("block")
     z[0].style.filter = "blur(1.5px)"
