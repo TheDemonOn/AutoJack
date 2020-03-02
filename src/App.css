@@ -566,7 +566,7 @@ p {
   text-align: center;
   /* border: solid; */
   width: 100%;
-  filter: none;
+  filter: blur(1.5px);
   transition: 1s;
 }
 

@@ -250,7 +250,7 @@ function Home({
     } else {
       setSubText(<h2 style={textColor}>Blackjack. It's Blackjack.</h2>)
     }
-  }, [])
+  }, [textColor])
 
   // const [hoverText, setHoverText] = useState()
 
@@ -2739,6 +2739,111 @@ function App() {
     setBodyTheme("bodyTheme4")
     setCardThemeNum("t4")
   }
+
+  const [storedTheme, setStoredTheme] = useState(
+    localStorage.getItem("theme") || ""
+  )
+
+  useEffect(() => {
+    localStorage.setItem("theme", bodyTheme)
+  }, [bodyTheme])
+
+  useEffect(() => {
+    switch (storedTheme) {
+      case "bodyTheme1":
+        setDisplayCard(cards.t1.spade.ace.src)
+        setButtonTheme({
+          ...buttonSettings,
+          ...goldTheme
+        })
+        setAltButtonTheme({
+          ...altButtonSettings,
+          ...goldTheme
+        })
+        setAltButtonThemeActive({
+          ...altButtonSettings,
+          ...goldTheme,
+          backgroundColor: "#e7bd52",
+          color: "rgba(40, 47, 93, 1)"
+        })
+        setTextColor(goldColor)
+        setIconTheme(goldColorString)
+        bodyChange("bodyTheme1")
+        setBodyTheme("bodyTheme1")
+        setCardThemeNum("t1")
+        break
+
+      case "bodyTheme2":
+        setDisplayCard(cards.t2.spade.ace.src)
+        setButtonTheme({
+          ...buttonSettings,
+          ...purpleTheme
+        })
+        setAltButtonTheme({
+          ...altButtonSettings,
+          ...purpleTheme
+        })
+        setAltButtonThemeActive({
+          ...altButtonSettings,
+          ...purpleTheme,
+          backgroundColor: "#DBD8DF",
+          color: "#392950"
+        })
+        setTextColor(purpleColor)
+        setIconTheme(purpleColorString)
+        bodyChange("bodyTheme2")
+        setBodyTheme("bodyTheme2")
+        setCardThemeNum("t2")
+        break
+
+      case "bodyTheme3":
+        setDisplayCard(cards.t3.spade.ace.src)
+        setButtonTheme({
+          ...buttonSettings,
+          ...redTheme
+        })
+        setAltButtonTheme({
+          ...altButtonSettings,
+          ...redTheme
+        })
+        setAltButtonThemeActive({
+          ...altButtonSettings,
+          ...redTheme,
+          backgroundColor: "#c12f2f",
+          color: "#fff"
+        })
+        setTextColor(redColor)
+        setIconTheme(redColorString)
+        bodyChange("bodyTheme3")
+        setBodyTheme("bodyTheme3")
+        setCardThemeNum("t3")
+        break
+
+      case "bodyTheme4":
+        setDisplayCard(cards.t4.spade.ace.src)
+        setButtonTheme({
+          ...buttonSettings,
+          ...greenTheme
+        })
+        setAltButtonTheme({
+          ...altButtonSettings,
+          ...greenTheme
+        })
+        setAltButtonThemeActive({
+          ...altButtonSettings,
+          ...greenTheme,
+          borderColor: "rgba(42, 31, 73, 1)",
+          backgroundColor: "#48b74d",
+          color: "rgba(42, 31, 73, 1)"
+        })
+        setTextColor(greenColor)
+        setIconTheme(greenColorString)
+        bodyChange("bodyTheme4")
+        setBodyTheme("bodyTheme4")
+        setCardThemeNum("t4")
+        break
+    }
+  }, [])
 
   const [settingsFlag, setSettingsFlag] = useState(0)
   const settingsFlagSwitch = () => {
