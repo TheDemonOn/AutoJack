@@ -3,11 +3,14 @@ import "./App.css"
 import Button from "./MinorComponents/Button.js"
 import GithubSVG from "./MinorComponents/GithubSVG.js"
 import ThemesIcon from "./MinorComponents/ThemesIcon.js"
-
 import HitIcon from "./MinorComponents/HitIcon.js"
 import StandIcon from "./MinorComponents/StandIcon.js"
 import DoubleIcon from "./MinorComponents/DoubleIcon.js"
 import SplitIcon from "./MinorComponents/SplitIcon.js"
+import TableLow from "./MinorComponents/TableLow.js"
+import TableMid from "./MinorComponents/TableMid.js"
+import TableHigh from "./MinorComponents/TableHigh.js"
+import TableCustom from "./MinorComponents/TableCustom.js"
 
 import Button_Theme1 from "./Images/Button_Theme1.png"
 import Button_Theme2 from "./Images/Button_Theme2.png"
@@ -538,29 +541,29 @@ function StartScreen({
     theDeckCountValue(deckSize)
   }
 
+  const [windowFlag, setWindowFlag] = useState(0)
+
+  useEffect(() => {
+    console.log(windowFlag)
+    if (window.innerWidth <= 750) {
+      setTableIconSize("90px")
+    } else {
+      setTableIconSize("130px")
+    }
+  }, [windowFlag])
+
+  const updateSize = () => {
+    setWindowFlag(prevCount => prevCount + 1)
+    window.removeEventListener("resize", updateSize)
+    window.setTimeout(window.addEventListener("resize", updateSize), 1000)
+  }
+
+  useEffect(() => {
+    window.addEventListener("resize", updateSize)
+  }, [])
+
   return (
     <div>
-      {/* <form onSubmit={handleDeckCount}>
-        <h3 style={textColor}>How many decks do you want to use?</h3>
-        <input
-          type="number"
-          value={deckCountValue}
-          min="1"
-          max="100"
-          onChange={e => setDeckCountValue(e.target.value)}
-        />{" "}
-        <br></br>
-      </form>
-      <form onSubmit={handleYourMoney}>
-        <h3 style={textColor}>How much money do you want to start with?</h3>
-        <input
-          type="number"
-          value={YourMoneyLocal}
-          min="1"
-          max="10000"
-          onChange={e => setYourMoneyLocal(e.target.value)}
-        />
-      </form> */}
       <div className="tableBack">
         <Button
           buttonTheme={buttonTheme}
@@ -580,40 +583,34 @@ function StartScreen({
         The custom will be different because the state changes are static for the 1-3 options whereas the custom will take in an input
           and constantly update the state to reflect what is inside it to set the parameters to however you would like.
         */}
-        <a href="#">
-          <img
-            src={chip1}
-            height={tableIconSize}
-            width={tableIconSize}
-            onClick={lowEnd}
-          ></img>
+
+        {/* These should go down to 9em for the responsitivity */}
+        <a href="#" onClick={lowEnd}>
+          <TableLow
+            iconTheme={iconTheme}
+            tableIconSize={tableIconSize}
+          ></TableLow>
         </a>
 
-        <a href="#">
-          <img
-            src={chip5}
-            height={tableIconSize}
-            width={tableIconSize}
-            onClick={midEnd}
-          ></img>
+        <a href="#" onClick={midEnd}>
+          <TableMid
+            iconTheme={iconTheme}
+            tableIconSize={tableIconSize}
+          ></TableMid>
         </a>
 
-        <a href="#">
-          <img
-            src={chip10}
-            height={tableIconSize}
-            width={tableIconSize}
-            onClick={highEnd}
-          ></img>
+        <a href="#" onClick={highEnd}>
+          <TableHigh
+            iconTheme={iconTheme}
+            tableIconSize={tableIconSize}
+          ></TableHigh>
         </a>
 
-        <a href="#">
-          <img
-            src={chip25}
-            height={tableIconSize}
-            width={tableIconSize}
-            onClick={custom}
-          ></img>
+        <a href="#" onClick={custom}>
+          <TableCustom
+            iconTheme={iconTheme}
+            tableIconSize={tableIconSize}
+          ></TableCustom>
         </a>
       </div>
 
