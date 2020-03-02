@@ -566,6 +566,8 @@ p {
   text-align: center;
   /* border: solid; */
   width: 100%;
+  filter: none;
+  transition: 1s;
 }
 
 .chips {

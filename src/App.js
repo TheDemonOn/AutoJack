@@ -2157,6 +2157,67 @@ function TableOptions({
     console.log(dealerCards)
   })
 
+  const [dealerCardOne, setDealerCardOne] = useState(
+    process.env.PUBLIC_URL +
+      cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].src +
+      "#" +
+      new Date().getTime()
+  )
+
+  const [dealerCardTwo, setDealerCardTwo] = useState(
+    process.env.PUBLIC_URL +
+      cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].src +
+      "#" +
+      new Date().getTime()
+  )
+
+  const [playerCardOne, setPlayerCardOne] = useState(
+    process.env.PUBLIC_URL +
+      cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
+      "#" +
+      new Date().getTime()
+  )
+
+  const [playerCardTwo, setPlayerCardTwo] = useState(
+    process.env.PUBLIC_URL +
+      cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
+      "#" +
+      new Date().getTime()
+  )
+
+  useEffect(() => {
+    setDealerCardOne(
+      process.env.PUBLIC_URL +
+        cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].src +
+        "#" +
+        new Date().getTime()
+    )
+    setDealerCardTwo(
+      process.env.PUBLIC_URL +
+        cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].src +
+        "#" +
+        new Date().getTime()
+    )
+    setPlayerCardOne(
+      process.env.PUBLIC_URL +
+        cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
+        "#" +
+        new Date().getTime()
+    )
+    setPlayerCardTwo(
+      process.env.PUBLIC_URL +
+        cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
+        "#" +
+        new Date().getTime()
+    )
+  }, [])
+
+  // useEffect(() => {
+  //   if (document.getElementsByClassName("firstCard").complete === false || document.getElementsByClassName("otherCard").complete === false) {
+
+  //   }
+  // }, [])
+
   return (
     <div className="block">
       <div className="remainingCards">
@@ -2184,7 +2245,10 @@ function TableOptions({
           <img
             src={
               process.env.PUBLIC_URL +
-              cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].src
+                cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card]
+                  .src +
+                "#" +
+                new Date().getTime() || dealerCardOne
             }
             height="199.6488px"
             width="136.4688px"
@@ -2197,7 +2261,10 @@ function TableOptions({
           <img
             src={
               process.env.PUBLIC_URL +
-              cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].src
+                cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card]
+                  .src +
+                "#" +
+                new Date().getTime() || dealerCardTwo
             }
             height="199.6488px"
             width="136.4688px"
@@ -2253,7 +2320,9 @@ function TableOptions({
           <img
             src={
               process.env.PUBLIC_URL +
-              cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src
+                cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
+                "#" +
+                new Date().getTime() || playerCardOne
             }
             height="199.6488px"
             width="136.4688px"
@@ -2264,7 +2333,9 @@ function TableOptions({
           <img
             src={
               process.env.PUBLIC_URL +
-              cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src
+                cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
+                "#" +
+                new Date().getTime() || playerCardTwo
             }
             height="199.6488px"
             width="136.4688px"
