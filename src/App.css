@@ -776,12 +776,6 @@ p {
 
 /* Table Options */
 
-.resultText {
-  font-family: upgrade-lights, sans-serif;
-  font-weight: 500;
-  font-style: normal;
-  font-size: 4em;
-}
 .boxPosition {
   display: none;
   position: absolute;
@@ -817,13 +811,20 @@ p {
   align-items: center;
 }
 
+.resultText {
+  font-family: upgrade-lights, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 4em;
+}
+
 .outcomePositive {
   display: flex;
   justify-content: center;
   position: absolute;
   width: 40%;
   border: solid;
-  border-width: 1.5px;
+  /* border-width: 1.5px; */
   border-radius: 100px;
   left: 50%;
   margin-left: -20.7%;
@@ -837,6 +838,12 @@ p {
 
   /* background-color: rgb(46, 54, 107);
   color: aqua; */
+
+  /* background-color: #e7bd52;
+  color: rgba(40, 47, 93, 1); */
+
+  /* background-color: rgba(40, 47, 93, 1);
+  color: #e7bd52; */
 }
 
 .outcomeClass {
