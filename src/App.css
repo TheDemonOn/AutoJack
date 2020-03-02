@@ -566,7 +566,7 @@ p {
   text-align: center;
   /* border: solid; */
   width: 100%;
-  filter: blur(1.5px);
+
   transition: 1s;
 }
 
@@ -775,6 +775,97 @@ p {
 }
 
 /* Table Options */
+
+.resultText {
+  font-family: upgrade-lights, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 4em;
+}
+.boxPosition {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 500px;
+  height: 500px;
+  margin-top: -250px;
+  margin-left: -250px;
+  /* border: solid; */
+  z-index: 1;
+}
+/*  */
+#dealerBust {
+  display: none;
+}
+.dealerBustClass {
+  display: block !important;
+  align-items: center;
+}
+#playerBust {
+  display: none;
+}
+.bustClass {
+  display: block !important;
+  align-items: center;
+}
+#playerWin {
+  display: none;
+}
+.wonClass {
+  display: block !important;
+  align-items: center;
+}
+
+.outcomePositive {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  width: 40%;
+  border: solid;
+  border-width: 1.5px;
+  border-radius: 100px;
+  left: 50%;
+  margin-left: -20.7%;
+  top: 7.5em;
+
+  /* background-color: rgb(34, 41, 80);
+  color: red; */
+
+  /* background-color: rgba(40, 47, 93, 1);
+  color: yellow; */
+
+  /* background-color: rgb(46, 54, 107);
+  color: aqua; */
+}
+
+.outcomeClass {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  width: 40%;
+  border: solid;
+  border-radius: 100px;
+  left: 50%;
+  margin-left: -20.7%;
+  top: 7.5em;
+}
+#outcomeId {
+}
+
+#buttonOverride {
+  background-color: rgba(40, 47, 93, 1) !important;
+}
+
+#blackjack {
+  display: none;
+}
+#playerLose {
+  display: none;
+}
+#push {
+  display: none;
+}
 
 .dealerTotal {
   position: absolute;

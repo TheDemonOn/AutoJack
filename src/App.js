@@ -541,6 +541,7 @@ function StartScreen({
     theDeckCountValue(deckSize)
   }
 
+  // The section below is for updating the size of the svg table icons to be responsive
   const [windowFlag, setWindowFlag] = useState(0)
 
   useEffect(() => {
@@ -942,6 +943,8 @@ function TableOptions({
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
 
   const [roundResult, setRoundResult] = useState("")
+
+  const [roundResultKey, setRoundResultKey] = useState("")
 
   const [handResult1, setHandResult1] = useState("")
 
@@ -1590,7 +1593,8 @@ function TableOptions({
           // If turn has ended and it has not split
           if (dealerCardTotal === cardTotal) {
             yourMoneyValue(yourMoney + playerBet)
-            setRoundResult("It's a push")
+            setRoundResult("Push")
+            setRoundResultKey("push")
           }
           if (dealerCardTotal < cardTotal) {
             if (cardTotal > 21) {
@@ -1602,13 +1606,16 @@ function TableOptions({
               setRoundResult(
                 `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
               )
+              setRoundResultKey("blackjack")
             } else {
               yourMoneyValue(yourMoney + playerBet * 2)
               setRoundResult(`You won ${playerBet * 2}`)
+              setRoundResultKey("won")
             }
           } else if (dealerCardTotal > cardTotal) {
             if (dealerCardTotal < 22) {
               setRoundResult("You lost")
+              setRoundResultKey("lost")
             } else if (yourCards[0].value + yourCards[1].value === 21) {
               yourMoneyValue(
                 yourMoney + playerBet + Math.round(playerBet * 1.5)
@@ -1616,9 +1623,11 @@ function TableOptions({
               setRoundResult(
                 `Blackjack! You won ${playerBet + Math.round(playerBet * 1.5)}`
               )
+              setRoundResultKey("blackjack")
             } else {
               yourMoneyValue(yourMoney + playerBet * 2)
               setRoundResult(`Dealer Bust. You win ${playerBet * 2}`)
+              setRoundResultKey("dealerBust")
             }
           }
         } else {
@@ -2209,217 +2218,288 @@ function TableOptions({
     )
   }, [])
 
-  // useEffect(() => {
-  //   if (document.getElementsByClassName("firstCard").complete === false || document.getElementsByClassName("otherCard").complete === false) {
+  const backgroundBlur = () => {
+    let z = document.getElementsByClassName("block")
+    z[0].style.filter = "blur(1.5px)"
+    // Also need to remove it after the round ends
+  }
 
-  //   }
-  // }, [])
+  const roundEndAuto = () => {
+    window.setTimeout(roundStartFlagReset(), 5000)
+  }
+
+  // This will
+  useEffect(() => {
+    switch (roundResultKey) {
+      case "won":
+        backgroundBlur()
+        roundEndAuto()
+        break
+      case "lost":
+        backgroundBlur()
+        roundEndAuto()
+        break
+      case "push":
+        backgroundBlur()
+        roundEndAuto()
+        break
+      case "blackjack":
+        backgroundBlur()
+        roundEndAuto()
+        break
+      case "bust":
+        // I don't think this is used
+
+        backgroundBlur()
+        roundEndAuto()
+        break
+      case "dealerBust":
+        backgroundBlur()
+        roundEndAuto()
+        break
+    }
+  }, [endPlayerTurn])
+
+  useEffect(() => {
+    let a = document.getElementById("playerWin")
+    // wonClass just turn it on
+    a.className += " wonClass"
+    let z = document.getElementsByClassName("block")
+    z[0].style.filter = "blur(1.5px)"
+  }, [])
+
+  const [outcomeComponent, setOutcomeComponent] = useState()
+
+  // useEffect(() => {
+  //   setOutcomeComponent(
+  //     <Outcome textColor={textColor}></Outcome>
+  //   )
+  //   // Info will be sent here starting from the switch
+
+  // }, [
+  //   // Some input from the switch statement so this triggers after
+  // ])
 
   return (
-    <div className="block">
-      <div className="remainingCards">
-        <div>
-          <img
-            className="drawPile"
-            src={process.env.PUBLIC_URL + cards.t2.spade.ace.src}
-            height="153.576px"
-            width="104.976px"
-            alt="Ace of spades card."
-          ></img>
+    <div>
+      {/* {outcomeComponent} */}
+      <div className="boxPosition" id="playerWin">
+        <p className="outcomePositive resultText">You Win</p>
+      </div>
+
+      <div className="block">
+        <div className="remainingCards">
+          <div>
+            <img
+              className="drawPile"
+              src={process.env.PUBLIC_URL + cards.t2.spade.ace.src}
+              height="153.576px"
+              width="104.976px"
+              alt="Ace of spades card."
+            ></img>
+          </div>
+          <div>{cardsLeft}</div>
         </div>
-        <div>{cardsLeft}</div>
-      </div>
 
-      <div className="dealerTotal">
-        <p style={textColor}>{dealerCardTotal}</p>
-      </div>
-      <div className="playerTotal">
-        <p style={textColor}>{cardTotal}</p>
-      </div>
+        <div className="dealerTotal">
+          <p style={textColor}>{dealerCardTotal}</p>
+        </div>
+        <div className="playerTotal">
+          <p style={textColor}>{cardTotal}</p>
+        </div>
 
-      <div className="dealerCardsWrap">
-        <div className="firstCard">
-          <img
-            src={
-              process.env.PUBLIC_URL +
+        <div className="dealerCardsWrap">
+          <div className="firstCard">
+            <img
+              src={
+                process.env.PUBLIC_URL +
+                  cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card]
+                    .src +
+                  "#" +
+                  new Date().getTime() || dealerCardOne
+              }
+              height="199.6488px"
+              width="136.4688px"
+              alt={
                 cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card]
-                  .src +
-                "#" +
-                new Date().getTime() || dealerCardOne
-            }
-            height="199.6488px"
-            width="136.4688px"
-            alt={
-              cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].alt
-            }
-          ></img>
-        </div>
-        <div className="otherCard">
-          <img
-            src={
-              process.env.PUBLIC_URL +
+                  .alt
+              }
+            ></img>
+          </div>
+          <div className="otherCard">
+            <img
+              src={
+                process.env.PUBLIC_URL +
+                  cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card]
+                    .src +
+                  "#" +
+                  new Date().getTime() || dealerCardTwo
+              }
+              height="199.6488px"
+              width="136.4688px"
+              alt={
                 cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card]
-                  .src +
-                "#" +
-                new Date().getTime() || dealerCardTwo
-            }
-            height="199.6488px"
-            width="136.4688px"
-            alt={
-              cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].alt
-            }
-          ></img>
+                  .alt
+              }
+            ></img>
+          </div>
+          <div className="thirdCard" style={thirdDealerDisplay}>
+            <img
+              src={dealerThird}
+              height="199.6488px"
+              width="136.4688px"
+              alt={dealerThirdAlt}
+            ></img>
+          </div>
+          <div className="fourthCard" style={fourthDealerDisplay}>
+            <img
+              src={dealerFourth}
+              height="199.6488px"
+              width="136.4688px"
+              alt={dealerFourthAlt}
+            ></img>
+          </div>
+          <div className="fifthCard" style={fifthDealerDisplay}>
+            <img
+              src={dealerFifth}
+              height="199.6488px"
+              width="136.4688px"
+              alt={dealerFifthAlt}
+            ></img>
+          </div>
+          <div className="sixthCard" style={sixthDealerDisplay}>
+            <img
+              src={dealerSixth}
+              height="199.6488px"
+              width="136.4688px"
+              alt={dealerSixthAlt}
+            ></img>
+          </div>
+          <div className="seventhCard" style={seventhDealerDisplay}>
+            <img
+              src={dealerSeventh}
+              height="199.6488px"
+              width="136.4688px"
+              alt={dealerSeventhAlt}
+            ></img>
+          </div>
         </div>
-        <div className="thirdCard" style={thirdDealerDisplay}>
-          <img
-            src={dealerThird}
-            height="199.6488px"
-            width="136.4688px"
-            alt={dealerThirdAlt}
-          ></img>
-        </div>
-        <div className="fourthCard" style={fourthDealerDisplay}>
-          <img
-            src={dealerFourth}
-            height="199.6488px"
-            width="136.4688px"
-            alt={dealerFourthAlt}
-          ></img>
-        </div>
-        <div className="fifthCard" style={fifthDealerDisplay}>
-          <img
-            src={dealerFifth}
-            height="199.6488px"
-            width="136.4688px"
-            alt={dealerFifthAlt}
-          ></img>
-        </div>
-        <div className="sixthCard" style={sixthDealerDisplay}>
-          <img
-            src={dealerSixth}
-            height="199.6488px"
-            width="136.4688px"
-            alt={dealerSixthAlt}
-          ></img>
-        </div>
-        <div className="seventhCard" style={seventhDealerDisplay}>
-          <img
-            src={dealerSeventh}
-            height="199.6488px"
-            width="136.4688px"
-            alt={dealerSeventhAlt}
-          ></img>
-        </div>
-      </div>
 
-      <div className="playerCardsWrap">
-        <div className="firstCard">
-          <img
-            src={
-              process.env.PUBLIC_URL +
-                cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
-                "#" +
-                new Date().getTime() || playerCardOne
-            }
-            height="199.6488px"
-            width="136.4688px"
-            alt={cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt}
-          ></img>
+        <div className="playerCardsWrap">
+          <div className="firstCard">
+            <img
+              src={
+                process.env.PUBLIC_URL +
+                  cards[cardThemeNum][yourCards[0].suit][yourCards[0].card]
+                    .src +
+                  "#" +
+                  new Date().getTime() || playerCardOne
+              }
+              height="199.6488px"
+              width="136.4688px"
+              alt={
+                cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt
+              }
+            ></img>
+          </div>
+          <div className="otherCard">
+            <img
+              src={
+                process.env.PUBLIC_URL +
+                  cards[cardThemeNum][yourCards[1].suit][yourCards[1].card]
+                    .src +
+                  "#" +
+                  new Date().getTime() || playerCardTwo
+              }
+              height="199.6488px"
+              width="136.4688px"
+              alt={
+                cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].alt
+              }
+            ></img>
+          </div>
+          <div className="thirdCard" style={thirdDisplay}>
+            <img
+              src={playerThird}
+              height="199.6488px"
+              width="136.4688px"
+              alt={playerThirdAlt}
+            ></img>
+          </div>
+          <div className="fourthCard" style={fourthDisplay}>
+            <img
+              src={playerFourth}
+              height="199.6488px"
+              width="136.4688px"
+              alt={playerFourthAlt}
+            ></img>
+          </div>
+          <div className="fifthCard" style={fifthDisplay}>
+            <img
+              src={playerFifth}
+              height="199.6488px"
+              width="136.4688px"
+              alt={playerFifthAlt}
+            ></img>
+          </div>
+          <div className="sixthCard" style={sixthDisplay}>
+            <img
+              src={playerSixth}
+              height="199.6488px"
+              width="136.4688px"
+              alt={playerSixthAlt}
+            ></img>
+          </div>
+          <div className="seventhCard" style={seventhDisplay}>
+            <img
+              src={playerSeventh}
+              height="199.6488px"
+              width="136.4688px"
+              alt={playerSeventhAlt}
+            ></img>
+          </div>
         </div>
-        <div className="otherCard">
-          <img
-            src={
-              process.env.PUBLIC_URL +
-                cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
-                "#" +
-                new Date().getTime() || playerCardTwo
-            }
-            height="199.6488px"
-            width="136.4688px"
-            alt={cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].alt}
-          ></img>
-        </div>
-        <div className="thirdCard" style={thirdDisplay}>
-          <img
-            src={playerThird}
-            height="199.6488px"
-            width="136.4688px"
-            alt={playerThirdAlt}
-          ></img>
-        </div>
-        <div className="fourthCard" style={fourthDisplay}>
-          <img
-            src={playerFourth}
-            height="199.6488px"
-            width="136.4688px"
-            alt={playerFourthAlt}
-          ></img>
-        </div>
-        <div className="fifthCard" style={fifthDisplay}>
-          <img
-            src={playerFifth}
-            height="199.6488px"
-            width="136.4688px"
-            alt={playerFifthAlt}
-          ></img>
-        </div>
-        <div className="sixthCard" style={sixthDisplay}>
-          <img
-            src={playerSixth}
-            height="199.6488px"
-            width="136.4688px"
-            alt={playerSixthAlt}
-          ></img>
-        </div>
-        <div className="seventhCard" style={seventhDisplay}>
-          <img
-            src={playerSeventh}
-            height="199.6488px"
-            width="136.4688px"
-            alt={playerSeventhAlt}
-          ></img>
-        </div>
-      </div>
 
-      <div className="playerActions">
-        <a href="#" onClick={stand}>
-          <StandIcon iconTheme={iconTheme}></StandIcon>
-        </a>
-        <a href="#" onClick={playerHit}>
-          <HitIcon iconTheme={iconTheme}></HitIcon>
-        </a>
-        {doubleDownElement}
-        {splitElement}
-      </div>
+        <div className="playerActions">
+          <a href="#" onClick={stand}>
+            <StandIcon iconTheme={iconTheme}></StandIcon>
+          </a>
+          <a href="#" onClick={playerHit}>
+            <HitIcon iconTheme={iconTheme}></HitIcon>
+          </a>
+          {doubleDownElement}
+          {splitElement}
+        </div>
 
-      <div className="moneyWrapperTable">
-        <p style={textColor} id="bet">
-          ${yourMoney}
-        </p>
-        <p style={textColor} id="currentBet">
-          Your Money
-        </p>
-      </div>
+        <div className="moneyWrapperTable">
+          <p style={textColor} id="bet">
+            ${yourMoney}
+          </p>
+          <p style={textColor} id="currentBet">
+            Your Money
+          </p>
+        </div>
 
-      <div>
-        <p style={textColor} id="bet">
-          ${playerBet}
-        </p>
-        <p style={textColor} id="currentBet">
-          Current bet
-        </p>
-      </div>
+        <div>
+          <p style={textColor} id="bet">
+            ${playerBet}
+          </p>
+          <p style={textColor} id="currentBet">
+            Current bet
+          </p>
+        </div>
 
-      <div id="githubSvgRoundStart">
-        <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
-          <GithubSVG iconTheme={iconTheme}></GithubSVG>
-        </a>
-      </div>
+        <div id="githubSvgRoundStart">
+          <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
+            <GithubSVG iconTheme={iconTheme}></GithubSVG>
+          </a>
+        </div>
 
-      <div id="themeIconRoundStart">
-        <a href="#" onClick={settingsFlagSwitch}>
-          <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
-        </a>
+        <div id="themeIconRoundStart">
+          <a href="#" onClick={settingsFlagSwitch}>
+            <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
+          </a>
+        </div>
       </div>
     </div>
   )
