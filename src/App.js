@@ -1583,7 +1583,7 @@ function TableOptions({
       console.log("cardTotal:", cardTotal)
       console.log("cardTotal2:", cardTotal2)
       console.log("dealerCardTotal:", dealerCardTotal)
-      if (cardTotal > 21 && cardTotal === 0) {
+      if (cardTotal > 21 && cardTotal2 === 0) {
         // Checks for bust on double down
         console.log("bust")
         return
@@ -2224,15 +2224,28 @@ function TableOptions({
     // Also need to remove it after the round ends
   }
 
+  var timeoutID
+
+  function delayedAlert() {
+    timeoutID = window.setTimeout(
+      console.log("iterated"),
+      2 * 1000,
+      console.log("false")
+    )
+  }
+
   const roundEndAuto = () => {
-    window.setTimeout(roundStartFlagReset(), 5000)
+    setTimeout(console.log("FUCK"), 5000) // roundStartFlagReset()
   }
 
   const [outcomeContent, setOutcomeContent] = useState()
+
   const [outcomeEffect, setOutcomeEffect] = useState()
 
   // This will
   useEffect(() => {
+    console.log("roundResultKey switch")
+    console.log(roundResultKey)
     switch (roundResultKey) {
       case "won":
         setOutcomeContent("You Won")
@@ -2272,12 +2285,12 @@ function TableOptions({
         roundEndAuto()
         break
     }
-  }, [endPlayerTurn])
+  }, [roundResultKey])
 
   useEffect(() => {
-    let a = document.getElementById("playerWin")
-    // wonClass just turns it on
-    a.className += " wonClass"
+    // let a = document.getElementById("playerWin")
+    // // wonClass just turns it on
+    // a.className += " wonClass"
     let z = document.getElementsByClassName("block")
     z[0].style.filter = "blur(1.5px)"
   }, [])
@@ -2296,7 +2309,7 @@ function TableOptions({
 
   return (
     <div>
-      {/* {outcomeComponent} */}
+      {outcomeComponent}
       <div className="boxPosition" id="playerWin">
         <p className="outcomePositive resultText">You Win</p>
       </div>
@@ -2475,7 +2488,7 @@ function TableOptions({
         </div>
 
         <div className="playerActions">
-          <a href="#" onClick={stand}>
+          <a href="#" onClick={delayedAlert}>
             <StandIcon iconTheme={iconTheme}></StandIcon>
           </a>
           <a href="#" onClick={playerHit}>
