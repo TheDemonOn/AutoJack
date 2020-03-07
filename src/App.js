@@ -561,6 +561,9 @@ function StartScreen({
 
   useEffect(() => {
     window.addEventListener("resize", updateSize)
+    return () => {
+      window.removeEventListener("resize", updateSize)
+    }
   }, [])
 
   return (
@@ -2224,18 +2227,8 @@ function TableOptions({
     // Also need to remove it after the round ends
   }
 
-  var timeoutID
-
-  function delayedAlert() {
-    timeoutID = window.setTimeout(
-      console.log("iterated"),
-      2 * 1000,
-      console.log("false")
-    )
-  }
-
   const roundEndAuto = () => {
-    setTimeout(console.log("FUCK"), 5000) // roundStartFlagReset()
+    setTimeout(roundStartFlagReset, 3000)
   }
 
   const [outcomeContent, setOutcomeContent] = useState()
@@ -2488,7 +2481,7 @@ function TableOptions({
         </div>
 
         <div className="playerActions">
-          <a href="#" onClick={delayedAlert}>
+          <a href="#" onClick={roundEndAuto}>
             <StandIcon iconTheme={iconTheme}></StandIcon>
           </a>
           <a href="#" onClick={playerHit}>
