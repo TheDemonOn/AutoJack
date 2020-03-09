@@ -12,6 +12,9 @@ import TableMid from "./MinorComponents/TableMid.js"
 import TableHigh from "./MinorComponents/TableHigh.js"
 import TableCustom from "./MinorComponents/TableCustom.js"
 
+// import Push from "./MinorComponents/Push.js"
+import Outcome from "./MinorComponents/Outcome.js"
+
 import Button_Theme1 from "./Images/Button_Theme1.png"
 import Button_Theme2 from "./Images/Button_Theme2.png"
 import Button_Theme3 from "./Images/Button_Theme3.png"
@@ -2224,16 +2227,19 @@ function TableOptions({
   const backgroundBlur = () => {
     let z = document.getElementsByClassName("block")
     z[0].style.filter = "blur(1.5px)"
-    // Also need to remove it after the round ends
   }
 
   const roundEndAuto = () => {
-    setTimeout(roundStartFlagReset, 3000)
+    // setTimeout(roundStartFlagReset, 5000)
   }
 
   const [outcomeContent, setOutcomeContent] = useState()
 
-  const [outcomeEffect, setOutcomeEffect] = useState()
+  const [outcomeEffect, setOutcomeEffect] = useState("")
+
+  const blur = () => {
+    setTimeout(backgroundBlur, 1500)
+  }
 
   // This will
   useEffect(() => {
@@ -2241,71 +2247,61 @@ function TableOptions({
     console.log(roundResultKey)
     switch (roundResultKey) {
       case "won":
-        setOutcomeContent("You Won")
         setOutcomeEffect("positive")
-        backgroundBlur()
+        blur()
         roundEndAuto()
         break
       case "lost":
-        setOutcomeContent("You Lost")
         setOutcomeEffect("negative")
-        backgroundBlur()
+        blur()
         roundEndAuto()
         break
       case "push":
-        setOutcomeContent("Push")
         setOutcomeEffect("neutral")
-        backgroundBlur()
+        blur()
         roundEndAuto()
         break
       case "blackjack":
-        setOutcomeContent("Blackjack")
+        setOutcomeContent("Blackjack.")
         setOutcomeEffect("positive")
-        backgroundBlur()
+        blur()
         roundEndAuto()
         break
       case "bust":
         // I don't think this is used
-        setOutcomeContent("You Bust")
+        setOutcomeContent("You bust.")
         setOutcomeEffect("negative")
-        backgroundBlur()
+        blur()
         roundEndAuto()
         break
       case "dealerBust":
-        setOutcomeContent("Dealer Bust")
+        setOutcomeContent("Dealer bust.")
         setOutcomeEffect("positive")
-        backgroundBlur()
+        blur()
         roundEndAuto()
         break
     }
   }, [roundResultKey])
 
-  useEffect(() => {
-    // let a = document.getElementById("playerWin")
-    // // wonClass just turns it on
-    // a.className += " wonClass"
-    let z = document.getElementsByClassName("block")
-    z[0].style.filter = "blur(1.5px)"
-  }, [])
-
   const [outcomeComponent, setOutcomeComponent] = useState()
 
-  // useEffect(() => {
-  //   setOutcomeComponent(
-  //     <Outcome textColor={textColor}></Outcome>
-  //   )
-  //   // Info will be sent here starting from the switch
-
-  // }, [
-  //   // Some input from the switch statement so this triggers after
-  // ])
+  useEffect(() => {
+    if (outcomeEffect !== "") {
+      console.log("OUTCOME COMPONENT SET")
+      setOutcomeComponent(
+        <Outcome
+          textColor={textColor}
+          content={outcomeContent}
+          effect={outcomeEffect}
+          iconTheme={iconTheme}
+        ></Outcome>
+      )
+    }
+  }, [outcomeEffect])
 
   return (
     <div>
-      {outcomeComponent}
-      <div className="boxPosition" id="playerWin">
-        <p className="outcomePositive resultText">You Win</p>
-      </div>
+      <div>{outcomeComponent}</div>
 
       <div className="block">
         <div className="remainingCards">
@@ -2481,7 +2477,7 @@ function TableOptions({
         </div>
 
         <div className="playerActions">
-          <a href="#" onClick={roundEndAuto}>
+          <a href="#" onClick={stand}>
             <StandIcon iconTheme={iconTheme}></StandIcon>
           </a>
           <a href="#" onClick={playerHit}>

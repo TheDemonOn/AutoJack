@@ -776,6 +776,13 @@ p {
 
 /* Table Options */
 
+#st0 {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 10;
+  stroke-miterlimit: 10;
+}
+
 .boxPosition {
   display: none;
   position: absolute;
