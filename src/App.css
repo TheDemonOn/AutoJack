@@ -55,18 +55,20 @@ h3 {
   margin-bottom: 5em;
 }
 
-#one {
+.one {
   position: absolute;
   left: 6.2em;
+  top: 80vh;
 
   /* width: 10%; */
 }
 
-#two {
+.two {
   position: fixed;
   right: 7em;
   width: 7m;
   height: 7em;
+  top: 80vh;
 }
 
 .hoverText {
@@ -96,10 +98,10 @@ h3 {
 #automated:hover ~ #hoverAutomated {
   display: block;
 }
-#one:hover ~ #hoverGithub {
+.one:hover ~ #hoverGithub {
   display: block;
 }
-#two:hover ~ #hoverTheme {
+.two:hover ~ #hoverTheme {
   display: block;
 }
 
@@ -196,7 +198,7 @@ h3 {
 }
 
 @media (max-height: 700px) {
-  #two {
+  .two {
     position: absolute;
   }
 }
@@ -209,10 +211,10 @@ h3 {
     font-size: 2.8em;
   }
 
-  #one {
+  .one {
     top: 52em;
   }
-  #two {
+  .two {
     position: absolute;
     /* margin-top: 7.1em; */
     top: 52em;
@@ -235,19 +237,19 @@ h3 {
   #automated:hover ~ #hoverAutomated {
     display: none;
   }
-  #one:hover ~ #hoverGithub {
+  .one:hover ~ #hoverGithub {
     display: none;
   }
-  #two:hover ~ #hoverTheme {
+  .two:hover ~ #hoverTheme {
     display: none;
   }
 }
 
 @media (max-height: 570px) {
-  #one {
+  .one {
     top: 48em;
   }
-  #two {
+  .two {
     position: absolute;
     /* margin-top: 7.1em; */
     top: 48em;
@@ -262,10 +264,10 @@ h3 {
   #automated:hover ~ #hoverAutomated {
     display: none;
   }
-  #one:hover ~ #hoverGithub {
+  .one:hover ~ #hoverGithub {
     display: none;
   }
-  #two:hover ~ #hoverTheme {
+  .two:hover ~ #hoverTheme {
     display: none;
   }
 }
@@ -374,7 +376,7 @@ input {
   /* width: 15em;
   height: 2em; */
   font-size: 2.5em;
-  font-family: "upgrade-lights";
+  font-family: 'upgrade-lights';
   width: 6em;
   padding: 0.15em 0;
   padding-left: 0.5em;
@@ -776,9 +778,9 @@ p {
 
 /* Table Options */
 
-#st0 {
+.st0 {
+  position: absolute;
   fill: none;
-  stroke: #ffffff;
   stroke-width: 10;
   stroke-miterlimit: 10;
 }
@@ -965,7 +967,7 @@ COLUMNS going vertically
   display: grid;
   position: absolute;
   margin-top: -15em;
-  right: 10em;
+  right: 40em;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   width: 44em;
 }
@@ -974,4 +976,49 @@ COLUMNS going vertically
   position: fixed;
   right: 22%;
   top: 12em;
+}
+
+.resultIcon {
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 30em;
+  width: 100%;
+}
+
+h7 {
+  font-family: upgrade-lights, sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 5.5em;
+  text-align: center;
+  margin: 0.3em 0;
+  margin-left: 0.35em;
+}
+
+h8 {
+  font-family: upgrade-medium, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 7.1em;
+  text-align: center;
+  margin-left: 0.35em;
+}
+
+.effectResult {
+  margin-top: -0.7em;
+}
+
+.outcomeBackground {
+}
+
+h9 {
+  font-family: upgrade-medium, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 3.7em;
+  text-align: center;
+  margin: 0em 0;
+  margin-left: 0.6em;
 }
