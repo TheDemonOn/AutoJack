@@ -1,6 +1,6 @@
 import React from "react"
 
-export default function GithubSVG({ iconTheme }) {
+export default function GithubSVG({ iconTheme, opacity = "100%" }) {
   return (
     <svg
       width="10em"
@@ -12,6 +12,7 @@ export default function GithubSVG({ iconTheme }) {
       x="0"
       y="0"
       viewBox="0 0 500 500"
+      opacity={opacity}
     >
       <g>
         <path

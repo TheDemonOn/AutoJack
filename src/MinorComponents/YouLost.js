@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from "react"
 
 export default function YouLost({
   textColor,
-  iconTheme = '#fff',
-  outcomeContent,
+  iconTheme = "#fff",
+  outcomeContent
 }) {
   const [output, setOutput] = useState()
 
@@ -35,17 +35,17 @@ export default function YouLost({
   useEffect(() => {
     console.log(iconTheme)
     switch (iconTheme) {
-      case '#392950': //purple
-        setIconTheme2('#ebebf2')
+      case "#392950": //purple
+        setIconTheme2("#ebebf2")
         break
-      case '#e7bd52': //gold
-        setIconTheme2('#282e42')
+      case "#e7bd52": //gold
+        setIconTheme2("#282e42")
         break
-      case '#c12f2f': //red
-        setIconTheme2('#ffffff')
+      case "#c12f2f": //red
+        setIconTheme2("#ffffff")
         break
-      case '#48b74d': //green
-        setIconTheme2('#2a1f49')
+      case "#48b74d": //green
+        setIconTheme2("#2a1f49")
         break
     }
   }, [])
@@ -67,7 +67,7 @@ export default function YouLost({
           >
             <circle fill={iconTheme} cx="60.95" cy="60.95" r="60.95" />
             <polyline
-              class="st0"
+              className="st0"
               stroke={iconTheme2}
               points="32.31,66.51 53.83,84.41 89.59,33.49 "
             />

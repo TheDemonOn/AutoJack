@@ -1,7 +1,7 @@
 import React from "react"
 
 // Default values for props is just set in the destructuring and gets overridden when passed a value
-export default function ThemesIcon({ iconTheme = "black" }) {
+export default function ThemesIcon({ iconTheme = "black", opacity = "100%" }) {
   return (
     <svg
       width="10em"
@@ -13,6 +13,7 @@ export default function ThemesIcon({ iconTheme = "black" }) {
       x="0"
       y="0"
       viewBox="0 0 500 500"
+      opacity={opacity}
     >
       <g>
         <path
