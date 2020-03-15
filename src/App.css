@@ -376,7 +376,7 @@ input {
   /* width: 15em;
   height: 2em; */
   font-size: 2.5em;
-  font-family: 'upgrade-lights';
+  font-family: "upgrade-lights";
   width: 6em;
   padding: 0.15em 0;
   padding-left: 0.5em;
@@ -887,14 +887,14 @@ p {
   position: absolute;
   /* border: solid; */
   top: 6.2em;
-  left: 49%;
+  left: 49.4%;
 }
 
 .playerTotal {
   position: absolute;
   /* border: solid; */
   top: 33.6em;
-  left: 49%;
+  left: 49.4%;
 }
 
 .dealerCardsWrap {
@@ -967,7 +967,7 @@ COLUMNS going vertically
   display: grid;
   position: absolute;
   margin-top: -15em;
-  right: 40em;
+  right: 18em;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   width: 44em;
 }

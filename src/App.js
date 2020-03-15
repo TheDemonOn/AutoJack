@@ -2025,11 +2025,7 @@ function TableOptions({
     }
   }, [dealerCards, localDealerCards, endPlayerTurn])
 
-  const [dealerThird, setDealerThird] = useState(
-    dealerThirdCardFlag ||
-      cards[cardThemeNum][localDealerCards[2].suit][localDealerCards[2].card]
-        .src
-  )
+  const [dealerThird, setDealerThird] = useState(dealerThirdCardFlag)
 
   useEffect(() => {
     setDealerThird(
@@ -2060,12 +2056,9 @@ function TableOptions({
     if (dealerCards[3]) {
       setDealerFourthCardFlag()
     }
-  }, [dealerCards, endPlayerTurn])
+  }, [dealerCards, localDealerCards, endPlayerTurn])
 
-  const [dealerFourth, setDealerFourth] = useState(
-    dealerFourthCardFlag ||
-      cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src
-  )
+  const [dealerFourth, setDealerFourth] = useState(dealerFourthCardFlag)
 
   useEffect(() => {
     setDealerFourth(
@@ -2078,7 +2071,7 @@ function TableOptions({
         cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].alt
       )
     }
-  }, [dealerCards, dealerFourthCardFlag])
+  }, [dealerFourthCardFlag])
 
   //
 
@@ -2092,27 +2085,35 @@ function TableOptions({
 
   useEffect(() => {
     if (dealerCards[4]) {
+      console.log(dealerCards[4])
       setDealerFifthCardFlag()
     }
-  }, [dealerCards, endPlayerTurn])
+  }, [dealerCards, localDealerCards, endPlayerTurn])
 
-  const [dealerFifth, setDealerFifth] = useState(
-    dealerFifthCardFlag ||
-      cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src
-  )
+  const [dealerFifth, setDealerFifth] = useState(dealerFifthCardFlag)
+
+  // The issue is not that I want to access a value which is undefined, it is that I want to access an undefined value of undefined
+  // hence the .suit error
 
   useEffect(() => {
-    setDealerFifth(
-      dealerFifthCardFlag ||
-        cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src
-    )
-    if (dealerFifthCardFlag != "//:0") {
-      setFifthDealerDisplay({ display: "block" })
-      setDealerFifthAlt(
-        cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].alt
+    console.log(dealerCards[4])
+    if (dealerCards[4]) {
+      console.log(
+        cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src
       )
+      console.log("Also about to crash right here.")
+      setDealerFifth(
+        dealerFifthCardFlag ||
+          cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src
+      )
+      if (dealerFifthCardFlag != "//:0") {
+        setFifthDealerDisplay({ display: "block" })
+        setDealerFifthAlt(
+          cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].alt
+        )
+      }
     }
-  }, [dealerCards, dealerFifthCardFlag])
+  }, [dealerFifthCardFlag])
 
   //
 
@@ -2128,25 +2129,25 @@ function TableOptions({
     if (dealerCards[5]) {
       setDealerSixthCardFlag()
     }
-  }, [dealerCards, endPlayerTurn])
+  }, [dealerCards, localDealerCards, endPlayerTurn])
 
   const [dealerSixth, setDealerSixth] = useState(
     dealerSixthCardFlag ||
-      cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src
+      cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].src
   )
 
   useEffect(() => {
     setDealerSixth(
       dealerSixthCardFlag ||
-        cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src
+        cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].src
     )
     if (dealerSixthCardFlag != "//:0") {
       setSixthDealerDisplay({ display: "block" })
       setDealerSixthAlt(
-        cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].alt
+        cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].alt
       )
     }
-  }, [dealerCards, dealerSixthCardFlag])
+  }, [dealerSixthCardFlag])
 
   //
 
@@ -2162,25 +2163,25 @@ function TableOptions({
     if (dealerCards[6]) {
       setDealerSeventhCardFlag()
     }
-  }, [dealerCards, endPlayerTurn])
+  }, [dealerCards, localDealerCards, endPlayerTurn])
 
   const [dealerSeventh, setDealerSeventh] = useState(
     dealerSeventhCardFlag ||
-      cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src
+      cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].src
   )
 
   useEffect(() => {
     setDealerSeventh(
       dealerSeventhCardFlag ||
-        cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src
+        cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].src
     )
     if (dealerSeventhCardFlag != "//:0") {
       setSeventhDealerDisplay({ display: "block" })
       setDealerSeventhAlt(
-        cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].alt
+        cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].alt
       )
     }
-  }, [dealerCards, dealerSeventhCardFlag])
+  }, [dealerSeventhCardFlag])
 
   const [dealerCardOne, setDealerCardOne] = useState(
     process.env.PUBLIC_URL +
