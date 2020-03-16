@@ -1714,7 +1714,9 @@ function TableOptions({
     // This removes the ability to press the button after standing
     if (endPlayerTurn) {
       setSplitElement(
-        <SplitIcon iconTheme={iconTheme} opacity={"50%"}></SplitIcon>
+        <a>
+          <SplitIcon iconTheme={iconTheme} opacity={"50%"}></SplitIcon>
+        </a>
       )
     } else if (
       yourCards[0].value === yourCards[1].value &&
@@ -1730,7 +1732,9 @@ function TableOptions({
     } else {
       setSplitElement(
         // This will be the lowered opacity, or greyed out version of the split icon
-        <SplitIcon iconTheme={iconTheme} opacity={"50%"}></SplitIcon>
+        <a>
+          <SplitIcon iconTheme={iconTheme} opacity={"50%"}></SplitIcon>
+        </a>
       )
     }
   }, [yourCards, endPlayerTurn])
@@ -1745,7 +1749,9 @@ function TableOptions({
   useEffect(() => {
     if (endPlayerTurn) {
       setDoubleDownElement(
-        <DoubleIcon iconTheme={iconTheme} opacity={"50%"}></DoubleIcon>
+        <a>
+          <DoubleIcon iconTheme={iconTheme} opacity={"50%"}></DoubleIcon>
+        </a>
       )
     } else if (playerBet <= yourMoney) {
       setDoubleDownElement(
@@ -1756,14 +1762,18 @@ function TableOptions({
     } else {
       setDoubleDownElement(
         // Unusable version
-        <DoubleIcon iconTheme={iconTheme} opacity={"50%"}></DoubleIcon>
+        <a>
+          <DoubleIcon iconTheme={iconTheme} opacity={"50%"}></DoubleIcon>
+        </a>
       )
     }
     // Removes the option to double on split if you have already hit, too many bugs if allowed
     if (splitFlag === 0 && yourCards.length > 2) {
       setDoubleDownElement(
         // Unusable version
-        <DoubleIcon iconTheme={iconTheme} opacity={"50%"}></DoubleIcon>
+        <a>
+          <DoubleIcon iconTheme={iconTheme} opacity={"50%"}></DoubleIcon>
+        </a>
       )
     }
   }, [yourCards, endPlayerTurn])
@@ -1807,32 +1817,6 @@ function TableOptions({
       )
     }
   }, [cutPosition, discardPile])
-
-  // I could make the class names be a state that can also be a variant for a double down so the final card in that set will be horizontal
-  // instead of vertical
-
-  // This section is based on the hypothesis that just having the img tags point to undefined values will cause them to throw an error,
-  // even if the card is not displayed. Test this when the cards are received.
-
-  // The below code starts with the values being empty rather than undefined, see what that results in.
-
-  //Also see the effect of the img tag being set to "//:0" as opposed to nothing or an empty string
-
-  // If making the img tag nothing still throws errors then a last resort could be just using a 1 pixel transparent image.
-
-  // Also if the assumed code works, a version for yourCards will also be needed.
-
-  // Also also can you test an if statement by setting it to undefined, I thought there was some weird interaction
-  //////////////////////////
-  // Errors are thrown when the src points to undefined because of TypeError: Cannot read property x of undefined
-  // As well as defining a variable to be the same hopeful src attribute TypeError: Cannot read property x of undefined
-  // So a common theme seems to be to not access a property which is not defined yet
-  // So I need to run a check to see if it exists, then use that as my condition statement
-
-  // I could try displaying all the cards after the first card to be the second card in the same position so you can't tell,
-  // then when a card is drawn iterate and display properly?
-
-  // I will use this to control when the card path is referenced so the error doesn't occur
 
   const [thirdDisplay, setThirdDisplay] = useState({ display: "none" })
 
@@ -2318,7 +2302,9 @@ function TableOptions({
         "END PLAYER TURN STAAND RRRRRREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
       )
       setStandElement(
-        <StandIcon iconTheme={iconTheme} opacity={"50%"}></StandIcon>
+        <a>
+          <StandIcon iconTheme={iconTheme} opacity={"50%"}></StandIcon>
+        </a>
       )
     }
   }, [endPlayerTurn])
@@ -2332,7 +2318,11 @@ function TableOptions({
   // Sets hit element
   useEffect(() => {
     if (endPlayerTurn) {
-      setHitElement(<HitIcon iconTheme={iconTheme} opacity={"50%"}></HitIcon>)
+      setHitElement(
+        <a>
+          <HitIcon iconTheme={iconTheme} opacity={"50%"}></HitIcon>
+        </a>
+      )
     }
   }, [endPlayerTurn])
 
