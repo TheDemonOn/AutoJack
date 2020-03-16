@@ -140,6 +140,8 @@ function LoadOrder({
         homeFlagSwitch1={homeFlagSwitch1}
         betRange={betRange}
         playerBetUpdate={playerBetUpdate}
+        maxBet={maxBet}
+        minBet={minBet}
       ></StartScreen>
     )
   } else if (roundStartFlag) {
@@ -166,22 +168,6 @@ function LoadOrder({
         maxBet={maxBet}
         minBet={minBet}
       ></RoundStart>
-    )
-  } else if (dealerCards[0].value + dealerCards[1].value === 21) {
-    return (
-      <DealerBlackJack
-        roundStartFlagReset={roundStartFlagReset}
-        yourMoney={yourMoney}
-        yourMoneyValue={yourMoneyValue}
-        playerBet={playerBet}
-        cutPosition={cutPosition}
-        discardPile={discardPile}
-        yourCards={yourCards}
-        dealerCards={dealerCards}
-        buttonTheme={buttonTheme}
-        iconTheme={iconTheme}
-        textColor={textColor}
-      ></DealerBlackJack>
     )
   } else if (tableStart) {
     return (
@@ -394,7 +380,9 @@ function StartScreen({
   settingsFlagSwitch,
   homeFlagSwitch1,
   betRange,
-  playerBetUpdate
+  playerBetUpdate,
+  maxBet,
+  minBet
 }) {
   // Add functionality for min bet and max bet
 
@@ -481,6 +469,12 @@ function StartScreen({
 
   const [deckValue, setDeckValue] = useState()
 
+  useEffect(() => {
+    if (minBet < 1) {
+      betRange("min", 0)
+    }
+  }, [minBet])
+
   // Need to set a default value for bet on custom
   const custom = () => {
     setParameterSection(
@@ -490,7 +484,7 @@ function StartScreen({
           <div>
             <h5 style={textColor}>Decks Used: </h5>
             {/* Figure out if type="number" can use maxLength or a variant */}
-            {/* Also figure out if you can restrict the inputed value being higher than the max */}
+            {/* Also figure out if you can restrict the input value being higher than the max */}
             <input
               type="text"
               // min="1"
@@ -711,6 +705,12 @@ function RoundStart({
     setActiveState(altButtonThemeActive)
     setActiveStateOpposite(altButtonTheme)
   }
+
+  useEffect(() => {
+    if (playerBet > maxBet) {
+      playerBetUpdate(maxBet)
+    }
+  }, [])
 
   // Instead of using a useEffect to put the value of the bet to the respective max range when exceeded, this way will remove the single
   // tick of the value being wrong before being corrected
@@ -1708,25 +1708,10 @@ function TableOptions({
     }
   }, [cardTotal])
 
-  const [onclickActions, setOnclickActions] = useState([
-    stand,
-    playerHit,
-    doubleDown,
-    splitting
-  ])
-
-  // useEffect(() => {
-  //   if (endPlayerTurn) {
-  //     // setOnclickActions([])
-  //   }
-  // }, [endPlayerTurn])
-
-  const [splitElement, setSplitElement] = useState(
-    // The default for the split will be the greyed out version because most of the time it won't be active
-    <img src={chip1} height="100px" width="100px" alt="Chip 1"></img>
-  )
+  const [splitElement, setSplitElement] = useState()
   // Sets split element
   useEffect(() => {
+    // This removes the ability to press the button after standing
     if (endPlayerTurn) {
       setSplitElement(
         <SplitIcon iconTheme={iconTheme} opacity={"50%"}></SplitIcon>
@@ -2347,8 +2332,23 @@ function TableOptions({
   // Sets hit element
   useEffect(() => {
     if (endPlayerTurn) {
-      console.log("HIT IS NOW FUCKKKEDKKDKEDKED")
       setHitElement(<HitIcon iconTheme={iconTheme} opacity={"50%"}></HitIcon>)
+    }
+  }, [endPlayerTurn])
+
+  const [themesButtonToggle, setThemesButtonToggle] = useState(
+    <a href="#" onClick={settingsFlagSwitch}>
+      <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
+    </a>
+  )
+
+  useEffect(() => {
+    if (endPlayerTurn) {
+      setThemesButtonToggle(
+        <a href="#">
+          <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
+        </a>
+      )
     }
   }, [endPlayerTurn])
 
@@ -2560,105 +2560,8 @@ function TableOptions({
           </a>
         </div>
 
-        <div className="two">
-          <a href="#" onClick={settingsFlagSwitch}>
-            <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
-          </a>
-        </div>
+        <div className="two">{themesButtonToggle}</div>
       </div>
-    </div>
-  )
-}
-
-function DealerBlackJack({
-  roundStartFlagReset,
-  yourMoney,
-  yourMoneyValue,
-  playerBet,
-  cutPosition,
-  discardPile,
-  yourCards,
-  dealerCards
-}) {
-  /////////////////////////
-  // Need to import a bunch of state for this later to shuffle check when the dealer draws a blackJack
-
-  // function deckShuffleFunction() {
-  //   console.log("Shuffle check")
-  //   console.log(cutPosition - discardPile.length)
-  //   if (cutPosition - discardPile.length <= 0) {
-  //     // discardPile.push(...yourCards, ...localDealerCards)
-  //     console.log("Deck length: " + deck.length)
-  //     console.log("discard length: " + discardPile.length)
-  //     console.log("Your Cards: " + yourCards.length)
-  //     console.log("dealer card: " + localDealerCards.length)
-  //     let placeHolderDeck = [...deck, ...discardPile]
-  //     let localDiscardPile = discardPile
-  //     console.log("Deck Shuffling")
-  //     // shuffleDeck()
-  //     // setDeck(...placeHolderDeck)
-  //     shoeCount(
-  //       Math.floor(
-  //         (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) *
-  //           (deck.length + discardPile.length)
-  //       )
-  //     )
-
-  //     console.log(yourCards)
-  //     console.log(localDealerCards)
-  //     deckUpdate(placeHolderDeck)
-  //     discardPile.length = 0
-  //   }
-  // }
-  // deckShuffleFunction()
-
-  const [cardsLeft, setCardsLeft] = useState()
-
-  useEffect(() => {
-    if (cutPosition - discardPile.length) {
-      setCardsLeft(
-        <div>Remaining Cards: {cutPosition - discardPile.length}</div>
-      )
-    }
-  }, [])
-
-  const [pushElement, setPushElement] = useState()
-
-  useEffect(() => {
-    if (yourCards.map(x => x.value).reduce((x, y) => x + y) === 21) {
-      yourMoneyValue(yourMoney + playerBet)
-      setPushElement(
-        <div>
-          <br></br>
-          <p>You also have a blackjack. It's a push.</p>
-        </div>
-      )
-    }
-  }, [])
-
-  return (
-    <div>
-      <p>Money: {yourMoney}</p>
-      <p>Dealer blackjack</p>
-      {pushElement}
-      <button onClick={roundStartFlagReset}>Continue</button>
-      <br></br>
-      {cardsLeft}
-      <br></br>
-      <p>Money: {yourMoney}</p>
-      <p>Your Bet: {playerBet}</p>
-      <br></br>
-      <p>
-        Your Cards: {yourCards.map(x => x.name).join(", ")}
-        <br></br>
-        Total: {yourCards.map(x => x.value).reduce((x, y) => x + y)}
-      </p>
-      <br></br>
-      <p>
-        Dealer Cards: {dealerCards.map(x => x.name).join(", ")}
-        <br></br>
-        Value: 21
-      </p>
     </div>
   )
 }
