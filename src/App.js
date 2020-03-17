@@ -964,7 +964,7 @@ function TableOptions({
   cardThemeNum
 }) {
   useEffect(() => {
-    window.history.pushState("state", null, "http://localhost:3000/Table")
+    window.history.pushState("Table", null, "http://localhost:3000/Table")
   }, [])
 
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
