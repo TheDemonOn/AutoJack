@@ -315,11 +315,16 @@ function ThemeSettings({
   settingsFlagSwitch0
 }) {
   useEffect(() => {
-    window.history.pushState(
-      "ThemeSettings",
-      null,
-      "http://localhost:3000/ThemeSettings"
-    )
+    if (
+      window.history.state === "Home" ||
+      window.history.state === "StartScreen"
+    ) {
+      window.history.pushState(
+        "ThemeSettings",
+        null,
+        "http://localhost:3000/ThemeSettings"
+      )
+    }
   }, [])
 
   return (
@@ -397,11 +402,12 @@ function StartScreen({
   minBet
 }) {
   useEffect(() => {
-    window.history.pushState(
-      "StartScreen",
-      null,
-      "http://localhost:3000/StartScreen"
-    )
+    if (window.history.state === "Home")
+      window.history.pushState(
+        "StartScreen",
+        null,
+        "http://localhost:3000/StartScreen"
+      )
   }, [])
 
   const [deckSize, setDeckSize] = useState(8)
@@ -964,7 +970,7 @@ function TableOptions({
   cardThemeNum
 }) {
   useEffect(() => {
-    window.history.pushState("Table", null, "http://localhost:3000/Table")
+    window.history.replaceState("Table", null, "http://localhost:3000/Table")
   }, [])
 
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
@@ -3452,31 +3458,24 @@ function App() {
 
   window.onpopstate = () => {
     // console.log(window.history.state)
-    switch (window.history.state) {
-      case "Home":
-        setHomeFlag(1)
-        setSettingsFlag(0)
-        setStartFlag(1)
-        break
-      case "ThemeSettings":
-        console.log("setting flag 1")
-        setSettingsFlag(1)
-        break
-      case "StartScreen":
-        setHomeFlag(0)
-        setSettingsFlag(0)
-        setStartFlag(1)
-        break
-      case "RoundStart":
-        setHomeFlag(0)
-        setSettingsFlag(0)
-        setStartFlag(0)
-        break
-      case "Table":
-        setHomeFlag(0)
-        setSettingsFlag(0)
-        setStartFlag(0)
-        setRoundStartFlag(0)
+    if (discardPile.length) {
+    } else {
+      switch (window.history.state) {
+        case "Home":
+          setHomeFlag(1)
+          setSettingsFlag(0)
+          setStartFlag(1)
+          break
+        case "ThemeSettings":
+          console.log("setting flag 1")
+          setSettingsFlag(1)
+          break
+        case "StartScreen":
+          setHomeFlag(0)
+          setSettingsFlag(0)
+          setStartFlag(1)
+          break
+      }
     }
   }
 
