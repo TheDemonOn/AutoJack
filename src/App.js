@@ -227,6 +227,10 @@ function Home({
   homeFlagSwitch1,
   startFlagSwitch
 }) {
+  useEffect(() => {
+    window.history.replaceState("Home", null, "http://localhost:3000/Home")
+  }, [])
+
   const [subText, setSubText] = useState(
     <h2 style={textColor}>The Blackjack that plays itself.</h2>
   )
@@ -281,7 +285,7 @@ function Home({
         </a>
       </div>
       <div className="two">
-        <a href="#" onClick={settingsFlagSwitch}>
+        <a onClick={settingsFlagSwitch}>
           <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
         </a>
       </div>
@@ -310,6 +314,14 @@ function ThemeSettings({
   displayCard,
   settingsFlagSwitch0
 }) {
+  useEffect(() => {
+    window.history.pushState(
+      "ThemeSettings",
+      null,
+      "http://localhost:3000/ThemeSettings"
+    )
+  }, [])
+
   return (
     <div>
       <img
@@ -321,7 +333,7 @@ function ThemeSettings({
       ></img>
       <div>
         <div className="themeSelector">
-          <a href="#" onClick={t1ThemeChange}>
+          <a className="hoverHover" onClick={t1ThemeChange}>
             <img
               src={Button_Theme1}
               height="150px"
@@ -330,7 +342,7 @@ function ThemeSettings({
             ></img>
           </a>
 
-          <a href="#" onClick={t2ThemeChange}>
+          <a className="hoverHover" onClick={t2ThemeChange}>
             <img
               src={Button_Theme2}
               height="150px"
@@ -339,7 +351,7 @@ function ThemeSettings({
             ></img>
           </a>
 
-          <a href="#" onClick={t3ThemeChange}>
+          <a className="hoverHover" onClick={t3ThemeChange}>
             <img
               src={Button_Theme3}
               height="150px"
@@ -348,7 +360,7 @@ function ThemeSettings({
             ></img>
           </a>
 
-          <a href="#" onClick={t4ThemeChange}>
+          <a className="hoverHover" onClick={t4ThemeChange}>
             <img
               src={Button_Theme4}
               height="150px"
@@ -384,7 +396,13 @@ function StartScreen({
   maxBet,
   minBet
 }) {
-  // Add functionality for min bet and max bet
+  useEffect(() => {
+    window.history.pushState(
+      "StartScreen",
+      null,
+      "http://localhost:3000/StartScreen"
+    )
+  }, [])
 
   const [deckSize, setDeckSize] = useState(8)
 
@@ -586,28 +604,28 @@ function StartScreen({
         */}
 
         {/* These should go down to 9em for the responsitivity */}
-        <a href="#" onClick={lowEnd}>
+        <a className="hoverHover" onClick={lowEnd}>
           <TableLow
             iconTheme={iconTheme}
             tableIconSize={tableIconSize}
           ></TableLow>
         </a>
 
-        <a href="#" onClick={midEnd}>
+        <a className="hoverHover" onClick={midEnd}>
           <TableMid
             iconTheme={iconTheme}
             tableIconSize={tableIconSize}
           ></TableMid>
         </a>
 
-        <a href="#" onClick={highEnd}>
+        <a className="hoverHover" onClick={highEnd}>
           <TableHigh
             iconTheme={iconTheme}
             tableIconSize={tableIconSize}
           ></TableHigh>
         </a>
 
-        <a href="#" onClick={custom}>
+        <a className="hoverHover" onClick={custom}>
           <TableCustom
             iconTheme={iconTheme}
             tableIconSize={tableIconSize}
@@ -631,7 +649,7 @@ function StartScreen({
       >
         <GithubSVG iconTheme={iconTheme}></GithubSVG>
       </a>
-      <a className="two" href="#" onClick={settingsFlagSwitch}>
+      <a className="two hoverHover" onClick={settingsFlagSwitch}>
         <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
       </a>
       {/* <button onClick={startFlagSwitch}>Continue</button> */}
@@ -661,6 +679,14 @@ function RoundStart({
   maxBet,
   minBet
 }) {
+  useEffect(() => {
+    window.history.pushState(
+      "RoundStart",
+      null,
+      "http://localhost:3000/RoundStart"
+    )
+  }, [])
+
   // So it appears that even when thr function is called from the child it still executes in the location it was defined (the parent) and had access to everything it would normally.
 
   const deal = e => {
@@ -816,13 +842,13 @@ function RoundStart({
 
       <div className="topContainer">
         <div className="chipsTop">
-          <a href="#" onClick={one}>
+          <a className="hoverHover" onClick={one}>
             <img src={chip1} height="100px" width="100px" alt="Chip 1"></img>
           </a>
-          <a href="#" onClick={five}>
+          <a className="hoverHover" onClick={five}>
             <img src={chip5} height="100px" width="100px" alt="Chip 1"></img>
           </a>
-          <a href="#" onClick={ten}>
+          <a className="hoverHover" onClick={ten}>
             <img src={chip10} height="100px" width="100px" alt="Chip 1"></img>
           </a>
         </div>
@@ -830,16 +856,16 @@ function RoundStart({
 
       <div className="botContainer">
         <div className="chipsBot">
-          <a href="#" onClick={twentyFive}>
+          <a className="hoverHover" onClick={twentyFive}>
             <img src={chip25} height="100px" width="100px" alt="Chip 1"></img>
           </a>
-          <a href="#" onClick={fifty}>
+          <a className="hoverHover" onClick={fifty}>
             <img src={chip50} height="100px" width="100px" alt="Chip 1"></img>
           </a>
-          <a href="#" onClick={oneHundred}>
+          <a className="hoverHover" onClick={oneHundred}>
             <img src={chip100} height="100px" width="100px" alt="Chip 1"></img>
           </a>
-          <a href="#" onClick={fiveHundred}>
+          <a className="hoverHover" onClick={fiveHundred}>
             <img src={chip500} height="100px" width="100px" alt="Chip 1"></img>
           </a>
         </div>
@@ -885,22 +911,13 @@ function RoundStart({
       </div>
 
       <div className="two">
-        <a href="#" onClick={settingsFlagSwitch}>
+        <a className="hoverHover" onClick={settingsFlagSwitch}>
           <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
         </a>
       </div>
     </div>
   )
 }
-
-//  There is a bug where cards are randomly disappearing, pay attention to the discardPile plus deck total to figure out how this happens
-// I was splitting don't remember if doubling, the turn the deck shuffled seems correct but suddenly the next turn
-// Perhaps some code was running twice because of outdated information?
-
-// New testing, hitting until busting does not appear to cause the bug
-// Reproduced similar situation to last time by only using doubleDown, after shuffle seemed fine then next turn went down to 16
-// discardPile does not seem to be the issue, leaving the deck still for scrutiny
-// Double Down causes the bug, don't know for split
 
 function TableOptions({
   playerHit,
@@ -946,6 +963,10 @@ function TableOptions({
   settingsFlagSwitch,
   cardThemeNum
 }) {
+  useEffect(() => {
+    window.history.pushState("state", null, "http://localhost:3000/Table")
+  }, [])
+
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
 
   const [roundResultKey, setRoundResultKey] = useState("")
@@ -1725,7 +1746,7 @@ function TableOptions({
     ) {
       setSplitElement(
         // Normal split element
-        <a href="#" onClick={splitting}>
+        <a className="hoverHover" onClick={splitting}>
           <SplitIcon iconTheme={iconTheme}></SplitIcon>
         </a>
       )
@@ -1740,7 +1761,7 @@ function TableOptions({
   }, [yourCards, endPlayerTurn])
 
   const [doubleDownElement, setDoubleDownElement] = useState(
-    <a href="#" onClick={doubleDown}>
+    <a className="hoverHover" onClick={doubleDown}>
       <DoubleIcon iconTheme={iconTheme}></DoubleIcon>
     </a>
   )
@@ -1755,7 +1776,7 @@ function TableOptions({
       )
     } else if (playerBet <= yourMoney) {
       setDoubleDownElement(
-        <a href="#" onClick={doubleDown}>
+        <a className="hoverHover" onClick={doubleDown}>
           <DoubleIcon iconTheme={iconTheme}></DoubleIcon>
         </a>
       )
@@ -2290,7 +2311,7 @@ function TableOptions({
   }, [outcomeEffect])
 
   const [standElement, setStandElement] = useState(
-    <a href="#" onClick={stand}>
+    <a className="hoverHover" onClick={stand}>
       <StandIcon iconTheme={iconTheme}></StandIcon>
     </a>
   )
@@ -2310,7 +2331,7 @@ function TableOptions({
   }, [endPlayerTurn])
 
   const [hitElement, setHitElement] = useState(
-    <a href="#" onClick={playerHit}>
+    <a className="hoverHover" onClick={playerHit}>
       <HitIcon iconTheme={iconTheme}></HitIcon>
     </a>
   )
@@ -2327,7 +2348,7 @@ function TableOptions({
   }, [endPlayerTurn])
 
   const [themesButtonToggle, setThemesButtonToggle] = useState(
-    <a href="#" onClick={settingsFlagSwitch}>
+    <a className="hoverHover" onClick={settingsFlagSwitch}>
       <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
     </a>
   )
@@ -2335,7 +2356,7 @@ function TableOptions({
   useEffect(() => {
     if (endPlayerTurn) {
       setThemesButtonToggle(
-        <a href="#">
+        <a className="hoverHover">
           <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
         </a>
       )
@@ -3425,6 +3446,38 @@ function App() {
   }
   const tableStartOne = () => {
     setTableStart(1)
+  }
+
+  // Need to figure out why I can't go forward to roundStart when I can go back
+
+  window.onpopstate = () => {
+    // console.log(window.history.state)
+    switch (window.history.state) {
+      case "Home":
+        setHomeFlag(1)
+        setSettingsFlag(0)
+        setStartFlag(1)
+        break
+      case "ThemeSettings":
+        console.log("setting flag 1")
+        setSettingsFlag(1)
+        break
+      case "StartScreen":
+        setHomeFlag(0)
+        setSettingsFlag(0)
+        setStartFlag(1)
+        break
+      case "RoundStart":
+        setHomeFlag(0)
+        setSettingsFlag(0)
+        setStartFlag(0)
+        break
+      case "Table":
+        setHomeFlag(0)
+        setSettingsFlag(0)
+        setStartFlag(0)
+        setRoundStartFlag(0)
+    }
   }
 
   return (

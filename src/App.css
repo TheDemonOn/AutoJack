@@ -4,6 +4,10 @@
   padding: 0;
 }
 
+.hoverHover:hover {
+  cursor: pointer;
+}
+
 body {
   /* background-image: url(./Images/2.png); */
 }
@@ -69,6 +73,10 @@ h3 {
   width: 7m;
   height: 7em;
   top: 80vh;
+}
+
+.two:hover {
+  cursor: pointer;
 }
 
 .hoverText {
