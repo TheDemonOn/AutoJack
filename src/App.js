@@ -1520,6 +1520,9 @@ function TableOptions({
     if (yourCards[0].value + yourCards[1].value === 21 && splitFlag === 1) {
       // Blackjack check
       stand()
+    } else if (dealerCards[0].value + dealerCards[1].value === 21) {
+      console.log("DID DEALER BLACKJACK")
+      stand()
     } else {
       if (yourCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
         // Checking for Aces in yourCards
@@ -1647,7 +1650,9 @@ function TableOptions({
               setRoundResultKey("won")
             }
           } else if (dealerCardTotal > cardTotal) {
-            if (dealerCardTotal < 22) {
+            if (dealerCards[0].value + dealerCards[1].value === 21) {
+              setRoundResultKey("DealerBlackjack")
+            } else if (dealerCardTotal < 22) {
               setRoundResultKey("lost")
             } else if (yourCards[0].value + yourCards[1].value === 21) {
               yourMoneyValue(
@@ -2293,6 +2298,11 @@ function TableOptions({
         blur()
         roundEndAuto()
         break
+      case "DealerBlackjack":
+        setOutcomeContent("Dealer Blackjack.")
+        setOutcomeEffect("negative")
+        blur()
+        roundEndAuto()
     }
   }, [roundResultKey])
 
@@ -2542,6 +2552,39 @@ function TableOptions({
               height="199.6488px"
               width="136.4688px"
               alt={playerSeventhAlt}
+            ></img>
+          </div>
+        </div>
+
+        <div className="playerCards2Wrap">
+          <div className="splitCard1">
+            <img
+              src={
+                process.env.PUBLIC_URL +
+                cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
+                "#" +
+                new Date().getTime()
+              }
+              height="99.8244"
+              width="68.2344px"
+              alt={
+                cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt
+              }
+            ></img>
+          </div>
+          <div className="splitCard2">
+            <img
+              src={
+                process.env.PUBLIC_URL +
+                cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
+                "#" +
+                new Date().getTime()
+              }
+              height="99.8244"
+              width="68.2344px"
+              alt={
+                cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].alt
+              }
             ></img>
           </div>
         </div>

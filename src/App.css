@@ -970,6 +970,20 @@ COLUMNS going vertically
   margin-left: -9.3em;
 }
 
+.playerCards2Wrap {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  top: 39em;
+  width: 60%;
+  /* border: solid; */
+}
+.splitCard2 {
+  /* width: 13.6em; */
+  position: relative;
+  margin-left: -4.65em;
+}
+
 .playerActions {
   /* border: solid; */
   display: grid;
