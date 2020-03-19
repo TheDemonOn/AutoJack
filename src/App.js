@@ -1454,6 +1454,65 @@ function TableOptions({
     }
   }
 
+  //
+  const [splitCard1Display, setSplitCard1Display] = useState({
+    display: "none"
+  })
+  const [splitCard1Flag, setSplitCard1Flag] = useState("//:0")
+  const [splitCard1Alt, setSplitCard1Alt] = useState()
+  useEffect(() => {
+    if (yourCards2[0]) {
+      setSplitCard1Flag()
+    }
+  }, [yourCards2, endPlayerTurn])
+
+  const [splitCard1, setSplitCard1] = useState(splitCard1Flag)
+
+  useEffect(() => {
+    console.log("SPLITCARD TRIGGERED")
+    setSplitCard1(
+      splitCard1Flag ||
+        cards[cardThemeNum][yourCards2[0].suit][yourCards2[0].card].src +
+          "#" +
+          new Date().getTime()
+    )
+    if (splitCard1Flag != "//:0") {
+      setSplitCard1Display({ display: "block" })
+      setSplitCard1Alt(
+        cards[cardThemeNum][yourCards2[0].suit][yourCards2[0].card].alt
+      )
+    }
+  }, [splitCard1Flag])
+
+  //
+  const [splitCard2Display, setSplitCard2Display] = useState({
+    display: "none"
+  })
+  const [splitCard2Flag, setSplitCard2Flag] = useState("//:0")
+  const [splitCard2Alt, setSplitCard2Alt] = useState()
+  useEffect(() => {
+    if (yourCards2[1]) {
+      setSplitCard2Flag()
+    }
+  }, [yourCards2, endPlayerTurn])
+
+  const [splitCard2, setSplitCard2] = useState(splitCard2Flag)
+
+  useEffect(() => {
+    setSplitCard2(
+      splitCard2Flag ||
+        cards[cardThemeNum][yourCards2[1].suit][yourCards2[1].card].src +
+          "#" +
+          new Date().getTime()
+    )
+    if (splitCard2Flag != "//:0") {
+      setSplitCard2Display({ display: "block" })
+      setSplitCard2Alt(
+        cards[cardThemeNum][yourCards2[1].suit][yourCards2[1].card].alt
+      )
+    }
+  }, [splitCard2Flag])
+
   let stand = () => {
     if (yourCards2.length === 0) {
       // If split is not triggered
@@ -1464,6 +1523,38 @@ function TableOptions({
       setEndPlayerTurn(1)
     } else {
       // swap the stand function to use stand 2?
+      setSplitCard1(
+        cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
+          yourCards[yourCards.length - 1].card
+        ].src +
+          "#" +
+          new Date().getTime()
+      )
+      setSplitCard1Alt(
+        cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
+          yourCards[yourCards.length - 1].card
+        ].alt
+      )
+      setSplitCard2("//:0")
+      setSplitCard2Display({
+        display: "none"
+      })
+      let cards1 = yourCards
+      let cards2 = yourCards2
+      console.log(cards1)
+      console.log(cards2)
+
+      setPlayerThirdCardFlag("//:0")
+      setThirdDisplay({ display: "none" })
+
+      setYourCards2(cards1)
+      setYourCards(cards2)
+      setSplitCard2Alt()
+      setStandElement(
+        <a className="hoverHover" onClick={stand2}>
+          <StandIcon iconTheme={iconTheme}></StandIcon>
+        </a>
+      )
     }
   }
 
@@ -1474,82 +1565,6 @@ function TableOptions({
     deckShuffleFunction()
     setEndPlayerTurn(1)
   }
-
-  useEffect(() => {
-    console.log("UPDATING STAND TRYING AT LEAST")
-    stand = () => {
-      console.log(yourCards2)
-      console.log(localSplitFlag)
-      console.log(splitFlag)
-      if (yourCards2.length === 0) {
-        // If split is not triggered
-        console.log("THERE WAS NO SPLIT")
-        dealerHit()
-        dealerCardTotalEvaluation()
-        deckShuffleFunction()
-        setEndPlayerTurn(1)
-        // roundEvaluation()
-        // setEndPlayerTurn(1)
-
-        // endTurnFlagSwitch() // This is what starts the results calculations
-      } else {
-        // Handle second hand
-        // We need both hands to resolve before endTurnFlag can be switched
-        if (handOneEnd === 0) {
-          dealerHit()
-          dealerCardTotalEvaluation()
-          deckShuffleFunction()
-          setEndPlayerTurn(1)
-          // roundEvaluation()
-          // endTurnFlagSwitch()
-        }
-        console.log("SWITCH TO SECOND HAND?")
-        handSwitch() // Switches to second hand
-      }
-    }
-  })
-
-  // Sets an initial value for yourCards2 if the hand is split
-  useEffect(() => {
-    if (splitFlag === 0) {
-      if (yourCards2.map(x => x.value).filter(x => x === 11)[0] > 0) {
-        // Checking for ace in yourCards
-        let aceCards = yourCards2.filter(x => x.value2 === 1)
-        if (
-          // Checking for bust with reduced Aces
-          yourCards2.map(x => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length >
-          21
-        ) {
-          // Checks to see if you bust with the ace being 11, if true calculate total with the ace being 1
-          setCardTotal2(
-            yourCards2.map(x => x.value).reduce((x, y) => x + y) -
-              aceCards.length * 11 +
-              aceCards.length
-          )
-          setBust2(1)
-        } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) <= 21) {
-          // Normal draw calculation with Ace being 11 if not busting
-          setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
-        } else {
-          // Draw but with reduced Aces
-          setCardTotal2(
-            yourCards2.map(x => x.value).reduce((x, y) => x + y) -
-              aceCards.length * 11 +
-              aceCards.length
-          )
-        }
-      } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) > 21) {
-        // Checking for Bust without Aces
-        setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
-        setBust2(1)
-      } else {
-        // Normal draw calculation
-        setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
-      }
-    }
-  }, [splitFlag])
 
   ///////////
   // Bug with calculation of cardTotal after blackjack from drawn card off of split
@@ -1606,7 +1621,7 @@ function TableOptions({
     }
   }, [yourCards])
 
-  // Sets card total for yourCards2
+  // Sets card total for yourCards2 and when it is initialized
   useEffect(() => {
     if (handOneEnd === 0) {
       console.log("Your Cards 2 evaluation for total is starting")
@@ -1652,10 +1667,10 @@ function TableOptions({
       }
       // }
     }
-  }, [yourCards2])
+  }, [splitFlag, yourCards2])
 
   useEffect(() => {
-    if (bust === 1) {
+    if (bust === 1 && yourCards2.length === 0) {
       console.log("We have BUUUSTSUEED")
       setRoundResultKey("bust")
       stand()
@@ -1853,29 +1868,18 @@ function TableOptions({
     }
   }, [yourCards, endPlayerTurn])
 
-  const [doubleDownElement2, setDoubleDownElement2] = useState()
+  // I just realized that opposed to having alt function for yourCards2 I could just swap 2 into the original and back to perform actions.
 
-  // Sets double down element 2
-  useEffect(() => {
-    if (playerBet2 <= yourMoney) {
-      setDoubleDownElement2(
-        <div>
-          <button onClick={doubleDown2}>Double Down</button>
-          <br></br>
-        </div>
-      )
-      // Removes the option to double on split if you have already hit
-      if (splitFlag === 0 && yourCards2.length > 2) {
-        setDoubleDownElement2()
-      }
-    }
-  }, [yourCards2])
-
-  // Bust
-  // If you bust then run a check for shuffling the deck
-  // deckShuffleFunction()
-
-  // Also remove DealerBlackJack and combine here
+  // useEffect(() => {
+  //   if(yourCards.length === 2) {
+  //     setDoubleDownElement(
+  //       <a className="hoverHover" onClick={doubleDown2}>
+  //       <DoubleIcon iconTheme={iconTheme}></DoubleIcon>
+  //     </a>
+  //     )
+  //     setSplitElement()
+  //   }
+  // }, [standElement])
 
   const [cardsLeft, setCardsLeft] = useState()
 
@@ -2182,64 +2186,6 @@ function TableOptions({
   }, [dealerSeventhCardFlag])
 
   //
-  const [splitCard1Display, setSplitCard1Display] = useState({
-    display: "none"
-  })
-  const [splitCard1Flag, setSplitCard1Flag] = useState("//:0")
-  const [splitCard1Alt, setSplitCard1Alt] = useState()
-  useEffect(() => {
-    if (yourCards2[0]) {
-      setSplitCard1Flag()
-    }
-  }, [yourCards2, endPlayerTurn])
-
-  const [splitCard1, setSplitCard1] = useState(splitCard1Flag)
-
-  useEffect(() => {
-    setSplitCard1(
-      splitCard1Flag ||
-        cards[cardThemeNum][yourCards2[0].suit][yourCards2[0].card].src +
-          "#" +
-          new Date().getTime()
-    )
-    if (splitCard1Flag != "//:0") {
-      setSplitCard1Display({ display: "block" })
-      setSplitCard1Alt(
-        cards[cardThemeNum][yourCards2[0].suit][yourCards2[0].card].alt
-      )
-    }
-  }, [splitCard1Flag])
-
-  //
-  const [splitCard2Display, setSplitCard2Display] = useState({
-    display: "none"
-  })
-  const [splitCard2Flag, setSplitCard2Flag] = useState("//:0")
-  const [splitCard2Alt, setSplitCard2Alt] = useState()
-  useEffect(() => {
-    if (yourCards2[1]) {
-      setSplitCard2Flag()
-    }
-  }, [yourCards2, endPlayerTurn])
-
-  const [splitCard2, setSplitCard2] = useState(splitCard2Flag)
-
-  useEffect(() => {
-    setSplitCard2(
-      splitCard2Flag ||
-        cards[cardThemeNum][yourCards2[1].suit][yourCards2[1].card].src +
-          "#" +
-          new Date().getTime()
-    )
-    if (splitCard2Flag != "//:0") {
-      setSplitCard2Display({ display: "block" })
-      setSplitCard2Alt(
-        cards[cardThemeNum][yourCards2[1].suit][yourCards2[1].card].alt
-      )
-    }
-  }, [splitCard2Flag])
-
-  //
 
   const [dealerCardOne, setDealerCardOne] = useState(
     process.env.PUBLIC_URL +
@@ -2295,7 +2241,7 @@ function TableOptions({
         "#" +
         new Date().getTime()
     )
-  }, [yourCards2])
+  }, [yourCards2, yourCards])
 
   let z = document.getElementsByClassName("block")
 
