@@ -973,6 +973,17 @@ function TableOptions({
     window.history.replaceState("Table", null, "http://localhost:3000/Table")
   }, [])
 
+  useEffect(() => {
+    if (yourCards2[0]) {
+      yourCards2.length = 0
+      setYourCards2([])
+      setSplitFlag(1)
+      console.log("CLEAED YOURCARDS2")
+    }
+  }, [])
+
+  const [localSplitFlag, setLocalSplitFlag] = useState(1)
+
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
 
   const [roundResultKey, setRoundResultKey] = useState("")
@@ -1055,8 +1066,11 @@ function TableOptions({
     yourCards2.push(...splitCard2, card2)
     setYourCards2([...splitCard2, card2])
     // setYourCards2(splitCard2 => [...splitCard2, card2])
+    console.log(yourCards)
+    console.log(yourCards2)
 
     setSplitFlag(0)
+    setLocalSplitFlag(0)
   }
 
   const [doubleSplit, setDoubleSplit] = useState(0)
@@ -1440,31 +1454,60 @@ function TableOptions({
     }
   }
 
-  const stand = () => {
-    if (splitFlag) {
+  let stand = () => {
+    if (yourCards2.length === 0) {
       // If split is not triggered
+      console.log("THERE WAS NO SPLIT")
       dealerHit()
       dealerCardTotalEvaluation()
       deckShuffleFunction()
       setEndPlayerTurn(1)
-      // roundEvaluation()
-      // setEndPlayerTurn(1)
-
-      // endTurnFlagSwitch() // This is what starts the results calculations
     } else {
-      // Handle second hand
-      // We need both hands to resolve before endTurnFlag can be switched
-      if (handOneEnd === 0) {
+      // swap the stand function to use stand 2?
+    }
+  }
+
+  let stand2 = () => {
+    console.log("SPLIT STAND")
+    dealerHit()
+    dealerCardTotalEvaluation()
+    deckShuffleFunction()
+    setEndPlayerTurn(1)
+  }
+
+  useEffect(() => {
+    console.log("UPDATING STAND TRYING AT LEAST")
+    stand = () => {
+      console.log(yourCards2)
+      console.log(localSplitFlag)
+      console.log(splitFlag)
+      if (yourCards2.length === 0) {
+        // If split is not triggered
+        console.log("THERE WAS NO SPLIT")
         dealerHit()
         dealerCardTotalEvaluation()
         deckShuffleFunction()
         setEndPlayerTurn(1)
         // roundEvaluation()
-        // endTurnFlagSwitch()
+        // setEndPlayerTurn(1)
+
+        // endTurnFlagSwitch() // This is what starts the results calculations
+      } else {
+        // Handle second hand
+        // We need both hands to resolve before endTurnFlag can be switched
+        if (handOneEnd === 0) {
+          dealerHit()
+          dealerCardTotalEvaluation()
+          deckShuffleFunction()
+          setEndPlayerTurn(1)
+          // roundEvaluation()
+          // endTurnFlagSwitch()
+        }
+        console.log("SWITCH TO SECOND HAND?")
+        handSwitch() // Switches to second hand
       }
-      handSwitch() // Switches to second hand
     }
-  }
+  })
 
   // Sets an initial value for yourCards2 if the hand is split
   useEffect(() => {
@@ -1849,28 +1892,24 @@ function TableOptions({
       )
     }
   }, [cutPosition, discardPile])
-
+  //
   const [thirdDisplay, setThirdDisplay] = useState({ display: "none" })
-
   const [playerThirdCardFlag, setPlayerThirdCardFlag] = useState("//:0")
-
   const [playerThirdAlt, setPlayerThirdAlt] = useState()
-
   useEffect(() => {
     if (yourCards[2]) {
       setPlayerThirdCardFlag()
     }
   }, [yourCards])
 
-  const [playerThird, setPlayerThird] = useState(
-    playerThirdCardFlag ||
-      cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src
-  )
+  const [playerThird, setPlayerThird] = useState(playerThirdCardFlag)
 
   useEffect(() => {
     setPlayerThird(
       playerThirdCardFlag ||
-        cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src
+        cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (playerThirdCardFlag != "//:0") {
       setThirdDisplay({ display: "block" })
@@ -1883,26 +1922,22 @@ function TableOptions({
   //
 
   const [fourthDisplay, setFourthDisplay] = useState({ display: "none" })
-
   const [playerFourthCardFlag, setPlayerFourthCardFlag] = useState("//:0")
-
   const [playerFourthAlt, setPlayerFourthAlt] = useState()
-
   useEffect(() => {
     if (yourCards[3]) {
       setPlayerFourthCardFlag()
     }
   }, [yourCards])
 
-  const [playerFourth, setPlayerFourth] = useState(
-    playerFourthCardFlag ||
-      cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].src
-  )
+  const [playerFourth, setPlayerFourth] = useState(playerFourthCardFlag)
 
   useEffect(() => {
     setPlayerFourth(
       playerFourthCardFlag ||
-        cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].src
+        cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (playerFourthCardFlag != "//:0") {
       setFourthDisplay({ display: "block" })
@@ -1913,28 +1948,23 @@ function TableOptions({
   }, [yourCards, playerFourthCardFlag])
 
   //
-
   const [fifthDisplay, setFifthDisplay] = useState({ display: "none" })
-
   const [playerFifthCardFlag, setPlayerFifthCardFlag] = useState("//:0")
-
   const [playerFifthAlt, setPlayerFifthAlt] = useState()
-
   useEffect(() => {
     if (yourCards[4]) {
       setPlayerFifthCardFlag()
     }
   }, [yourCards])
 
-  const [playerFifth, setPlayerFifth] = useState(
-    playerFifthCardFlag ||
-      cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src
-  )
+  const [playerFifth, setPlayerFifth] = useState(playerFifthCardFlag)
 
   useEffect(() => {
     setPlayerFifth(
       playerFifthCardFlag ||
-        cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src
+        cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (playerFifthCardFlag != "//:0") {
       setFifthDisplay({ display: "block" })
@@ -1945,28 +1975,23 @@ function TableOptions({
   }, [yourCards, playerFifthCardFlag])
 
   //
-
   const [sixthDisplay, setSixthDisplay] = useState({ display: "none" })
-
   const [playerSixthCardFlag, setPlayerSixthCardFlag] = useState("//:0")
-
   const [playerSixthAlt, setPlayerSixthAlt] = useState()
-
   useEffect(() => {
     if (yourCards[5]) {
       setPlayerSixthCardFlag()
     }
   }, [yourCards])
 
-  const [playerSixth, setPlayerSixth] = useState(
-    playerSixthCardFlag ||
-      cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src
-  )
+  const [playerSixth, setPlayerSixth] = useState(playerSixthCardFlag)
 
   useEffect(() => {
     setPlayerSixth(
       playerSixthCardFlag ||
-        cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src
+        cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (playerSixthCardFlag != "//:0") {
       setSixthDisplay({ display: "block" })
@@ -1977,28 +2002,23 @@ function TableOptions({
   }, [yourCards, playerSixthCardFlag])
 
   //
-
   const [seventhDisplay, setSeventhDisplay] = useState({ display: "none" })
-
   const [playerSeventhCardFlag, setPlayerSeventhCardFlag] = useState("//:0")
-
   const [playerSeventhAlt, setPlayerSeventhAlt] = useState()
-
   useEffect(() => {
     if (yourCards[6]) {
       setPlayerSeventhCardFlag()
     }
   }, [yourCards])
 
-  const [playerSeventh, setPlayerSeventh] = useState(
-    playerSeventhCardFlag ||
-      cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src
-  )
+  const [playerSeventh, setPlayerSeventh] = useState(playerSeventhCardFlag)
 
   useEffect(() => {
     setPlayerSeventh(
       playerSeventhCardFlag ||
-        cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src
+        cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (playerSeventhCardFlag != "//:0") {
       setSeventhDisplay({ display: "block" })
@@ -2011,15 +2031,11 @@ function TableOptions({
   //
   //
   //
-
   const [thirdDealerDisplay, setThirdDealerDisplay] = useState({
     display: "none"
   })
-
   const [dealerThirdCardFlag, setDealerThirdCardFlag] = useState("//:0")
-
   const [dealerThirdAlt, setDealerThirdAlt] = useState()
-
   useEffect(() => {
     if (localDealerCards[2] || dealerCards[2]) {
       setDealerThirdCardFlag()
@@ -2032,7 +2048,9 @@ function TableOptions({
     setDealerThird(
       dealerThirdCardFlag ||
         cards[cardThemeNum][localDealerCards[2].suit][localDealerCards[2].card]
-          .src
+          .src +
+          "#" +
+          new Date().getTime()
     )
     if (dealerThirdCardFlag != "//:0") {
       setThirdDealerDisplay({ display: "block" })
@@ -2044,15 +2062,11 @@ function TableOptions({
   }, [dealerThirdCardFlag])
 
   //
-
   const [fourthDealerDisplay, setFourthDealerDisplay] = useState({
     display: "none"
   })
-
   const [dealerFourthCardFlag, setDealerFourthCardFlag] = useState("//:0")
-
   const [dealerFourthAlt, setDealerFourthAlt] = useState()
-
   useEffect(() => {
     if (dealerCards[3]) {
       setDealerFourthCardFlag()
@@ -2064,7 +2078,9 @@ function TableOptions({
   useEffect(() => {
     setDealerFourth(
       dealerFourthCardFlag ||
-        cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src
+        cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (dealerFourthCardFlag != "//:0") {
       setFourthDealerDisplay({ display: "block" })
@@ -2075,15 +2091,11 @@ function TableOptions({
   }, [dealerFourthCardFlag])
 
   //
-
   const [fifthDealerDisplay, setFifthDealerDisplay] = useState({
     display: "none"
   })
-
   const [dealerFifthCardFlag, setDealerFifthCardFlag] = useState("//:0")
-
   const [dealerFifthAlt, setDealerFifthAlt] = useState()
-
   useEffect(() => {
     if (dealerCards[4]) {
       console.log(dealerCards[4])
@@ -2093,19 +2105,14 @@ function TableOptions({
 
   const [dealerFifth, setDealerFifth] = useState(dealerFifthCardFlag)
 
-  // The issue is not that I want to access a value which is undefined, it is that I want to access an undefined value of undefined
-  // hence the .suit error
-
   useEffect(() => {
     console.log(dealerCards[4])
     if (dealerCards[4]) {
-      console.log(
-        cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src
-      )
-      console.log("Also about to crash right here.")
       setDealerFifth(
         dealerFifthCardFlag ||
-          cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src
+          cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src +
+            "#" +
+            new Date().getTime()
       )
       if (dealerFifthCardFlag != "//:0") {
         setFifthDealerDisplay({ display: "block" })
@@ -2117,30 +2124,25 @@ function TableOptions({
   }, [dealerFifthCardFlag])
 
   //
-
   const [sixthDealerDisplay, setSixthDealerDisplay] = useState({
     display: "none"
   })
-
   const [dealerSixthCardFlag, setDealerSixthCardFlag] = useState("//:0")
-
   const [dealerSixthAlt, setDealerSixthAlt] = useState()
-
   useEffect(() => {
     if (dealerCards[5]) {
       setDealerSixthCardFlag()
     }
   }, [dealerCards, localDealerCards, endPlayerTurn])
 
-  const [dealerSixth, setDealerSixth] = useState(
-    dealerSixthCardFlag ||
-      cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].src
-  )
+  const [dealerSixth, setDealerSixth] = useState(dealerSixthCardFlag)
 
   useEffect(() => {
     setDealerSixth(
       dealerSixthCardFlag ||
-        cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].src
+        cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (dealerSixthCardFlag != "//:0") {
       setSixthDealerDisplay({ display: "block" })
@@ -2151,30 +2153,25 @@ function TableOptions({
   }, [dealerSixthCardFlag])
 
   //
-
   const [seventhDealerDisplay, setSeventhDealerDisplay] = useState({
     display: "none"
   })
-
   const [dealerSeventhCardFlag, setDealerSeventhCardFlag] = useState("//:0")
-
   const [dealerSeventhAlt, setDealerSeventhAlt] = useState()
-
   useEffect(() => {
     if (dealerCards[6]) {
       setDealerSeventhCardFlag()
     }
   }, [dealerCards, localDealerCards, endPlayerTurn])
 
-  const [dealerSeventh, setDealerSeventh] = useState(
-    dealerSeventhCardFlag ||
-      cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].src
-  )
+  const [dealerSeventh, setDealerSeventh] = useState(dealerSeventhCardFlag)
 
   useEffect(() => {
     setDealerSeventh(
       dealerSeventhCardFlag ||
-        cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].src
+        cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (dealerSeventhCardFlag != "//:0") {
       setSeventhDealerDisplay({ display: "block" })
@@ -2183,6 +2180,66 @@ function TableOptions({
       )
     }
   }, [dealerSeventhCardFlag])
+
+  //
+  const [splitCard1Display, setSplitCard1Display] = useState({
+    display: "none"
+  })
+  const [splitCard1Flag, setSplitCard1Flag] = useState("//:0")
+  const [splitCard1Alt, setSplitCard1Alt] = useState()
+  useEffect(() => {
+    if (yourCards2[0]) {
+      setSplitCard1Flag()
+    }
+  }, [yourCards2, endPlayerTurn])
+
+  const [splitCard1, setSplitCard1] = useState(splitCard1Flag)
+
+  useEffect(() => {
+    setSplitCard1(
+      splitCard1Flag ||
+        cards[cardThemeNum][yourCards2[0].suit][yourCards2[0].card].src +
+          "#" +
+          new Date().getTime()
+    )
+    if (splitCard1Flag != "//:0") {
+      setSplitCard1Display({ display: "block" })
+      setSplitCard1Alt(
+        cards[cardThemeNum][yourCards2[0].suit][yourCards2[0].card].alt
+      )
+    }
+  }, [splitCard1Flag])
+
+  //
+  const [splitCard2Display, setSplitCard2Display] = useState({
+    display: "none"
+  })
+  const [splitCard2Flag, setSplitCard2Flag] = useState("//:0")
+  const [splitCard2Alt, setSplitCard2Alt] = useState()
+  useEffect(() => {
+    if (yourCards2[1]) {
+      setSplitCard2Flag()
+    }
+  }, [yourCards2, endPlayerTurn])
+
+  const [splitCard2, setSplitCard2] = useState(splitCard2Flag)
+
+  useEffect(() => {
+    setSplitCard2(
+      splitCard2Flag ||
+        cards[cardThemeNum][yourCards2[1].suit][yourCards2[1].card].src +
+          "#" +
+          new Date().getTime()
+    )
+    if (splitCard2Flag != "//:0") {
+      setSplitCard2Display({ display: "block" })
+      setSplitCard2Alt(
+        cards[cardThemeNum][yourCards2[1].suit][yourCards2[1].card].alt
+      )
+    }
+  }, [splitCard2Flag])
+
+  //
 
   const [dealerCardOne, setDealerCardOne] = useState(
     process.env.PUBLIC_URL +
@@ -2212,6 +2269,7 @@ function TableOptions({
       new Date().getTime()
   )
 
+  // This is here I believe to ensure that they properly update
   useEffect(() => {
     setDealerCardOne(
       process.env.PUBLIC_URL +
@@ -2237,7 +2295,7 @@ function TableOptions({
         "#" +
         new Date().getTime()
     )
-  }, [])
+  }, [yourCards2])
 
   let z = document.getElementsByClassName("block")
 
@@ -2379,6 +2437,8 @@ function TableOptions({
     }
   }, [endPlayerTurn])
 
+  console.log(splitFlag)
+
   return (
     <div>
       <div>{outcomeComponent}</div>
@@ -2407,13 +2467,7 @@ function TableOptions({
         <div className="dealerCardsWrap">
           <div className="firstCard">
             <img
-              src={
-                process.env.PUBLIC_URL +
-                  cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card]
-                    .src +
-                  "#" +
-                  new Date().getTime() || dealerCardOne
-              }
+              src={process.env.PUBLIC_URL + dealerCardOne}
               height="199.6488px"
               width="136.4688px"
               alt={
@@ -2424,13 +2478,7 @@ function TableOptions({
           </div>
           <div className="otherCard">
             <img
-              src={
-                process.env.PUBLIC_URL +
-                  cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card]
-                    .src +
-                  "#" +
-                  new Date().getTime() || dealerCardTwo
-              }
+              src={process.env.PUBLIC_URL + dealerCardTwo}
               height="199.6488px"
               width="136.4688px"
               alt={
@@ -2441,7 +2489,7 @@ function TableOptions({
           </div>
           <div className="thirdCard" style={thirdDealerDisplay}>
             <img
-              src={dealerThird}
+              src={process.env.PUBLIC_URL + dealerThird}
               height="199.6488px"
               width="136.4688px"
               alt={dealerThirdAlt}
@@ -2449,7 +2497,7 @@ function TableOptions({
           </div>
           <div className="fourthCard" style={fourthDealerDisplay}>
             <img
-              src={dealerFourth}
+              src={process.env.PUBLIC_URL + dealerFourth}
               height="199.6488px"
               width="136.4688px"
               alt={dealerFourthAlt}
@@ -2457,7 +2505,7 @@ function TableOptions({
           </div>
           <div className="fifthCard" style={fifthDealerDisplay}>
             <img
-              src={dealerFifth}
+              src={process.env.PUBLIC_URL + dealerFifth}
               height="199.6488px"
               width="136.4688px"
               alt={dealerFifthAlt}
@@ -2465,7 +2513,7 @@ function TableOptions({
           </div>
           <div className="sixthCard" style={sixthDealerDisplay}>
             <img
-              src={dealerSixth}
+              src={process.env.PUBLIC_URL + dealerSixth}
               height="199.6488px"
               width="136.4688px"
               alt={dealerSixthAlt}
@@ -2473,7 +2521,7 @@ function TableOptions({
           </div>
           <div className="seventhCard" style={seventhDealerDisplay}>
             <img
-              src={dealerSeventh}
+              src={process.env.PUBLIC_URL + dealerSeventh}
               height="199.6488px"
               width="136.4688px"
               alt={dealerSeventhAlt}
@@ -2484,13 +2532,7 @@ function TableOptions({
         <div className="playerCardsWrap">
           <div className="firstCard">
             <img
-              src={
-                process.env.PUBLIC_URL +
-                  cards[cardThemeNum][yourCards[0].suit][yourCards[0].card]
-                    .src +
-                  "#" +
-                  new Date().getTime() || playerCardOne
-              }
+              src={process.env.PUBLIC_URL + playerCardOne}
               height="199.6488px"
               width="136.4688px"
               alt={
@@ -2500,13 +2542,7 @@ function TableOptions({
           </div>
           <div className="otherCard">
             <img
-              src={
-                process.env.PUBLIC_URL +
-                  cards[cardThemeNum][yourCards[1].suit][yourCards[1].card]
-                    .src +
-                  "#" +
-                  new Date().getTime() || playerCardTwo
-              }
+              src={process.env.PUBLIC_URL + playerCardTwo}
               height="199.6488px"
               width="136.4688px"
               alt={
@@ -2516,7 +2552,7 @@ function TableOptions({
           </div>
           <div className="thirdCard" style={thirdDisplay}>
             <img
-              src={playerThird}
+              src={process.env.PUBLIC_URL + playerThird}
               height="199.6488px"
               width="136.4688px"
               alt={playerThirdAlt}
@@ -2524,7 +2560,7 @@ function TableOptions({
           </div>
           <div className="fourthCard" style={fourthDisplay}>
             <img
-              src={playerFourth}
+              src={process.env.PUBLIC_URL + playerFourth}
               height="199.6488px"
               width="136.4688px"
               alt={playerFourthAlt}
@@ -2532,7 +2568,7 @@ function TableOptions({
           </div>
           <div className="fifthCard" style={fifthDisplay}>
             <img
-              src={playerFifth}
+              src={process.env.PUBLIC_URL + playerFifth}
               height="199.6488px"
               width="136.4688px"
               alt={playerFifthAlt}
@@ -2540,7 +2576,7 @@ function TableOptions({
           </div>
           <div className="sixthCard" style={sixthDisplay}>
             <img
-              src={playerSixth}
+              src={process.env.PUBLIC_URL + playerSixth}
               height="199.6488px"
               width="136.4688px"
               alt={playerSixthAlt}
@@ -2548,7 +2584,7 @@ function TableOptions({
           </div>
           <div className="seventhCard" style={seventhDisplay}>
             <img
-              src={playerSeventh}
+              src={process.env.PUBLIC_URL + playerSeventh}
               height="199.6488px"
               width="136.4688px"
               alt={playerSeventhAlt}
@@ -2557,34 +2593,20 @@ function TableOptions({
         </div>
 
         <div className="playerCards2Wrap">
-          <div className="splitCard1">
+          <div className="splitCard1" style={splitCard1Display}>
             <img
-              src={
-                process.env.PUBLIC_URL +
-                cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
-                "#" +
-                new Date().getTime()
-              }
+              src={process.env.PUBLIC_URL + splitCard1}
               height="99.8244"
               width="68.2344px"
-              alt={
-                cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt
-              }
+              alt={splitCard1Alt}
             ></img>
           </div>
-          <div className="splitCard2">
+          <div className="splitCard2" style={splitCard2Display}>
             <img
-              src={
-                process.env.PUBLIC_URL +
-                cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
-                "#" +
-                new Date().getTime()
-              }
+              src={process.env.PUBLIC_URL + splitCard2}
               height="99.8244"
               width="68.2344px"
-              alt={
-                cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].alt
-              }
+              alt={splitCard2Alt}
             ></img>
           </div>
         </div>

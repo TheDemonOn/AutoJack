@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from "react"
 
-export default function Push({textColor, iconTheme = '#fff'}) {
+export default function Push({ textColor, iconTheme = "#fff" }) {
   const [output, setOutput] = useState()
 
   const [iconTheme2, setIconTheme2] = useState()
@@ -8,17 +8,17 @@ export default function Push({textColor, iconTheme = '#fff'}) {
   useEffect(() => {
     console.log(iconTheme)
     switch (iconTheme) {
-      case '#392950': //purple
-        setIconTheme2('#ebebf2')
+      case "#392950": //purple
+        setIconTheme2("#ebebf2")
         break
-      case '#e7bd52': //gold
-        setIconTheme2('#282e42')
+      case "#e7bd52": //gold
+        setIconTheme2("#282e42")
         break
-      case '#c12f2f': //red
-        setIconTheme2('#ffffff')
+      case "#c12f2f": //red
+        setIconTheme2("#ffffff")
         break
-      case '#48b74d': //green
-        setIconTheme2('#2a1f49')
+      case "#48b74d": //green
+        setIconTheme2("#2a1f49")
         break
     }
   }, [])

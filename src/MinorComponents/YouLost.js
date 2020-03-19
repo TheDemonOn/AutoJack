@@ -66,11 +66,24 @@ export default function YouLost({
             viewBox="0 0 121.9 121.9"
           >
             <circle fill={iconTheme} cx="60.95" cy="60.95" r="60.95" />
-            <polyline
-              className="st0"
-              stroke={iconTheme2}
-              points="32.31,66.51 53.83,84.41 89.59,33.49 "
-            />
+            <g>
+              <line
+                className="st0"
+                stroke={iconTheme2}
+                x1="31.99"
+                y1="31.99"
+                x2="89.91"
+                y2="89.91"
+              />
+              <line
+                className="st0"
+                stroke={iconTheme2}
+                x1="89.91"
+                y1="31.99"
+                x2="31.99"
+                y2="89.91"
+              />
+            </g>
           </svg>
 
           {subText}
