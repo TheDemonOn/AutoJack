@@ -167,6 +167,7 @@ function LoadOrder({
         playerBetModify={playerBetModify}
         maxBet={maxBet}
         minBet={minBet}
+        cardThemeNum={cardThemeNum}
       ></RoundStart>
     )
   } else if (tableStart) {
@@ -683,7 +684,8 @@ function RoundStart({
   altButtonThemeActive,
   playerBetModify,
   maxBet,
-  minBet
+  minBet,
+  cardThemeNum
 }) {
   useEffect(() => {
     window.history.pushState(
@@ -822,13 +824,32 @@ function RoundStart({
     }
   }
 
+  const [cardBack, setCardBack] = useState()
+
+  useEffect(() => {
+    switch (cardThemeNum) {
+      case "t1":
+        setCardBack("./Cards/CardBacks/back1.png")
+        break
+      case "t2":
+        setCardBack("./Cards/CardBacks/back2.png")
+        break
+      case "t3":
+        setCardBack("./Cards/CardBacks/back3.png")
+        break
+      case "t4":
+        setCardBack("./Cards/CardBacks/back4.png")
+        break
+    }
+  }, [])
+
   return (
     <div className="block">
       <div className="remainingCards">
         <div>
           <img
             className="drawPile"
-            src={process.env.PUBLIC_URL + cards.t2.spade.ace.src}
+            src={process.env.PUBLIC_URL + cardBack}
             height="153.576px"
             width="104.976px"
             alt="Ace of spades card."
@@ -1702,6 +1723,17 @@ function TableOptions({
           <SplitIcon iconTheme={iconTheme} opacity={"50%"}></SplitIcon>
         </a>
       )
+    } else if (yourCards2.length) {
+      setSplitElement(
+        <a>
+          <SplitIcon iconTheme={iconTheme} opacity={"50%"}></SplitIcon>
+        </a>
+      )
+      setThemesButtonToggle(
+        <a className="hoverHover">
+          <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
+        </a>
+      )
     } else if (
       yourCards[0].value === yourCards[1].value &&
       playerBet <= yourMoney &&
@@ -2381,6 +2413,25 @@ function TableOptions({
     }
   }, [endPlayerTurn])
 
+  const [cardBack, setCardBack] = useState()
+
+  useEffect(() => {
+    switch (cardThemeNum) {
+      case "t1":
+        setCardBack("./Cards/CardBacks/back1.png")
+        break
+      case "t2":
+        setCardBack("./Cards/CardBacks/back2.png")
+        break
+      case "t3":
+        setCardBack("./Cards/CardBacks/back3.png")
+        break
+      case "t4":
+        setCardBack("./Cards/CardBacks/back4.png")
+        break
+    }
+  }, [])
+
   return (
     <div>
       <div>{outcomeComponent}</div>
@@ -2390,10 +2441,10 @@ function TableOptions({
           <div>
             <img
               className="drawPile"
-              src={process.env.PUBLIC_URL + cards.t2.spade.ace.src}
+              src={process.env.PUBLIC_URL + cardBack}
               height="153.576px"
               width="104.976px"
-              alt="Ace of spades card."
+              alt="Draw pile."
             ></img>
           </div>
           <div>{cardsLeft}</div>
