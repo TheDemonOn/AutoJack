@@ -977,16 +977,15 @@ function TableOptions({
     if (yourCards2[0]) {
       yourCards2.length = 0
       setYourCards2([])
-      setSplitFlag(1)
       console.log("CLEAED YOURCARDS2")
     }
   }, [])
 
-  const [localSplitFlag, setLocalSplitFlag] = useState(1)
-
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
 
   const [roundResultKey, setRoundResultKey] = useState("")
+
+  const [roundResultKey2, setRoundResultKey2] = useState("")
 
   const [handResult1, setHandResult1] = useState("")
 
@@ -1068,9 +1067,6 @@ function TableOptions({
     // setYourCards2(splitCard2 => [...splitCard2, card2])
     console.log(yourCards)
     console.log(yourCards2)
-
-    setSplitFlag(0)
-    setLocalSplitFlag(0)
   }
 
   const [doubleSplit, setDoubleSplit] = useState(0)
@@ -1085,14 +1081,10 @@ function TableOptions({
     )
   }
 
+  // Come back to this and investigate the flag resets for if they are needed
   const splitRoundReset = () => {
     setSplitFlag(1)
     roundStartFlagReset()
-  }
-
-  const handSwitch = () => {
-    // Start playing other hand
-    setHandOneEnd(0)
   }
 
   let doubleLostCards = []
@@ -1175,64 +1167,6 @@ function TableOptions({
 
   //////////////////////////////////////////
   // See explanation above
-  const doubleDown2 = () => {
-    console.log("Double Down 2222222222222222222222222222222222222222222222")
-    playerBetUpdate(playerBet * 2)
-    yourMoneyValue(yourMoney - playerBet)
-    // Because of issues with the transfer of state we are drawing the card from within function manually
-    let thisDeck = deck
-    let cardIndex = Math.floor(Math.random() * thisDeck.length)
-    let card = thisDeck[cardIndex]
-    deck.splice(cardIndex, 1)
-    setDiscardPile(discardPile => [...discardPile, card])
-    // The card is being pushed here so that yourCards is accurate for the local calculations below
-    // Do note that if it was just the push then the display of cards from the state would not include the drawn card
-    // The state has to be set at the end for it to update in the list
-    yourCards2.push(card)
-    // Because drawing a card then ending the turn happens in one cycle I have to do a local calculation that checks for Aces
-    // because otherwise the cardTotal is set too late for the final evaluation
-    if (yourCards2.map(x => x.value).filter(x => x === 11)[0] > 0) {
-      // Checking for Aces in yourCards
-      let aceCards = yourCards2.filter(x => x.value2 === 1)
-      if (
-        // Checks for bust with Aces reduced to 1
-        yourCards2.map(x => x.value).reduce((x, y) => x + y) -
-          aceCards.length * 11 +
-          aceCards.length >
-        21
-      ) {
-        setCardTotal2(
-          yourCards2.map(x => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length
-        )
-        setBust2(1)
-      } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) <= 21) {
-        // Normal draw calculation with Ace being 11 if not busting
-        setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
-        stand()
-      } else {
-        // Draw but with reduced Aces
-        setCardTotal2(
-          yourCards2.map(x => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length
-        )
-        stand()
-      }
-    } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) > 21) {
-      // Checks for bust with no Aces
-      setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
-      setBust2(1)
-    } else {
-      // Normal draw calculation without Aces
-      setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
-      stand()
-    }
-    // This actually sets the state to what it should be because otherwise the "yourCards" locally would not be the same as the global yourCards
-    // yourCardsValue2(yourCards2)
-    setYourCards2([...yourCards2])
-  }
 
   let dealerHitLostCards = []
 
@@ -1522,7 +1456,21 @@ function TableOptions({
       deckShuffleFunction()
       setEndPlayerTurn(1)
     } else {
-      // swap the stand function to use stand 2?
+      setSplitCard2("//:0")
+      setSplitCard2Display({
+        display: "none"
+      })
+      setPlayerThirdCardFlag("//:0")
+      setThirdDisplay({ display: "none" })
+      setPlayerFourthCardFlag("//:0")
+      setFourthDisplay({ display: "none" })
+      setPlayerFifthCardFlag("//:0")
+      setFifthDisplay({ display: "none" })
+      setPlayerSixthCardFlag("//:0")
+      setSixthDisplay({ display: "none" })
+      setPlayerSeventhCardFlag("//:0")
+      setSeventhDisplay({ display: "none" })
+
       setSplitCard1(
         cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
           yourCards[yourCards.length - 1].card
@@ -1535,18 +1483,9 @@ function TableOptions({
           yourCards[yourCards.length - 1].card
         ].alt
       )
-      setSplitCard2("//:0")
-      setSplitCard2Display({
-        display: "none"
-      })
+      setCardTotal2(cardTotal)
       let cards1 = yourCards
       let cards2 = yourCards2
-      console.log(cards1)
-      console.log(cards2)
-
-      setPlayerThirdCardFlag("//:0")
-      setThirdDisplay({ display: "none" })
-
       setYourCards2(cards1)
       setYourCards(cards2)
       setSplitCard2Alt()
@@ -1575,7 +1514,10 @@ function TableOptions({
 
   // sets yourCards to totalCards
   useEffect(() => {
-    if (yourCards[0].value + yourCards[1].value === 21 && splitFlag === 1) {
+    if (
+      yourCards[0].value + yourCards[1].value === 21 &&
+      yourCards2.length === 0
+    ) {
       // Blackjack check
       stand()
     } else if (dealerCards[0].value + dealerCards[1].value === 21) {
@@ -1621,57 +1563,10 @@ function TableOptions({
     }
   }, [yourCards])
 
-  // Sets card total for yourCards2 and when it is initialized
-  useEffect(() => {
-    if (handOneEnd === 0) {
-      console.log("Your Cards 2 evaluation for total is starting")
-      // if (yourCards2[0].value + yourCards2[1].value === 21) {
-      //   // Blackjack check
-      //   // stand() ////////////////////////////
-      // } else {
-      if (yourCards2.map(x => x.value).filter(x => x === 11)[0] > 0) {
-        // Checking for ace in yourCards
-        let aceCards = yourCards2.filter(x => x.value2 === 1)
-        if (
-          // Checking for bust with reduced Aces
-          yourCards2.map(x => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length >
-          21
-        ) {
-          // Checks to see if you bust with the ace being 11, if true calculate total with the ace being 1
-          setCardTotal2(
-            yourCards2.map(x => x.value).reduce((x, y) => x + y) -
-              aceCards.length * 11 +
-              aceCards.length
-          )
-          setBust2(1)
-        } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) <= 21) {
-          // Normal draw calculation with Ace being 11 if not busting
-          setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
-        } else {
-          // Draw but with reduced Aces
-          setCardTotal2(
-            yourCards2.map(x => x.value).reduce((x, y) => x + y) -
-              aceCards.length * 11 +
-              aceCards.length
-          )
-        }
-      } else if (yourCards2.map(x => x.value).reduce((x, y) => x + y) > 21) {
-        // Checking for Bust without Aces
-        setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
-        setBust2(1)
-      } else {
-        // Normal draw calculation
-        setCardTotal2(yourCards2.map(x => x.value).reduce((x, y) => x + y))
-      }
-      // }
-    }
-  }, [splitFlag, yourCards2])
-
+  // Bust starts at 0
   useEffect(() => {
     if (bust === 1 && yourCards2.length === 0) {
-      console.log("We have BUUUSTSUEED")
+      console.log("Busted, no split")
       setRoundResultKey("bust")
       stand()
     }
@@ -1689,7 +1584,7 @@ function TableOptions({
         return
       } else {
         console.log("Calculating final round result")
-        if (splitFlag) {
+        if (yourCards2.length === 0) {
           // If turn has ended and it has not split
           if (dealerCardTotal === cardTotal) {
             yourMoneyValue(yourMoney + playerBet)
@@ -1727,43 +1622,45 @@ function TableOptions({
           // First hand
           if (dealerCardTotal < cardTotal) {
             if (cardTotal > 21) {
+              // busted
+              setRoundResultKey("bust")
             } else {
               yourMoneyValue(yourMoney + playerBet * 2)
-              setHandResult1(`You won ${playerBet * 2}`)
+              setRoundResultKey("win")
               setHandOneWin(1)
             }
           } else if (dealerCardTotal > cardTotal) {
             if (dealerCardTotal < 22) {
-              setHandResult1("You lost")
+              setRoundResultKey("lost")
             } else {
               yourMoneyValue(yourMoney + playerBet * 2)
-              setHandResult1(`Dealer Bust. You win ${playerBet * 2}`)
+              setRoundResultKey("dealerBust")
               setHandOneWin(1)
             }
           } else {
             yourMoneyValue(yourMoney + playerBet)
-            setHandResult1("It's a tie")
+            setRoundResultKey("push")
           }
           // Second hand
           if (dealerCardTotal < cardTotal2) {
             if (cardTotal2 > 21) {
-              setHandResult2(`Bust`)
+              setRoundResultKey2("bust")
             } else {
               yourMoneyValue(yourMoney + playerBet2 * 2)
-              setHandResult2(`You won ${playerBet2 * 2}`)
+              setRoundResultKey2("win")
               setHandTwoWin(1)
             }
           } else if (dealerCardTotal > cardTotal2) {
             if (dealerCardTotal < 22) {
-              setHandResult2("You lost")
+              setRoundResultKey2("lost")
             } else {
               yourMoneyValue(yourMoney + playerBet2 * 2)
-              setHandResult2(`Dealer Bust. You win ${playerBet2 * 2}`)
+              setRoundResultKey2("dealerBust")
               setHandTwoWin(1)
             }
           } else {
             yourMoneyValue(yourMoney + playerBet2)
-            setHandResult2("It's a tie")
+            setRoundResultKey2("push")
           }
         }
       }
@@ -1778,25 +1675,22 @@ function TableOptions({
   }, [handTwoWin])
 
   // Checks for busting on second hand and ends turn
-  useEffect(() => {
-    if (splitFlag === 0) {
-      if (bust2) {
-        setHandResult2("Bust")
-        stand()
-      }
-    }
-  }, [cardTotal2])
+  // The bust below is determined as the cardTotal is being calculated, meaning after it has triggered once we just reset is then it
+  // should all work as planned
 
-  // Checks for busting on first hand and switches to second
+  // Checks for bust on split for both hands
   useEffect(() => {
-    if (splitFlag === 0) {
-      if (bust) {
-        setHandResult1("Bust hand one")
-        // Initiate switch to 2nd hand
-        handSwitch()
+    if (yourCards2.length) {
+      // I think I should use cardTotal2
+      if (bust && cardTotal2 === 0) {
+        setRoundResultKey("bust")
+        stand()
+      } else if (bust && cardTotal2) {
+        setRoundResultKey2("bust")
+        stand2()
       }
     }
-  }, [cardTotal])
+  }, [bust])
 
   const [splitElement, setSplitElement] = useState()
   // Sets split element
@@ -1858,7 +1752,7 @@ function TableOptions({
       )
     }
     // Removes the option to double on split if you have already hit, too many bugs if allowed
-    if (splitFlag === 0 && yourCards.length > 2) {
+    if (yourCards2.length && yourCards.length > 2) {
       setDoubleDownElement(
         // Unusable version
         <a>
@@ -1867,19 +1761,6 @@ function TableOptions({
       )
     }
   }, [yourCards, endPlayerTurn])
-
-  // I just realized that opposed to having alt function for yourCards2 I could just swap 2 into the original and back to perform actions.
-
-  // useEffect(() => {
-  //   if(yourCards.length === 2) {
-  //     setDoubleDownElement(
-  //       <a className="hoverHover" onClick={doubleDown2}>
-  //       <DoubleIcon iconTheme={iconTheme}></DoubleIcon>
-  //     </a>
-  //     )
-  //     setSplitElement()
-  //   }
-  // }, [standElement])
 
   const [cardsLeft, setCardsLeft] = useState()
 
@@ -2246,7 +2127,6 @@ function TableOptions({
   let z = document.getElementsByClassName("block")
 
   const backgroundBlur = () => {
-    console.log(z)
     z[0].style.filter = "blur(4px) grayscale(85%)"
   }
 
@@ -2262,12 +2142,37 @@ function TableOptions({
     setTimeout(backgroundBlur, 1000)
   }
 
-  // Need to deactivate buttons when resolving
+  const splitHandle = () => {
+    // disable blur
+    z[0].style.filter = ""
+    // remove outcomeComponent
+    setOutcomeComponent()
+    // swap hands
+    setSplitCard1(
+      cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
+        yourCards[yourCards.length - 1].card
+      ].src +
+        "#" +
+        new Date().getTime()
+    )
+    setSplitCard1Alt(
+      cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
+        yourCards[yourCards.length - 1].card
+      ].alt
+    )
+    setSplitCard2("//:0")
+    setSplitCard2Display({
+      display: "none"
+    })
+    setCardTotal2(cardTotal)
+    let cards1 = yourCards
+    let cards2 = yourCards2
+    setYourCards2(cards1)
+    setYourCards(cards2)
+    // Here I hope the rest of the triggers for displaying the cards to occur actually display them
 
-  useEffect(() => {
-    console.log("roundResultKey switch")
-    console.log(roundResultKey)
-    switch (roundResultKey) {
+    // I suspect that perhaps I may have to swap the roundResultKey to make things simpler
+    switch (roundResultKey2) {
       case "won":
         setOutcomeEffect("positive")
         blur()
@@ -2290,7 +2195,6 @@ function TableOptions({
         roundEndAuto()
         break
       case "bust":
-        // I don't think this is used
         setOutcomeContent("You bust.")
         setOutcomeEffect("negative")
         blur()
@@ -2308,11 +2212,103 @@ function TableOptions({
         blur()
         roundEndAuto()
     }
-  }, [roundResultKey])
+    // With that assuming all the systems work that should have resolved everything and took you back to the bet phase
+  }
+
+  useEffect(() => {
+    console.log("roundResultKey switch")
+    console.log(roundResultKey)
+
+    if (yourCards2.length === 0) {
+      // There is no split
+      switch (roundResultKey) {
+        case "won":
+          setOutcomeEffect("positive")
+          blur()
+          roundEndAuto()
+          break
+        case "lost":
+          setOutcomeEffect("negative")
+          blur()
+          roundEndAuto()
+          break
+        case "push":
+          setOutcomeEffect("neutral")
+          blur()
+          roundEndAuto()
+          break
+        case "blackjack":
+          setOutcomeContent("Blackjack.")
+          setOutcomeEffect("positive")
+          blur()
+          roundEndAuto()
+          break
+        case "bust":
+          setOutcomeContent("You bust.")
+          setOutcomeEffect("negative")
+          blur()
+          roundEndAuto()
+          break
+        case "dealerBust":
+          setOutcomeContent("Dealer bust.")
+          setOutcomeEffect("positive")
+          blur()
+          roundEndAuto()
+          break
+        case "DealerBlackjack":
+          setOutcomeContent("Dealer Blackjack.")
+          setOutcomeEffect("negative")
+          blur()
+          roundEndAuto()
+      }
+    } else if (yourCards2.length && roundResultKey2 !== "") {
+      switch (roundResultKey) {
+        case "won":
+          setOutcomeEffect("positive")
+          blur()
+          break
+        case "lost":
+          setOutcomeEffect("negative")
+          blur()
+          break
+        case "push":
+          setOutcomeEffect("neutral")
+          blur()
+          break
+        case "blackjack":
+          setOutcomeContent("Blackjack.")
+          setOutcomeEffect("positive")
+          blur()
+          break
+        case "bust":
+          setOutcomeContent("You bust.")
+          setOutcomeEffect("negative")
+          blur()
+          break
+        case "dealerBust":
+          setOutcomeContent("Dealer bust.")
+          setOutcomeEffect("positive")
+          blur()
+          break
+        case "DealerBlackjack":
+          setOutcomeContent("Dealer Blackjack.")
+          setOutcomeEffect("negative")
+          blur()
+      }
+      // Here put a setTimeout that handles resetting the blur and the outcomeComponent that triggers when the time is about the same as a
+      // normal end turn, then after that swap the hands of 1 and 2 then trigger another switch that is basically just the normal one
+      // with the roundEndAuto.
+      // Another thing I would like to add is updating the money during the blur function
+
+      // It seems like it mostly worked except the blur and component didn't trigger, nor the ending I think. Better than I expected
+
+      setTimeout(splitHandle, 5000)
+    }
+  }, [roundResultKey, roundResultKey2])
 
   const [outcomeComponent, setOutcomeComponent] = useState()
 
-  const component = () => {
+  const outcomeContainer = () => {
     setOutcomeComponent(
       <Outcome
         textColor={textColor}
@@ -2323,10 +2319,12 @@ function TableOptions({
     )
   }
 
+  // How long it takes for the component to display
+  // The issue with this i am predicting is what if the outcomeEffect from roundResultKey2 is the same as 1, would this not trigger then?
   useEffect(() => {
     if (outcomeEffect !== "") {
       console.log("OUTCOME COMPONENT SET")
-      setTimeout(component, 1500)
+      setTimeout(outcomeContainer, 1500)
     }
   }, [outcomeEffect])
 
@@ -2382,8 +2380,6 @@ function TableOptions({
       )
     }
   }, [endPlayerTurn])
-
-  console.log(splitFlag)
 
   return (
     <div>
@@ -2634,7 +2630,7 @@ function App() {
   const purpleColorString = "#392950"
 
   const redTheme = {
-    borderColor: "#595d67",
+    borderColor: "#c12f2f",
     backgroundColor: "rgba(244, 244, 244, .2)",
     color: "#c12f2f"
   }
