@@ -6,7 +6,6 @@ export default function Push({ textColor, iconTheme = "#fff" }) {
   const [iconTheme2, setIconTheme2] = useState()
 
   useEffect(() => {
-    console.log(iconTheme)
     switch (iconTheme) {
       case "#392950": //purple
         setIconTheme2("#ebebf2")
@@ -24,7 +23,6 @@ export default function Push({ textColor, iconTheme = "#fff" }) {
   }, [])
 
   useEffect(() => {
-    console.log(iconTheme2)
     if (iconTheme2) {
       setOutput(
         <div className="resultIcon">

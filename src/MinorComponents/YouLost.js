@@ -33,7 +33,6 @@ export default function YouLost({
   }, [])
 
   useEffect(() => {
-    console.log(iconTheme)
     switch (iconTheme) {
       case "#392950": //purple
         setIconTheme2("#ebebf2")
@@ -51,7 +50,6 @@ export default function YouLost({
   }, [])
 
   useEffect(() => {
-    console.log(iconTheme2)
     if (iconTheme2 && subText) {
       setOutput(
         <div className="resultIcon">

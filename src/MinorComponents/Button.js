@@ -15,8 +15,6 @@ import React, { useState, useEffect } from "react"
 function Button({ buttonTheme, content, ID, func }) {
   const [className, setClassName] = useState()
 
-  console.log(buttonTheme.backgroundColor)
-
   useEffect(() => {
     switch (buttonTheme.backgroundColor) {
       case "rgba(40, 47, 93, .5)":
