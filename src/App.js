@@ -1150,7 +1150,7 @@ function TableOptions({
             aceCards.length * 11 +
             aceCards.length
         )
-        setBust(1)
+        setBust(p => p + 1)
       } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) <= 21) {
         // Normal draw calculation with Ace being 11 if not busting
         setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
@@ -1167,7 +1167,7 @@ function TableOptions({
     } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
       // Checks for bust with no Aces
       setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
-      setBust(1)
+      setBust(p => p + 1)
     } else {
       // Normal draw calculation without Aces
       setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
@@ -1471,7 +1471,7 @@ function TableOptions({
       dealerHit()
       dealerCardTotalEvaluation()
       deckShuffleFunction()
-      setEndPlayerTurn(1) // This might not be needed
+      setEndPlayerTurn(1)
     } else {
       // instead of setting the card total just set it from the calculating right here
       console.log(yourCards)
@@ -1538,14 +1538,39 @@ function TableOptions({
           yourCards[yourCards.length - 1].card
         ].alt
       )
-      let cards1 = yourCards
-      let cards2 = yourCards2
+      let cards1 = []
+      let cards2 = []
+      cards1.push(...yourCards)
+      cards2.push(...yourCards2)
+      // This swaps the hands
+      // yourCards2.length = 0
+      // yourCards.length = 0
+      // yourCards2.push(...cards1)
       setYourCards2(cards1)
+      // yourCards.push(...cards2)
       setYourCards(cards2)
+      let newHit = () => {
+        console.log(yourCards)
+        console.log(yourCards)
+        let thisDeck = deck
+        let cardIndex = Math.floor(Math.random() * thisDeck.length)
+        let card = thisDeck[cardIndex]
+        thisDeck.splice(cardIndex, 1)
+        setDiscardPile(discardPile => [...discardPile, card])
+        setDeck(thisDeck)
+        cards2.push(card) // cards 2 is what is being used as yourCards
+        setYourCards([...cards2])
+        console.log(cards2)
+      }
       setSplitCard2Alt()
       setStandElement(
         <a className="hoverHover" onClick={stand2}>
           <StandIcon iconTheme={iconTheme}></StandIcon>
+        </a>
+      )
+      setHitElement(
+        <a className="hoverHover" onClick={newHit}>
+          <HitIcon iconTheme={iconTheme}></HitIcon>
         </a>
       )
     }
@@ -1569,50 +1594,60 @@ function TableOptions({
   // sets yourCards to totalCards
   useEffect(() => {
     if (
-      yourCards[0].value + yourCards[1].value === 21 &&
-      yourCards2.length === 0
+      yourCards[0].value === 11 &&
+      yourCards[1].value === 11 &&
+      yourCards.length === 2
     ) {
-      // Blackjack check
-      stand()
-    } else if (dealerCards[0].value + dealerCards[1].value === 21) {
-      console.log("DID DEALER BLACKJACK")
-      stand()
+      setCardTotal(2)
     } else {
-      if (yourCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
-        // Checking for Aces in yourCards
-        let aceCards = yourCards.filter(x => x.value2 === 1)
-        if (
-          // Checks for bust with Aces reduced to 1
-          yourCards.map(x => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length >
-          21
-        ) {
-          setCardTotal(
-            yourCards.map(x => x.value).reduce((x, y) => x + y) -
-              aceCards.length * 11 +
-              aceCards.length
-          )
-          setBust(1)
-        } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) <= 21) {
-          // Normal draw calculation with Ace being 11 if not busting
-          setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
-        } else {
-          // Draw but with reduced Aces
-          console.log("This is where we are")
-          setCardTotal(
-            yourCards.map(x => x.value).reduce((x, y) => x + y) -
-              aceCards.length * 11 +
-              aceCards.length
-          )
-        }
-      } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
-        // Checks for bust with no Aces
-        setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
-        setBust(1)
+      if (
+        yourCards[0].value + yourCards[1].value === 21 &&
+        yourCards2.length === 0
+      ) {
+        // Blackjack check
+        stand()
+      } else if (dealerCards[0].value + dealerCards[1].value === 21) {
+        console.log("DID DEALER BLACKJACK")
+        stand()
       } else {
-        // Normal draw calculation without Aces
-        setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
+        if (yourCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
+          // Checking for Aces in yourCards
+          let aceCards = yourCards.filter(x => x.value2 === 1)
+          if (
+            // Checks for bust with Aces reduced to 1
+            yourCards.map(x => x.value).reduce((x, y) => x + y) -
+              aceCards.length * 11 +
+              aceCards.length >
+            21
+          ) {
+            setCardTotal(
+              yourCards.map(x => x.value).reduce((x, y) => x + y) -
+                aceCards.length * 11 +
+                aceCards.length
+            )
+            setBust(p => p + 1)
+          } else if (
+            yourCards.map(x => x.value).reduce((x, y) => x + y) <= 21
+          ) {
+            // Normal draw calculation with Ace being 11 if not busting
+            setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
+          } else {
+            // Draw but with reduced Aces
+            console.log("This is where we are")
+            setCardTotal(
+              yourCards.map(x => x.value).reduce((x, y) => x + y) -
+                aceCards.length * 11 +
+                aceCards.length
+            )
+          }
+        } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+          // Checks for bust with no Aces
+          setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
+          setBust(p => p + 1)
+        } else {
+          // Normal draw calculation without Aces
+          setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
+        }
       }
     }
   }, [yourCards])
@@ -1629,8 +1664,13 @@ function TableOptions({
   // Creates round result
   // The issue here is that does having this run twice matter
   // This generates resultKeys for both 1 and 2
+
+  // What if I just run it once after the second hand if the second hand exists
   useEffect(() => {
-    if (endPlayerTurn === 1 || endPlayerTurn === 2) {
+    if (
+      (endPlayerTurn === 1 && yourCards2.length === 0) ||
+      endPlayerTurn === 2
+    ) {
       console.log("cardTotal:", cardTotal)
       console.log("cardTotal2:", cardTotal2)
       console.log("dealerCardTotal:", dealerCardTotal)
@@ -1682,7 +1722,7 @@ function TableOptions({
               setRoundResultKey("bust")
             } else {
               yourMoneyValue(yourMoney + playerBet * 2)
-              setRoundResultKey("win")
+              setRoundResultKey("won")
               setHandOneWin(1)
             }
           } else if (dealerCardTotal > cardTotal) {
@@ -1699,11 +1739,12 @@ function TableOptions({
           }
           // Second hand
           if (dealerCardTotal < cardTotal2) {
+            console.log(cardTotal2)
             if (cardTotal2 > 21) {
               setRoundResultKey2("bust")
             } else {
               yourMoneyValue(yourMoney + playerBet2 * 2)
-              setRoundResultKey2("win")
+              setRoundResultKey2("won")
               setHandTwoWin(1)
             }
           } else if (dealerCardTotal > cardTotal2) {
@@ -1737,11 +1778,13 @@ function TableOptions({
   // Checks for bust on split for both hands
   useEffect(() => {
     if (yourCards2.length) {
-      // I think I should use cardTotal2
       if (bust && cardTotal2 === 0) {
+        //
+        console.log(cardTotal2)
         setRoundResultKey("bust")
         stand()
       } else if (bust && cardTotal2) {
+        console.log(cardTotal2)
         setRoundResultKey2("bust")
         stand2()
       }
@@ -1850,7 +1893,18 @@ function TableOptions({
   const [playerThirdAlt, setPlayerThirdAlt] = useState()
   useEffect(() => {
     if (yourCards[2]) {
-      setPlayerThirdCardFlag()
+      switch (playerThirdCardFlag) {
+        case undefined:
+          setPlayerThirdCardFlag(null)
+          break
+        case null:
+          setPlayerThirdCardFlag(undefined)
+          break
+        default:
+          setPlayerThirdCardFlag(undefined)
+      }
+    } else {
+      setPlayerThirdCardFlag("//:0")
     }
   }, [yourCards])
 
@@ -1868,8 +1922,10 @@ function TableOptions({
       setPlayerThirdAlt(
         cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].alt
       )
+    } else {
+      setThirdDisplay({ display: "none" })
     }
-  }, [yourCards, playerThirdCardFlag])
+  }, [playerThirdCardFlag]) // This will update with yourCards or yourCards2 to turn display: none when split swaps
 
   //
 
@@ -1878,7 +1934,18 @@ function TableOptions({
   const [playerFourthAlt, setPlayerFourthAlt] = useState()
   useEffect(() => {
     if (yourCards[3]) {
-      setPlayerFourthCardFlag()
+      switch (playerFourthCardFlag) {
+        case undefined:
+          setPlayerFourthCardFlag(null)
+          break
+        case null:
+          setPlayerFourthCardFlag(undefined)
+          break
+        default:
+          setPlayerFourthCardFlag(undefined)
+      }
+    } else {
+      setPlayerFourthCardFlag("//:0")
     }
   }, [yourCards])
 
@@ -1896,8 +1963,10 @@ function TableOptions({
       setPlayerFourthAlt(
         cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].alt
       )
+    } else {
+      setFourthDisplay({ display: "none" })
     }
-  }, [yourCards, playerFourthCardFlag])
+  }, [playerFourthCardFlag])
 
   //
   const [fifthDisplay, setFifthDisplay] = useState({ display: "none" })
@@ -1905,7 +1974,18 @@ function TableOptions({
   const [playerFifthAlt, setPlayerFifthAlt] = useState()
   useEffect(() => {
     if (yourCards[4]) {
-      setPlayerFifthCardFlag()
+      switch (playerFifthCardFlag) {
+        case undefined:
+          setPlayerFifthCardFlag(null)
+          break
+        case null:
+          setPlayerFifthCardFlag(undefined)
+          break
+        default:
+          setPlayerFifthCardFlag(undefined)
+      }
+    } else {
+      setPlayerFifthCardFlag("//:0")
     }
   }, [yourCards])
 
@@ -1923,8 +2003,10 @@ function TableOptions({
       setPlayerFifthAlt(
         cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].alt
       )
+    } else {
+      setFifthDisplay({ display: "none" })
     }
-  }, [yourCards, playerFifthCardFlag])
+  }, [playerFifthCardFlag])
 
   //
   const [sixthDisplay, setSixthDisplay] = useState({ display: "none" })
@@ -1932,7 +2014,18 @@ function TableOptions({
   const [playerSixthAlt, setPlayerSixthAlt] = useState()
   useEffect(() => {
     if (yourCards[5]) {
-      setPlayerSixthCardFlag()
+      switch (playerSixthCardFlag) {
+        case undefined:
+          setPlayerSixthCardFlag(null)
+          break
+        case null:
+          setPlayerSixthCardFlag(undefined)
+          break
+        default:
+          setPlayerSixthCardFlag(undefined)
+      }
+    } else {
+      setPlayerSixthCardFlag("//:0")
     }
   }, [yourCards])
 
@@ -1950,8 +2043,10 @@ function TableOptions({
       setPlayerSixthAlt(
         cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].alt
       )
+    } else {
+      setSixthDisplay({ display: "none" })
     }
-  }, [yourCards, playerSixthCardFlag])
+  }, [playerSixthCardFlag])
 
   //
   const [seventhDisplay, setSeventhDisplay] = useState({ display: "none" })
@@ -1959,7 +2054,18 @@ function TableOptions({
   const [playerSeventhAlt, setPlayerSeventhAlt] = useState()
   useEffect(() => {
     if (yourCards[6]) {
-      setPlayerSeventhCardFlag()
+      switch (playerSeventhCardFlag) {
+        case undefined:
+          setPlayerSeventhCardFlag(null)
+          break
+        case null:
+          setPlayerSeventhCardFlag(undefined)
+          break
+        default:
+          setPlayerSeventhCardFlag(undefined)
+      }
+    } else {
+      setPlayerSeventhCardFlag("//:0")
     }
   }, [yourCards])
 
@@ -1977,8 +2083,10 @@ function TableOptions({
       setPlayerSeventhAlt(
         cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].alt
       )
+    } else {
+      setSeventhDisplay({ display: "none" })
     }
-  }, [yourCards, playerSeventhCardFlag])
+  }, [playerSeventhCardFlag])
 
   //
   //
@@ -2200,6 +2308,9 @@ function TableOptions({
   const roundEndAuto = () => {
     setTimeout(roundStartFlagReset, 3000)
   }
+  const roundEndAuto2 = () => {
+    setTimeout(roundStartFlagReset, 4000)
+  }
 
   const [outcomeContent, setOutcomeContent] = useState()
 
@@ -2243,49 +2354,49 @@ function TableOptions({
             secondOutcome("positive")
           }, 1500)
           blur()
-          roundEndAuto()
+          roundEndAuto2()
           break
         case "lost":
           setTimeout(function() {
             secondOutcome("negative")
           }, 1500)
           blur()
-          roundEndAuto()
+          roundEndAuto2()
           break
         case "push":
           setTimeout(function() {
             secondOutcome("neutral")
           }, 1500)
           blur()
-          roundEndAuto()
+          roundEndAuto2()
           break
         case "blackjack":
           setTimeout(function() {
             secondOutcome("positive", "Blackjack.")
           }, 1500)
           blur()
-          roundEndAuto()
+          roundEndAuto2()
           break
         case "bust":
           setTimeout(function() {
             secondOutcome("negative", "You bust.")
           }, 1500)
           blur()
-          roundEndAuto()
+          roundEndAuto2()
           break
         case "dealerBust":
           setTimeout(function() {
             secondOutcome("positive", "Dealer bust.")
           }, 1500)
           blur()
-          roundEndAuto()
+          roundEndAuto2()
           break
         case "DealerBlackjack":
           setTimeout(function() {
             secondOutcome("negative", "Dealer Blackjack.")
           }, 1500)
           blur()
-          roundEndAuto()
+          roundEndAuto2()
       }
     }
 
