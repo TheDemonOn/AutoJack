@@ -1771,6 +1771,10 @@ function TableOptions({
     }
   }, [handTwoWin])
 
+  useEffect(() => {
+    console.log("Current money is:" + yourMoney)
+  }, [yourMoney])
+
   // Checks for busting on second hand and ends turn
   // The bust below is determined as the cardTotal is being calculated, meaning after it has triggered once we just reset is then it
   // should all work as planned
@@ -2332,12 +2336,13 @@ function TableOptions({
   }
 
   const splitHandleTimeout = () => {
+    // When this triggers
     setTimeout(splitHandle, 4000)
   }
 
   const splitHandle = () => {
     // When splitHandle Occurs endPlayerTurn needs to have triggered for both of the roundKeys to be created
-
+    // The roundResultKeys are using old state on the first pass
     console.log("Split Handle Starting")
     console.log(roundResultKey)
     console.log(roundResultKey2)
@@ -2348,11 +2353,14 @@ function TableOptions({
       // when this executes the round will end
       console.log("Switch state function")
       console.log(roundResultKey2)
+      // this yourMoney is a step behind so we just manually add it back in
+      console.log(yourMoney)
       switch (roundResultKey2) {
         case "won":
           setTimeout(function() {
             secondOutcome("positive")
           }, 1500)
+          setYourMoneyUpdater(yourMoney + playerBet + playerBet)
           blur()
           roundEndAuto2()
           break
@@ -2360,6 +2368,7 @@ function TableOptions({
           setTimeout(function() {
             secondOutcome("negative")
           }, 1500)
+          setYourMoneyUpdater(yourMoney)
           blur()
           roundEndAuto2()
           break
@@ -2367,13 +2376,7 @@ function TableOptions({
           setTimeout(function() {
             secondOutcome("neutral")
           }, 1500)
-          blur()
-          roundEndAuto2()
-          break
-        case "blackjack":
-          setTimeout(function() {
-            secondOutcome("positive", "Blackjack.")
-          }, 1500)
+          setYourMoneyUpdater(yourMoney + playerBet)
           blur()
           roundEndAuto2()
           break
@@ -2381,6 +2384,7 @@ function TableOptions({
           setTimeout(function() {
             secondOutcome("negative", "You bust.")
           }, 1500)
+          setYourMoneyUpdater(yourMoney)
           blur()
           roundEndAuto2()
           break
@@ -2388,6 +2392,7 @@ function TableOptions({
           setTimeout(function() {
             secondOutcome("positive", "Dealer bust.")
           }, 1500)
+          setYourMoneyUpdater(yourMoney + playerBet + playerBet)
           blur()
           roundEndAuto2()
           break
@@ -2395,6 +2400,7 @@ function TableOptions({
           setTimeout(function() {
             secondOutcome("negative", "Dealer Blackjack.")
           }, 1500)
+          setYourMoneyUpdater(yourMoney)
           blur()
           roundEndAuto2()
       }
@@ -2489,12 +2495,31 @@ function TableOptions({
       }
       // This checks to see if the splitCards exist and that the first roundResultKey was created then swapped into roundResultKey2.
       // It is swapped because it uses the same system that evaluates key 1
-    } else if (yourCards2.length && roundResultKey2 !== "") {
+    } else if (
+      yourCards2.length &&
+      roundResultKey2 !== "" &&
+      roundResultKey !== ""
+    ) {
       console.log("ALT SWITCH")
       console.log(roundResultKey)
       console.log(roundResultKey2)
       switch (roundResultKey) {
         case "won":
+          switch (roundResultKey2) {
+            case "won":
+              setYourMoneyUpdater(yourMoney - playerBet * 2)
+              break
+            case "push":
+              setYourMoneyUpdater(yourMoney - playerBet)
+              break
+            case "blackjack":
+              setYourMoneyUpdater(yourMoney - playerBet * 2)
+              break
+            default:
+              // lost
+              setYourMoneyUpdater(yourMoney)
+              break
+          }
           setOutcomeEffect("positive")
           blur()
           break
@@ -2503,20 +2528,50 @@ function TableOptions({
           blur()
           break
         case "push":
+          switch (roundResultKey2) {
+            case "won":
+              setYourMoneyUpdater(yourMoney - playerBet * 2)
+              break
+            case "push":
+              setYourMoneyUpdater(yourMoney - playerBet)
+              break
+            case "blackjack":
+              setYourMoneyUpdater(yourMoney - playerBet * 2)
+              break
+            default:
+              // lost
+              setYourMoneyUpdater(yourMoney)
+              break
+          }
           setOutcomeEffect("neutral")
           blur()
           break
-        case "blackjack":
-          setOutcomeContent("Blackjack.")
-          setOutcomeEffect("positive")
-          blur()
-          break
+        // case "blackjack":
+        //   setOutcomeContent("Blackjack.")
+        //   setOutcomeEffect("positive")
+        //   blur()
+        //   break
         case "bust":
           setOutcomeContent("You bust.")
           setOutcomeEffect("negative")
           blur()
           break
         case "dealerBust":
+          switch (roundResultKey2) {
+            case "won":
+              setYourMoneyUpdater(yourMoney - playerBet * 2)
+              break
+            case "push":
+              setYourMoneyUpdater(yourMoney - playerBet)
+              break
+            case "blackjack":
+              setYourMoneyUpdater(yourMoney - playerBet * 2)
+              break
+            default:
+              // lost
+              setYourMoneyUpdater(yourMoney)
+              break
+          }
           setOutcomeContent("Dealer bust.")
           setOutcomeEffect("positive")
           blur()
@@ -2629,6 +2684,34 @@ function TableOptions({
         break
     }
   }, [])
+
+  const [yourMoneyUpdater, setYourMoneyUpdater] = useState(yourMoney)
+  // Updating for no split
+  useEffect(() => {
+    if (yourCards2[0]) {
+    } else {
+      setYourMoneyUpdater(yourMoney)
+    }
+  }, [yourMoney])
+
+  useEffect(() => {
+    if (yourCards2.length === 2) {
+      setYourMoneyUpdater(yourMoney)
+    }
+  }, [yourCards2, splitFlag])
+
+  // update for split
+  // useEffect(() => {
+  //   if(yourCards2[0]) {
+  //     setYourMoneyUpdater(yourMoney)
+  //   }
+  // }, [roundResultKey])
+
+  // useEffect(() => {
+  //   if(yourCards2[0]) {
+
+  //   }
+  // }, [roundResultKey2])
 
   return (
     <div>
@@ -2811,7 +2894,7 @@ function TableOptions({
 
         <div className="moneyWrapperTable">
           <p style={textColor} id="bet">
-            ${yourMoney}
+            ${yourMoneyUpdater}
           </p>
           <p style={textColor} id="currentBet">
             Your Money
@@ -2841,7 +2924,7 @@ function TableOptions({
 
 // later create a validation so that if the entered input is not acceptable it lets them know, but also prompts a button to continue with default options.
 function App() {
-  console.log("Main is looped")
+  // console.log("Main is looped")
 
   // This is the current/default bodyTheme
   const [bodyTheme, setBodyTheme] = useState("bodyTheme2")

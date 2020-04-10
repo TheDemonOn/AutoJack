@@ -11,8 +11,6 @@ export default function YouWon({
 
   const [subText, setSubText] = useState()
 
-  // asdd a background to see text better
-
   useEffect(() => {
     if (outcomeContent) {
       setSubText(
