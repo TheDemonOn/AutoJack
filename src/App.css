@@ -666,6 +666,28 @@ p {
   font-size: 4em;
 }
 
+.addCss {
+  font-family: upgrade-lights, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 3.5em;
+}
+
+.addAnimation {
+  position: fixed;
+  right: 25%;
+  top: 9em;
+  opacity: 0;
+  transition: 1s;
+}
+
+.addAnimationEnd {
+  position: fixed;
+  right: 25%;
+  top: 6em;
+  transition: 3s;
+}
+
 #currentBet {
   margin-top: -0.3em;
   font-size: 2.5em;
