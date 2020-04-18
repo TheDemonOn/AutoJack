@@ -12,6 +12,7 @@ import TableMid from "./MinorComponents/TableMid.js"
 import TableHigh from "./MinorComponents/TableHigh.js"
 import TableCustom from "./MinorComponents/TableCustom.js"
 import PreviousMoney from "./MinorComponents/PreviousMoney.js"
+import PreviousBet from "./MinorComponents/PreviousBet.js"
 import AddAnimation from "./MinorComponents/AddAnimation.js"
 
 // import Push from "./MinorComponents/Push.js"
@@ -824,6 +825,7 @@ function RoundStart({
 
   const [cardBack, setCardBack] = useState()
 
+  // Sets card back
   useEffect(() => {
     switch (cardThemeNum) {
       case "t1":
@@ -1041,17 +1043,21 @@ function TableOptions({
   const [endPlayerTurn, setEndPlayerTurn] = useState(0)
 
   //////////////////////////////////////////////////////
-  // ISSUE: When busting after drawing a card then doubling down while the dealer does not bust the cards they drew does not show up, but should.
-  // Double Down causes the bug, don't know for split
 
-  // useEffect(() => {
-  //   console.log("discard length: " + discardPile.length)
-  //   console.log("deck + discard: " + (deck.length + discardPile.length))
-  //   console.log("deck length: " + deck.length)
-  //   console.log(dealerCards.map(x => x.name))
-  //   console.log(yourCards.map(x => x.name))
-  //   console.log(yourCards2.map(x => x.name))
-  // }, [deck, discardPile, yourCards, yourCards2])
+  let betDoubled = 0
+
+  let prevBet = PreviousBet(playerBet)
+
+  useEffect(() => {
+    if (prevBet !== playerBet && prevBet) {
+      betDoubled = 1
+    }
+    return () => {
+      if (betDoubled) {
+        playerBetUpdate(playerBet / 2)
+      }
+    }
+  }, [playerBet])
 
   const splitting = () => {
     // splitting should only be available on the deal no other times
@@ -3053,7 +3059,6 @@ function TableOptions({
   )
 }
 
-// later create a validation so that if the entered input is not acceptable it lets them know, but also prompts a button to continue with default options.
 function App() {
   // console.log("Main is looped")
 
