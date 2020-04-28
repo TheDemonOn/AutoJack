@@ -678,7 +678,7 @@ p {
   right: 25%;
   top: 9em;
   opacity: 0;
-  transition: 1s;
+  transition: 0s;
 }
 
 .addAnimationEnd {

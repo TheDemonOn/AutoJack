@@ -1042,6 +1042,8 @@ function TableOptions({
 
   const [endPlayerTurn, setEndPlayerTurn] = useState(0)
 
+  const [secondHand, setSecondHand] = useState(0)
+
   //////////////////////////////////////////////////////
 
   // This checks to see if the bet value changed during the gameplay, and resets it back to the original value after
@@ -1132,9 +1134,23 @@ function TableOptions({
   // I need to make it see the hit
   const doubleDown = () => {
     // Focus on solving the playerBet and using playerBet2
-
-    playerBetUpdate(playerBet * 2)
     yourMoneyValue(m => m - playerBet)
+
+    if (secondHand) {
+      // Hand 2
+      console.log("PlayerBet2 is: " + playerBet2)
+      setPlayerBet2(playerBet2 * 2)
+    } else {
+      // Hand 1
+      console.log("PlayerBet is: " + playerBet)
+      playerBetUpdate(playerBet * 2)
+    }
+
+    if (splitFlag) {
+      console.log("Did this fix the lose money not updating")
+      setYourMoneyUpdater(m => m - playerBet)
+    }
+
     // Because of issues with the transfer of state we are drawing the card from within function manually; this did not work
     let thisDeck = deck
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
@@ -1147,6 +1163,19 @@ function TableOptions({
     yourCards.push(card)
     // Because drawing a card then ending the turn happens in one cycle I have to do a local calculation that checks for Aces
     // because otherwise the cardTotal is set too late for the final evaluation
+
+    let end = () => {}
+    console.log(secondHand)
+    if (secondHand) {
+      end = () => {
+        stand2()
+      }
+    } else {
+      end = () => {
+        stand()
+      }
+    }
+
     if (yourCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
       // Checking for Aces in yourCards
       let aceCards = yourCards.filter(x => x.value2 === 1)
@@ -1166,7 +1195,7 @@ function TableOptions({
       } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) <= 21) {
         // Normal draw calculation with Ace being 11 if not busting
         setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
-        stand()
+        end()
       } else {
         // Draw but with reduced Aces
         setCardTotal(
@@ -1174,7 +1203,7 @@ function TableOptions({
             aceCards.length * 11 +
             aceCards.length
         )
-        stand()
+        end()
       }
     } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
       // Checks for bust with no Aces
@@ -1183,12 +1212,18 @@ function TableOptions({
     } else {
       // Normal draw calculation without Aces
       setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
-      stand()
+      end()
     }
     // This actually sets the state to what it should be because otherwise the "yourCards" locally would not be the same as the global yourCards
     // yourCardsValue(yourCards)
     if (yourCards2.length) {
       // This fixes the card from going to the wrong hand as well
+      if (secondHand) {
+        // Second hand
+        setYourCards([...yourCards])
+      } else {
+        // First hand
+      }
     } else {
       setYourCards([...yourCards])
     }
@@ -1556,15 +1591,9 @@ function TableOptions({
       cards1.push(...yourCards)
       cards2.push(...yourCards2)
       // This swaps the hands
-      // yourCards2.length = 0
-      // yourCards.length = 0
-      // yourCards2.push(...cards1)
       setYourCards2(cards1)
-      // yourCards.push(...cards2)
       setYourCards(cards2)
       let newHit = () => {
-        // console.log(yourCards)
-        // console.log(yourCards)
         let thisDeck = deck
         let cardIndex = Math.floor(Math.random() * thisDeck.length)
         let card = thisDeck[cardIndex]
@@ -1573,7 +1602,6 @@ function TableOptions({
         setDeck(thisDeck)
         cards2.push(card) // cards 2 is what is being used as yourCards
         setYourCards([...cards2])
-        // console.log(cards2)
       }
       setSplitCard2Alt()
       setStandElement(
@@ -1586,7 +1614,8 @@ function TableOptions({
           <HitIcon iconTheme={iconTheme}></HitIcon>
         </a>
       )
-      setDoubleDownElement()
+      // setDoubleDownElement()
+      setSecondHand(1)
     }
   }
 
@@ -1689,8 +1718,8 @@ function TableOptions({
       console.log("cardTotal2:", cardTotal2)
       console.log("dealerCardTotal:", dealerCardTotal)
       if (cardTotal > 21 && cardTotal2 === 0) {
-        // Checks for bust on double down
-        // console.log("bust")
+        //
+        console.log("What is this")
         return
       } else {
         console.log("Calculating final round result")
@@ -1726,12 +1755,14 @@ function TableOptions({
         } else {
           // This will evaluate both the first and second hand sequentially at once
           // First hand
-          if (dealerCardTotal < cardTotal) {
+          if (cardTotal > 21) {
+            setRoundResultKey("bust")
+          } else if (dealerCardTotal < cardTotal) {
             if (cardTotal > 21) {
               // busted
               setRoundResultKey("bust")
             } else {
-              yourMoneyValue(m => m + playerBet * 2)
+              yourMoneyValue(m => m + playerBet2 * 2)
               setRoundResultKey("won")
               setHandOneWin(1)
             }
@@ -1739,22 +1770,24 @@ function TableOptions({
             if (dealerCardTotal < 22) {
               setRoundResultKey("lost")
             } else {
-              yourMoneyValue(m => m + playerBet * 2)
+              yourMoneyValue(m => m + playerBet2 * 2)
               setRoundResultKey("dealerBust")
               setHandOneWin(1)
             }
           } else {
-            yourMoneyValue(m => m + playerBet)
+            yourMoneyValue(m => m + playerBet2)
             setRoundResultKey("push")
             setHandOnePush(1)
           }
           // Second hand
-          if (dealerCardTotal < cardTotal2) {
-            // console.log(cardTotal2)
+          if (cardTotal2 > 21) {
+            setRoundResultKey2("bust")
+          } else if (dealerCardTotal < cardTotal2) {
+            console.log(cardTotal2)
             if (cardTotal2 > 21) {
               setRoundResultKey2("bust")
             } else {
-              yourMoneyValue(m => m + playerBet2 * 2)
+              yourMoneyValue(m => m + playerBet * 2)
               setRoundResultKey2("won")
               setHandTwoWin(1)
             }
@@ -1762,12 +1795,12 @@ function TableOptions({
             if (dealerCardTotal < 22) {
               setRoundResultKey2("lost")
             } else {
-              yourMoneyValue(m => m + playerBet2 * 2)
+              yourMoneyValue(m => m + playerBet * 2)
               setRoundResultKey2("dealerBust")
               setHandTwoWin(1)
             }
           } else {
-            yourMoneyValue(m => m + playerBet2)
+            yourMoneyValue(m => m + playerBet)
             setRoundResultKey2("push")
             setHandTwoPush(1)
           }
@@ -1784,17 +1817,16 @@ function TableOptions({
   // The bust below is determined as the cardTotal is being calculated, meaning after it has triggered once we just reset is then it
   // should all work as planned
 
-  // Checks for bust on split for both hands
+  // Checks for bust on split for both hands/
   useEffect(() => {
     if (yourCards2.length) {
       if (bust && cardTotal2 === 0) {
-        //
-        // console.log(cardTotal2)
-        setRoundResultKey("bust")
+        console.log("Bust 2")
+        setRoundResultKey2("bust")
         stand()
       } else if (bust && cardTotal2) {
-        // console.log(cardTotal2)
-        setRoundResultKey2("bust")
+        console.log("Bust 1")
+        setRoundResultKey("bust")
         stand2()
       }
     }
@@ -2345,12 +2377,6 @@ function TableOptions({
     setTimeout(splitHandle, 4000)
   }
 
-  let localMoney = yourMoney
-
-  useEffect(() => {
-    localMoney = yourMoney
-  }, [yourMoney])
-
   const splitHandle = () => {
     // When splitHandle Occurs endPlayerTurn needs to have triggered for both of the roundKeys to be created
     // The roundResultKeys are using old state on the first pass
@@ -2383,20 +2409,18 @@ function TableOptions({
 
     const switchState = () => {
       // when this executes the round will end
-      console.log("Switch state function")
+      console.log("SPLIT SWITCH 2")
       console.log(roundResultKey2)
       console.log(yourMoney)
-      console.log(localMoney)
+      console.log(playerBet)
       // So i can update it manually only if both are positive change; win or push
       switch (roundResultKey2) {
         case "won":
           setTimeout(function() {
             secondOutcome("positive")
           }, 1500)
-          console.log(yourMoney)
-          console.log(yourMoney + playerBet + playerBet)
           animateAdd(playerBet * 2)
-          setYourMoneyUpdater(localMoney)
+          setYourMoneyUpdater(yourMoney)
           blur()
           roundEndAuto2()
           break
@@ -2404,8 +2428,7 @@ function TableOptions({
           setTimeout(function() {
             secondOutcome("negative")
           }, 1500)
-          console.log(yourMoney)
-          setYourMoneyUpdater(localMoney)
+          setYourMoneyUpdater(yourMoney)
           blur()
           roundEndAuto2()
           break
@@ -2413,10 +2436,8 @@ function TableOptions({
           setTimeout(function() {
             secondOutcome("neutral")
           }, 1500)
-          console.log(yourMoney)
-          console.log(yourMoney + playerBet)
           animateAdd(playerBet)
-          setYourMoneyUpdater(localMoney)
+          setYourMoneyUpdater(yourMoney)
           blur()
           roundEndAuto2()
           break
@@ -2424,8 +2445,7 @@ function TableOptions({
           setTimeout(function() {
             secondOutcome("negative", "You bust.")
           }, 1500)
-          console.log(yourMoney)
-          setYourMoneyUpdater(localMoney)
+          setYourMoneyUpdater(yourMoney)
           blur()
           roundEndAuto2()
           break
@@ -2433,11 +2453,9 @@ function TableOptions({
           setTimeout(function() {
             secondOutcome("positive", "Dealer bust.")
           }, 1500)
-          // For double dealer bust yourMoney is inaccurate
-          console.log(yourMoney)
-          console.log(yourMoney + playerBet + playerBet)
+          // For double dealerBust yourMoney is inaccurate// Not anymore
           animateAdd(playerBet * 2)
-          setYourMoneyUpdater(localMoney)
+          setYourMoneyUpdater(yourMoney)
           blur()
           roundEndAuto2()
           break
@@ -2445,8 +2463,7 @@ function TableOptions({
           setTimeout(function() {
             secondOutcome("negative", "Dealer Blackjack.")
           }, 1500)
-          console.log(yourMoney)
-          setYourMoneyUpdater(localMoney)
+          setYourMoneyUpdater(yourMoney)
           blur()
           roundEndAuto2()
       }
@@ -2481,16 +2498,14 @@ function TableOptions({
     // It seems to just work now
     setYourCards(yourCards2)
 
+    console.log("SECOND HAND 0 (should be first hand)")
+    setSecondHand(0)
+
     // I suspect that perhaps I may have to swap the roundResultKey to make things simpler
 
     // With that assuming all the systems work that should have resolved everything and took you back to the bet phase
     setTimeout(switchState, 2000)
   }
-
-  const [doubleUpdate, setDoubleUpdate] = useState(0)
-
-  // Resolves for updating yourMoney state twice in the same cycle if both hands on split win, need to resolve push as well
-  // This happens a cycle after the money is already added
 
   const animateAdd = bet => {
     setAnimationComponent(
@@ -2501,8 +2516,8 @@ function TableOptions({
   }
 
   useEffect(() => {
-    // This is essential and triggers every time
-    console.log("roundResultKey Eval")
+    // This is essential  triggers every time
+    console.log("Round Result Keys")
     console.log(roundResultKey)
     console.log(roundResultKey2)
 
@@ -2559,48 +2574,28 @@ function TableOptions({
       roundResultKey2 !== "" &&
       roundResultKey !== ""
     ) {
-      // if (handOneWin && handTwoWin) {
-      //   console.log(yourMoney)
-      //   yourMoneyValue(yourMoney + playerBet + playerBet)
-      //   localMoney = yourMoney + playerBet + playerBet
-      // } else if (handOneWin && handTwoPush) {
-      //   console.log(yourMoney)
-      //   yourMoneyValue(yourMoney + playerBet + playerBet)
-      //   localMoney = yourMoney + playerBet + playerBet
-      // } else if (handOnePush && handTwoWin) {
-      //   console.log(yourMoney)
-      //   yourMoneyValue(yourMoney + playerBet)
-      //   localMoney = yourMoney + playerBet
-      // } else if (handOnePush && handTwoPush) {
-      //   console.log(yourMoney)
-      //   yourMoneyValue(yourMoney + playerBet)
-      //   localMoney = yourMoney + playerBet
-      // }
-      console.log(yourMoney)
-      console.log(localMoney)
-
-      console.log("ALT SWITCH")
+      console.log("SPLIT SWITCH 1")
       console.log(roundResultKey)
       console.log(roundResultKey2)
-      // The issue is when the double update for money occurs it uses the old money
+      console.log(yourMoney)
       switch (roundResultKey) {
         case "won":
           switch (roundResultKey2) {
             case "won":
-              setYourMoneyUpdater(localMoney - playerBet * 2)
+              setYourMoneyUpdater(yourMoney - playerBet * 2)
               break
             case "push":
-              setYourMoneyUpdater(localMoney - playerBet)
+              setYourMoneyUpdater(yourMoney - playerBet)
               break
             case "dealerBust":
-              setYourMoneyUpdater(localMoney - playerBet * 2)
+              setYourMoneyUpdater(yourMoney - playerBet * 2)
               break
             default:
               // lost
-              setYourMoneyUpdater(localMoney)
+              setYourMoneyUpdater(yourMoney)
               break
           }
-          animateAdd(playerBet * 2)
+          animateAdd(playerBet2 * 2)
           setOutcomeEffect("positive")
           blur()
           break
@@ -2611,34 +2606,26 @@ function TableOptions({
         case "push":
           switch (roundResultKey2) {
             case "won":
-              setYourMoneyUpdater(localMoney - playerBet * 2)
+              setYourMoneyUpdater(yourMoney - playerBet * 2)
               animateAdd(playerBet * 2)
               break
             case "push":
-              setYourMoneyUpdater(localMoney - playerBet)
+              setYourMoneyUpdater(yourMoney - playerBet)
               animateAdd(playerBet)
               break
-            // case "blackjack":
-            //   // setYourMoneyUpdater()
-            //   break
             case "dealerBust":
-              setYourMoneyUpdater(localMoney - playerBet * 2)
+              setYourMoneyUpdater(yourMoney - playerBet * 2)
               animateAdd(playerBet * 2)
               break
             default:
               // lost
-              setYourMoneyUpdater(localMoney)
+              setYourMoneyUpdater(yourMoney)
               break
           }
-          animateAdd(playerBet)
+          animateAdd(playerBet2)
           setOutcomeEffect("neutral")
           blur()
           break
-        // case "blackjack":
-        //   setOutcomeContent("Blackjack.")
-        //   setOutcomeEffect("positive")
-        //   blur()
-        //   break
         case "bust":
           setOutcomeContent("You bust.")
           setOutcomeEffect("negative")
@@ -2647,23 +2634,23 @@ function TableOptions({
         case "dealerBust":
           switch (roundResultKey2) {
             case "won":
-              setYourMoneyUpdater(localMoney - playerBet * 2)
+              setYourMoneyUpdater(yourMoney - playerBet * 2)
               break
             case "push":
-              setYourMoneyUpdater(localMoney - playerBet)
+              setYourMoneyUpdater(yourMoney - playerBet)
               break
             case "blackjack":
-              setYourMoneyUpdater(localMoney - playerBet * 2)
+              setYourMoneyUpdater(yourMoney - playerBet * 2)
               break
             case "dealerBust":
-              setYourMoneyUpdater(localMoney - playerBet * 2)
+              setYourMoneyUpdater(yourMoney - playerBet * 2)
               break
             default:
               // lost
-              setYourMoneyUpdater(localMoney)
+              setYourMoneyUpdater(yourMoney)
               break
           }
-          animateAdd(playerBet * 2)
+          animateAdd(playerBet2 * 2)
           setOutcomeContent("Dealer bust.")
           setOutcomeEffect("positive")
           blur()
@@ -2775,6 +2762,7 @@ function TableOptions({
     }
   }, [])
 
+  // yourMoneyUpdater is the display value, its initial value is what your money is
   const [yourMoneyUpdater, setYourMoneyUpdater] = useState(yourMoney)
   // Updating for no split
   useEffect(() => {
@@ -2790,27 +2778,14 @@ function TableOptions({
     }
   }, [yourCards2, splitFlag])
 
-  // This will be the info sent to a useEffect that triggers whenever they change to play the add or subtract animation
-  const [moneyAdd, setMoneyAdd] = useState()
-  const [moneySubtract, setMoneySubtract] = useState()
-
-  // So this useRef is basically like a variable that can hold information in an object under {current: "INITIAL_VALUE"},
-  //   but it persists across renders and is not unique to that render.
-
-  // So we are setting a current value to previousMoney with an initial value of nothing.
-  // When the moneyUpdater changes the displayed value it will take that value and store it inside previousMoney.current
-
-  // const previousMoneyRef = useRef()
-  // useEffect(() => {
-  //   previousMoneyRef.current = yourMoneyUpdater
-  // }, [yourMoneyUpdater])
-  // const prevMoney = previousMoneyRef.current
-
-  // Sometimes this is not accurate because the value changes for a push hand one are not occurring fast enough for when it should?
   const prevMoney = PreviousMoney(yourMoneyUpdater)
 
   useEffect(() => {
     // checks for a change in value and that the previous value exists
+    console.log("PrevMoney: " + prevMoney) // This was the money a cycle ago
+    console.log("YourMoney: " + yourMoney) // This is the money after both have evaluated
+    console.log("Displayed: " + yourMoneyUpdater) // This is what is displayed
+
     console.log(yourMoneyUpdater - prevMoney)
     let thing = yourMoneyUpdater - prevMoney
     if (yourMoneyUpdater - prevMoney && prevMoney) {
@@ -2840,6 +2815,18 @@ function TableOptions({
       </div>
     )
   }, [])
+
+  const [bet, setBet] = useState(playerBet)
+
+  useEffect(() => {
+    console.log(playerBet)
+    console.log(playerBet2)
+    if (secondHand) {
+      setBet(playerBet2)
+    } else {
+      setBet(playerBet)
+    }
+  }, [secondHand, yourCards, yourCards2])
 
   return (
     <div>
@@ -3031,7 +3018,7 @@ function TableOptions({
 
         <div>
           <p style={textColor} id="bet">
-            ${playerBet}
+            ${bet}
           </p>
           <p style={textColor} id="currentBet">
             Current bet
