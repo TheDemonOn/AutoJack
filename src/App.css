@@ -675,7 +675,7 @@ p {
 
 .addAnimation {
   position: fixed;
-  right: 25%;
+  right: 24%;
   top: 9em;
   opacity: 0;
   transition: 0s;
@@ -683,7 +683,7 @@ p {
 
 .addAnimationEnd {
   position: fixed;
-  right: 25%;
+  right: 24%;
   top: 6em;
   transition: 3s;
 }

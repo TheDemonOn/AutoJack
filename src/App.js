@@ -1821,13 +1821,19 @@ function TableOptions({
   useEffect(() => {
     if (yourCards2.length) {
       if (bust && cardTotal2 === 0) {
-        console.log("Bust 2")
-        setRoundResultKey2("bust")
-        stand()
+        if (roundResultKey2) {
+        } else {
+          console.log("Bust 2")
+          setRoundResultKey2("bust")
+          stand()
+        }
       } else if (bust && cardTotal2) {
-        console.log("Bust 1")
-        setRoundResultKey("bust")
-        stand2()
+        if (roundResultKey) {
+        } else {
+          console.log("Bust 1")
+          setRoundResultKey("bust")
+          stand2()
+        }
       }
     }
   }, [bust])
