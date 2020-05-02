@@ -15,7 +15,6 @@ import PreviousMoney from "./MinorComponents/PreviousMoney.js"
 import PreviousBet from "./MinorComponents/PreviousBet.js"
 import AddAnimation from "./MinorComponents/AddAnimation.js"
 
-// import Push from "./MinorComponents/Push.js"
 import Outcome from "./MinorComponents/Outcome.js"
 
 import Button_Theme1 from "./Images/Button_Theme1.png"
@@ -30,6 +29,8 @@ import chip25 from "./Images/chip25.png"
 import chip50 from "./Images/chip50.png"
 import chip100 from "./Images/chip100.png"
 import chip500 from "./Images/chip500.png"
+
+import { motion } from "framer-motion"
 
 // Important thing perhaps is don't setState in a useEffect that I intend to use for a calculation in the same cycle
 
@@ -100,7 +101,7 @@ function LoadOrder({
   betRange,
   maxBet,
   minBet,
-  cardThemeNum
+  cardThemeNum,
 }) {
   if (settingsFlag) {
     return (
@@ -229,7 +230,7 @@ function Home({
   textColor,
   settingsFlagSwitch,
   homeFlagSwitch1,
-  startFlagSwitch
+  startFlagSwitch,
 }) {
   useEffect(() => {
     window.history.replaceState("Home", null, "http://localhost:3000/Home")
@@ -316,7 +317,7 @@ function ThemeSettings({
   t3ThemeChange,
   t4ThemeChange,
   displayCard,
-  settingsFlagSwitch0
+  settingsFlagSwitch0,
 }) {
   useEffect(() => {
     if (
@@ -403,7 +404,7 @@ function StartScreen({
   betRange,
   playerBetUpdate,
   maxBet,
-  minBet
+  minBet,
 }) {
   useEffect(() => {
     if (window.history.state === "Home")
@@ -520,7 +521,7 @@ function StartScreen({
               maxLength="3"
               placeholder="1"
               value={deckValue}
-              onChange={e => theDeckCountValue(e.target.value)}
+              onChange={(e) => theDeckCountValue(e.target.value)}
               // onChange={e => theDeckCountValue(e.target.value)}
             ></input>
           </div>
@@ -530,7 +531,7 @@ function StartScreen({
               type="number"
               min="1"
               placeholder="5"
-              onChange={e => betRange("min", e.target.value)}
+              onChange={(e) => betRange("min", e.target.value)}
             ></input>
           </div>
           <div>
@@ -539,7 +540,7 @@ function StartScreen({
               type="number"
               min="1"
               placeholder="100"
-              onChange={e => betRange("max", e.target.value)}
+              onChange={(e) => betRange("max", e.target.value)}
             ></input>
           </div>
           <div>
@@ -548,7 +549,7 @@ function StartScreen({
               type="number"
               min="1"
               placeholder="100"
-              onChange={e => yourMoneyValue(e.target.value)}
+              onChange={(e) => yourMoneyValue(e.target.value)}
             ></input>
           </div>
         </div>
@@ -579,7 +580,7 @@ function StartScreen({
   }, [windowFlag])
 
   const updateSize = () => {
-    setWindowFlag(prevCount => prevCount + 1)
+    setWindowFlag((prevCount) => prevCount + 1)
     window.removeEventListener("resize", updateSize)
     window.setTimeout(window.addEventListener("resize", updateSize), 1000)
   }
@@ -688,7 +689,7 @@ function RoundStart({
   playerBetModify,
   maxBet,
   minBet,
-  cardThemeNum
+  cardThemeNum,
 }) {
   useEffect(() => {
     window.history.pushState(
@@ -700,7 +701,7 @@ function RoundStart({
 
   // So it appears that even when thr function is called from the child it still executes in the location it was defined (the parent) and had access to everything it would normally.
 
-  const deal = e => {
+  const deal = (e) => {
     yourMoneyValue(yourMoney - playerBet)
     playerDeal()
     dealerDeal()
@@ -747,13 +748,13 @@ function RoundStart({
 
   // Instead of using a useEffect to put the value of the bet to the respective max range when exceeded, this way will remove the single
   // tick of the value being wrong before being corrected
-  const rangeCheckMax = value => {
+  const rangeCheckMax = (value) => {
     if (playerBet + value > maxBet) {
       playerBetUpdate(maxBet)
     }
   }
 
-  const rangeCheckMin = value => {
+  const rangeCheckMin = (value) => {
     if (playerBet - value < minBet) {
       playerBetUpdate(minBet)
     }
@@ -988,7 +989,7 @@ function TableOptions({
   iconTheme,
   textColor,
   settingsFlagSwitch,
-  cardThemeNum
+  cardThemeNum,
 }) {
   useEffect(() => {
     window.history.replaceState("Table", null, "http://localhost:3000/Table")
@@ -1031,13 +1032,13 @@ function TableOptions({
   const [totalWithAce, setTotalWithAce] = useState()
 
   const [cardTotal, setCardTotal] = useState(
-    yourCards.map(x => x.value).reduce((x, y) => x + y)
+    yourCards.map((x) => x.value).reduce((x, y) => x + y)
   )
 
   const [cardTotal2, setCardTotal2] = useState(0)
 
   const [dealerCardTotal, setDealerCardTotal] = useState(
-    localDealerCards.map(x => x.value).reduce((x, y) => x + y)
+    localDealerCards.map((x) => x.value).reduce((x, y) => x + y)
   )
 
   const [endPlayerTurn, setEndPlayerTurn] = useState(0)
@@ -1066,7 +1067,7 @@ function TableOptions({
 
     // So all the state it receives stays the same through the entire operation
 
-    yourMoneyValue(m => m - playerBet)
+    yourMoneyValue((m) => m - playerBet)
 
     let splitCard1 = yourCards.slice(0, 1)
     let splitCard2 = yourCards.slice(1, 2)
@@ -1081,7 +1082,7 @@ function TableOptions({
     let card2 = thisDeck[cardIndex2]
     thisDeck.splice(cardIndex2, 1)
 
-    setDiscardPile(discardPile => [...discardPile, card, card2])
+    setDiscardPile((discardPile) => [...discardPile, card, card2])
     setDeck(thisDeck)
 
     yourCards.length = 0
@@ -1134,7 +1135,7 @@ function TableOptions({
   // I need to make it see the hit
   const doubleDown = () => {
     // Focus on solving the playerBet and using playerBet2
-    yourMoneyValue(m => m - playerBet)
+    yourMoneyValue((m) => m - playerBet)
 
     if (secondHand) {
       // Hand 2
@@ -1148,7 +1149,7 @@ function TableOptions({
 
     if (splitFlag) {
       console.log("Did this fix the lose money not updating")
-      setYourMoneyUpdater(m => m - playerBet)
+      setYourMoneyUpdater((m) => m - playerBet)
     }
 
     // Because of issues with the transfer of state we are drawing the card from within function manually; this did not work
@@ -1156,7 +1157,7 @@ function TableOptions({
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
     let card = thisDeck[cardIndex]
     deck.splice(cardIndex, 1)
-    setDiscardPile(discardPile => [...discardPile, card])
+    setDiscardPile((discardPile) => [...discardPile, card])
     // The card is being pushed here so that yourCards is accurate for the local calculations below
     // Do note that if it was just the push then the display of cards from the state would not include the drawn card
     // The state has to be set at the end for it to update in the list
@@ -1176,42 +1177,42 @@ function TableOptions({
       }
     }
 
-    if (yourCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
+    if (yourCards.map((x) => x.value).filter((x) => x === 11)[0] > 0) {
       // Checking for Aces in yourCards
-      let aceCards = yourCards.filter(x => x.value2 === 1)
+      let aceCards = yourCards.filter((x) => x.value2 === 1)
       if (
         // Checks for bust with Aces reduced to 1
-        yourCards.map(x => x.value).reduce((x, y) => x + y) -
+        yourCards.map((x) => x.value).reduce((x, y) => x + y) -
           aceCards.length * 11 +
           aceCards.length >
         21
       ) {
         setCardTotal(
-          yourCards.map(x => x.value).reduce((x, y) => x + y) -
+          yourCards.map((x) => x.value).reduce((x, y) => x + y) -
             aceCards.length * 11 +
             aceCards.length
         )
-        setBust(p => p + 1)
-      } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) <= 21) {
+        setBust((p) => p + 1)
+      } else if (yourCards.map((x) => x.value).reduce((x, y) => x + y) <= 21) {
         // Normal draw calculation with Ace being 11 if not busting
-        setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
+        setCardTotal(yourCards.map((x) => x.value).reduce((x, y) => x + y))
         end()
       } else {
         // Draw but with reduced Aces
         setCardTotal(
-          yourCards.map(x => x.value).reduce((x, y) => x + y) -
+          yourCards.map((x) => x.value).reduce((x, y) => x + y) -
             aceCards.length * 11 +
             aceCards.length
         )
         end()
       }
-    } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+    } else if (yourCards.map((x) => x.value).reduce((x, y) => x + y) > 21) {
       // Checks for bust with no Aces
-      setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
-      setBust(p => p + 1)
+      setCardTotal(yourCards.map((x) => x.value).reduce((x, y) => x + y))
+      setBust((p) => p + 1)
     } else {
       // Normal draw calculation without Aces
-      setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
+      setCardTotal(yourCards.map((x) => x.value).reduce((x, y) => x + y))
       end()
     }
     // This actually sets the state to what it should be because otherwise the "yourCards" locally would not be the same as the global yourCards
@@ -1240,7 +1241,7 @@ function TableOptions({
 
   const dealerHit = () => {
     console.log("Dealer Hitting")
-    if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) < 17) {
+    if (localDealerCards.map((x) => x.value).reduce((x, y) => x + y) < 17) {
       let thisDeck = deck
       let cardIndex = Math.floor(Math.random() * thisDeck.length)
       let card = thisDeck[cardIndex]
@@ -1248,7 +1249,7 @@ function TableOptions({
       realDiscardPileUpdate(card)
       dealerHitLostCards.push(card)
       if (
-        localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
+        localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
           card.value <
         17
       ) {
@@ -1258,7 +1259,7 @@ function TableOptions({
         realDiscardPileUpdate(card2)
         dealerHitLostCards.push(card2)
         if (
-          localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
+          localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
             card.value +
             card2.value <
           17
@@ -1269,7 +1270,7 @@ function TableOptions({
           realDiscardPileUpdate(card3)
           dealerHitLostCards.push(card3)
           if (
-            localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
+            localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
               card.value +
               card2.value +
               card3.value <
@@ -1281,7 +1282,7 @@ function TableOptions({
             realDiscardPileUpdate(card4)
             dealerHitLostCards.push(card4)
             if (
-              localDealerCards.map(x => x.value).reduce((x, y) => x + y) +
+              localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
                 card.value +
                 card2.value +
                 card3.value +
@@ -1327,23 +1328,23 @@ function TableOptions({
   // Evaluates dealerCardTotal and draws additional cards if necessary with Aces
   function dealerCardTotalEvaluation() {
     console.log("Evaluating dealer cards")
-    if (localDealerCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
+    if (localDealerCards.map((x) => x.value).filter((x) => x === 11)[0] > 0) {
       // Checking for Aces in yourCards
-      let aceCards = localDealerCards.filter(x => x.value2 === 1)
+      let aceCards = localDealerCards.filter((x) => x.value2 === 1)
       // For the dealer a bust flag does not need to trigger, if the dealer busts then no more cards are drawn and the result is calculated
-      if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) <= 21) {
+      if (localDealerCards.map((x) => x.value).reduce((x, y) => x + y) <= 21) {
         // Normal draw calculation with Ace being 11 if not busting, no additional card check needed
         console.log(
           "Total is:",
-          localDealerCards.map(x => x.value).reduce((x, y) => x + y)
+          localDealerCards.map((x) => x.value).reduce((x, y) => x + y)
         )
         setDealerCardTotal(
-          localDealerCards.map(x => x.value).reduce((x, y) => x + y)
+          localDealerCards.map((x) => x.value).reduce((x, y) => x + y)
         )
         endTurnFlagSwitch() // The draw is done and conditions met; end turn
         console.log("End: Aces, but reduced not needed")
       } else if (
-        localDealerCards.map(x => x.value).reduce((x, y) => x + y) -
+        localDealerCards.map((x) => x.value).reduce((x, y) => x + y) -
           aceCards.length * 11 +
           aceCards.length <
         17
@@ -1352,7 +1353,7 @@ function TableOptions({
         // If so draw a card, if the total is at 17 or greater then an additional card draw is not needed.
 
         let initialReducedAceValue =
-          localDealerCards.map(x => x.value).reduce((x, y) => x + y) -
+          localDealerCards.map((x) => x.value).reduce((x, y) => x + y) -
           aceCards.length * 11 +
           aceCards.length
         let thisDeck = deck
@@ -1366,10 +1367,10 @@ function TableOptions({
           localDealerCards.push(card)
           // console.log(localDealerCards)
 
-          let aceCardsLocal = localDealerCards.filter(x => x.value2 === 1)
+          let aceCardsLocal = localDealerCards.filter((x) => x.value2 === 1)
 
           let localTotal =
-            localDealerCards.map(x => x.value).reduce((x, y) => x + y) -
+            localDealerCards.map((x) => x.value).reduce((x, y) => x + y) -
             aceCardsLocal.length * 11 +
             aceCardsLocal.length
 
@@ -1383,7 +1384,7 @@ function TableOptions({
         endTurnFlagSwitch()
       } else {
         setDealerCardTotal(
-          localDealerCards.map(x => x.value).reduce((x, y) => x + y) -
+          localDealerCards.map((x) => x.value).reduce((x, y) => x + y) -
             aceCards.length * 11 +
             aceCards.length
         )
@@ -1394,11 +1395,11 @@ function TableOptions({
       // Normal draw calculation without Aces
       console.log(
         "Total is",
-        localDealerCards.map(x => x.value).reduce((x, y) => x + y)
+        localDealerCards.map((x) => x.value).reduce((x, y) => x + y)
       )
-      if (localDealerCards.map(x => x.value).reduce((x, y) => x + y) >= 17) {
+      if (localDealerCards.map((x) => x.value).reduce((x, y) => x + y) >= 17) {
         setDealerCardTotal(
-          localDealerCards.map(x => x.value).reduce((x, y) => x + y)
+          localDealerCards.map((x) => x.value).reduce((x, y) => x + y)
         )
         console.log("End: No Aces")
         endTurnFlagSwitch()
@@ -1458,7 +1459,7 @@ function TableOptions({
 
   //
   const [splitCard1Display, setSplitCard1Display] = useState({
-    display: "none"
+    display: "none",
   })
   const [splitCard1Flag, setSplitCard1Flag] = useState("//:0")
   const [splitCard1Alt, setSplitCard1Alt] = useState()
@@ -1488,7 +1489,7 @@ function TableOptions({
 
   //
   const [splitCard2Display, setSplitCard2Display] = useState({
-    display: "none"
+    display: "none",
   })
   const [splitCard2Flag, setSplitCard2Flag] = useState("//:0")
   const [splitCard2Alt, setSplitCard2Alt] = useState()
@@ -1525,43 +1526,45 @@ function TableOptions({
       setEndPlayerTurn(1)
     } else {
       // instead of setting the card total just set it from the calculating right here
-      if (yourCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
+      if (yourCards.map((x) => x.value).filter((x) => x === 11)[0] > 0) {
         // Checking for Aces in yourCards
-        let aceCards = yourCards.filter(x => x.value2 === 1)
+        let aceCards = yourCards.filter((x) => x.value2 === 1)
         if (
           // Checks for bust with Aces reduced to 1
-          yourCards.map(x => x.value).reduce((x, y) => x + y) -
+          yourCards.map((x) => x.value).reduce((x, y) => x + y) -
             aceCards.length * 11 +
             aceCards.length >
           21
         ) {
           setCardTotal2(
-            yourCards.map(x => x.value).reduce((x, y) => x + y) -
+            yourCards.map((x) => x.value).reduce((x, y) => x + y) -
               aceCards.length * 11 +
               aceCards.length
           )
-        } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) <= 21) {
+        } else if (
+          yourCards.map((x) => x.value).reduce((x, y) => x + y) <= 21
+        ) {
           // Normal draw calculation with Ace being 11 if not busting
-          setCardTotal2(yourCards.map(x => x.value).reduce((x, y) => x + y))
+          setCardTotal2(yourCards.map((x) => x.value).reduce((x, y) => x + y))
         } else {
           // Draw but with reduced Aces
           setCardTotal2(
-            yourCards.map(x => x.value).reduce((x, y) => x + y) -
+            yourCards.map((x) => x.value).reduce((x, y) => x + y) -
               aceCards.length * 11 +
               aceCards.length
           )
         }
-      } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+      } else if (yourCards.map((x) => x.value).reduce((x, y) => x + y) > 21) {
         // Checks for bust with no Aces
-        setCardTotal2(yourCards.map(x => x.value).reduce((x, y) => x + y))
+        setCardTotal2(yourCards.map((x) => x.value).reduce((x, y) => x + y))
       } else {
         // Normal draw calculation without Aces
-        setCardTotal2(yourCards.map(x => x.value).reduce((x, y) => x + y))
+        setCardTotal2(yourCards.map((x) => x.value).reduce((x, y) => x + y))
       }
 
       setSplitCard2("//:0")
       setSplitCard2Display({
-        display: "none"
+        display: "none",
       })
       setPlayerThirdCardFlag("//:0")
       setThirdDisplay({ display: "none" })
@@ -1598,7 +1601,7 @@ function TableOptions({
         let cardIndex = Math.floor(Math.random() * thisDeck.length)
         let card = thisDeck[cardIndex]
         thisDeck.splice(cardIndex, 1)
-        setDiscardPile(discardPile => [...discardPile, card])
+        setDiscardPile((discardPile) => [...discardPile, card])
         setDeck(thisDeck)
         cards2.push(card) // cards 2 is what is being used as yourCards
         setYourCards([...cards2])
@@ -1653,43 +1656,43 @@ function TableOptions({
         // console.log("DID DEALER BLACKJACK")
         stand()
       } else {
-        if (yourCards.map(x => x.value).filter(x => x === 11)[0] > 0) {
+        if (yourCards.map((x) => x.value).filter((x) => x === 11)[0] > 0) {
           // Checking for Aces in yourCards
-          let aceCards = yourCards.filter(x => x.value2 === 1)
+          let aceCards = yourCards.filter((x) => x.value2 === 1)
           if (
             // Checks for bust with Aces reduced to 1
-            yourCards.map(x => x.value).reduce((x, y) => x + y) -
+            yourCards.map((x) => x.value).reduce((x, y) => x + y) -
               aceCards.length * 11 +
               aceCards.length >
             21
           ) {
             setCardTotal(
-              yourCards.map(x => x.value).reduce((x, y) => x + y) -
+              yourCards.map((x) => x.value).reduce((x, y) => x + y) -
                 aceCards.length * 11 +
                 aceCards.length
             )
-            setBust(p => p + 1)
+            setBust((p) => p + 1)
           } else if (
-            yourCards.map(x => x.value).reduce((x, y) => x + y) <= 21
+            yourCards.map((x) => x.value).reduce((x, y) => x + y) <= 21
           ) {
             // Normal draw calculation with Ace being 11 if not busting
-            setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
+            setCardTotal(yourCards.map((x) => x.value).reduce((x, y) => x + y))
           } else {
             // Draw but with reduced Aces
             // console.log("This is where we are")
             setCardTotal(
-              yourCards.map(x => x.value).reduce((x, y) => x + y) -
+              yourCards.map((x) => x.value).reduce((x, y) => x + y) -
                 aceCards.length * 11 +
                 aceCards.length
             )
           }
-        } else if (yourCards.map(x => x.value).reduce((x, y) => x + y) > 21) {
+        } else if (yourCards.map((x) => x.value).reduce((x, y) => x + y) > 21) {
           // Checks for bust with no Aces
-          setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
-          setBust(p => p + 1)
+          setCardTotal(yourCards.map((x) => x.value).reduce((x, y) => x + y))
+          setBust((p) => p + 1)
         } else {
           // Normal draw calculation without Aces
-          setCardTotal(yourCards.map(x => x.value).reduce((x, y) => x + y))
+          setCardTotal(yourCards.map((x) => x.value).reduce((x, y) => x + y))
         }
       }
     }
@@ -1726,17 +1729,17 @@ function TableOptions({
         if (yourCards2.length === 0) {
           // If turn has ended and it has not split
           if (dealerCardTotal === cardTotal) {
-            yourMoneyValue(m => m + playerBet)
+            yourMoneyValue((m) => m + playerBet)
             setRoundResultKey("push")
           }
           if (dealerCardTotal < cardTotal) {
             if (cardTotal > 21) {
               return
             } else if (yourCards[0].value + yourCards[1].value === 21) {
-              yourMoneyValue(m => m + playerBet + Math.round(playerBet * 1.5))
+              yourMoneyValue((m) => m + playerBet + Math.round(playerBet * 1.5))
               setRoundResultKey("blackjack")
             } else {
-              yourMoneyValue(m => m + playerBet * 2)
+              yourMoneyValue((m) => m + playerBet * 2)
               setRoundResultKey("won")
             }
           } else if (dealerCardTotal > cardTotal) {
@@ -1745,10 +1748,10 @@ function TableOptions({
             } else if (dealerCardTotal < 22) {
               setRoundResultKey("lost")
             } else if (yourCards[0].value + yourCards[1].value === 21) {
-              yourMoneyValue(m => m + playerBet + Math.round(playerBet * 1.5))
+              yourMoneyValue((m) => m + playerBet + Math.round(playerBet * 1.5))
               setRoundResultKey("blackjack")
             } else {
-              yourMoneyValue(m => m + playerBet * 2)
+              yourMoneyValue((m) => m + playerBet * 2)
               setRoundResultKey("dealerBust")
             }
           }
@@ -1762,7 +1765,7 @@ function TableOptions({
               // busted
               setRoundResultKey("bust")
             } else {
-              yourMoneyValue(m => m + playerBet2 * 2)
+              yourMoneyValue((m) => m + playerBet2 * 2)
               setRoundResultKey("won")
               setHandOneWin(1)
             }
@@ -1770,12 +1773,12 @@ function TableOptions({
             if (dealerCardTotal < 22) {
               setRoundResultKey("lost")
             } else {
-              yourMoneyValue(m => m + playerBet2 * 2)
+              yourMoneyValue((m) => m + playerBet2 * 2)
               setRoundResultKey("dealerBust")
               setHandOneWin(1)
             }
           } else {
-            yourMoneyValue(m => m + playerBet2)
+            yourMoneyValue((m) => m + playerBet2)
             setRoundResultKey("push")
             setHandOnePush(1)
           }
@@ -1787,7 +1790,7 @@ function TableOptions({
             if (cardTotal2 > 21) {
               setRoundResultKey2("bust")
             } else {
-              yourMoneyValue(m => m + playerBet * 2)
+              yourMoneyValue((m) => m + playerBet * 2)
               setRoundResultKey2("won")
               setHandTwoWin(1)
             }
@@ -1795,12 +1798,12 @@ function TableOptions({
             if (dealerCardTotal < 22) {
               setRoundResultKey2("lost")
             } else {
-              yourMoneyValue(m => m + playerBet * 2)
+              yourMoneyValue((m) => m + playerBet * 2)
               setRoundResultKey2("dealerBust")
               setHandTwoWin(1)
             }
           } else {
-            yourMoneyValue(m => m + playerBet)
+            yourMoneyValue((m) => m + playerBet)
             setRoundResultKey2("push")
             setHandTwoPush(1)
           }
@@ -2139,7 +2142,7 @@ function TableOptions({
   //
   //
   const [thirdDealerDisplay, setThirdDealerDisplay] = useState({
-    display: "none"
+    display: "none",
   })
   const [dealerThirdCardFlag, setDealerThirdCardFlag] = useState("//:0")
   const [dealerThirdAlt, setDealerThirdAlt] = useState()
@@ -2170,7 +2173,7 @@ function TableOptions({
 
   //
   const [fourthDealerDisplay, setFourthDealerDisplay] = useState({
-    display: "none"
+    display: "none",
   })
   const [dealerFourthCardFlag, setDealerFourthCardFlag] = useState("//:0")
   const [dealerFourthAlt, setDealerFourthAlt] = useState()
@@ -2199,7 +2202,7 @@ function TableOptions({
 
   //
   const [fifthDealerDisplay, setFifthDealerDisplay] = useState({
-    display: "none"
+    display: "none",
   })
   const [dealerFifthCardFlag, setDealerFifthCardFlag] = useState("//:0")
   const [dealerFifthAlt, setDealerFifthAlt] = useState()
@@ -2232,7 +2235,7 @@ function TableOptions({
 
   //
   const [sixthDealerDisplay, setSixthDealerDisplay] = useState({
-    display: "none"
+    display: "none",
   })
   const [dealerSixthCardFlag, setDealerSixthCardFlag] = useState("//:0")
   const [dealerSixthAlt, setDealerSixthAlt] = useState()
@@ -2261,7 +2264,7 @@ function TableOptions({
 
   //
   const [seventhDealerDisplay, setSeventhDealerDisplay] = useState({
-    display: "none"
+    display: "none",
   })
   const [dealerSeventhCardFlag, setDealerSeventhCardFlag] = useState("//:0")
   const [dealerSeventhAlt, setDealerSeventhAlt] = useState()
@@ -2422,7 +2425,7 @@ function TableOptions({
       // So i can update it manually only if both are positive change; win or push
       switch (roundResultKey2) {
         case "won":
-          setTimeout(function() {
+          setTimeout(function () {
             secondOutcome("positive")
           }, 1500)
           animateAdd(playerBet * 2)
@@ -2431,7 +2434,7 @@ function TableOptions({
           roundEndAuto2()
           break
         case "lost":
-          setTimeout(function() {
+          setTimeout(function () {
             secondOutcome("negative")
           }, 1500)
           setYourMoneyUpdater(yourMoney)
@@ -2439,7 +2442,7 @@ function TableOptions({
           roundEndAuto2()
           break
         case "push":
-          setTimeout(function() {
+          setTimeout(function () {
             secondOutcome("neutral")
           }, 1500)
           animateAdd(playerBet)
@@ -2448,7 +2451,7 @@ function TableOptions({
           roundEndAuto2()
           break
         case "bust":
-          setTimeout(function() {
+          setTimeout(function () {
             secondOutcome("negative", "You bust.")
           }, 1500)
           setYourMoneyUpdater(yourMoney)
@@ -2456,7 +2459,7 @@ function TableOptions({
           roundEndAuto2()
           break
         case "dealerBust":
-          setTimeout(function() {
+          setTimeout(function () {
             secondOutcome("positive", "Dealer bust.")
           }, 1500)
           // For double dealerBust yourMoney is inaccurate// Not anymore
@@ -2466,7 +2469,7 @@ function TableOptions({
           roundEndAuto2()
           break
         case "DealerBlackjack":
-          setTimeout(function() {
+          setTimeout(function () {
             secondOutcome("negative", "Dealer Blackjack.")
           }, 1500)
           setYourMoneyUpdater(yourMoney)
@@ -2494,7 +2497,7 @@ function TableOptions({
     )
     setSplitCard2("//:0")
     setSplitCard2Display({
-      display: "none"
+      display: "none",
     })
     // Here I hope the rest of the triggers for displaying the cards to occur actually display them; DID NOT
     // I don't want to just set it to look like the yourCards2 cards, I want to actually swap them so that the cardTotal is proper
@@ -2513,7 +2516,7 @@ function TableOptions({
     setTimeout(switchState, 2000)
   }
 
-  const animateAdd = bet => {
+  const animateAdd = (bet) => {
     setAnimationComponent(
       <div className="addAnimationEnd">
         <AddAnimation playerBet={bet} textColor={textColor}></AddAnimation>
@@ -2834,6 +2837,28 @@ function TableOptions({
     }
   }, [secondHand, yourCards, yourCards2])
 
+  // Animation logic
+
+
+
+  const [dealTimer, setDealTimer] = useState(0)
+
+  const timePusher = () => {
+    setDealTimer((t) => t + 1)
+  }
+
+  useEffect(() => {
+    // console.log(
+    //   document.getElementsByClassName("firstCard")[0].style["z-index"]
+    // )
+    setTimeout(timePusher, 200)
+    setTimeout(timePusher, 400)
+  }, [])
+
+  useEffect(() => {
+    console.log(dealTimer)
+  }, [dealTimer])
+
   return (
     <div>
       <div>{outcomeComponent}</div>
@@ -2860,7 +2885,25 @@ function TableOptions({
         </div>
 
         <div className="dealerCardsWrap">
-          <div className="firstCard">
+          <motion.div
+            initial={{
+              opacity: 1,
+              translateY: -85,
+              translateX: -390,
+              scale: 0.76,
+              // rotateY: 200,
+            }} // initial
+            animate={{
+              opacity: 1,
+              translateY: 0,
+              translateX: 0,
+              scale: 1,
+              rotateZ: Math.random() * -3,
+              // rotateY: 0,
+            }} // animate is the target value
+            transition={{ duration: 0.4, ease: "easeOut" }} // It appears to be about 0.5 sec default for transition with no ease?
+            className="firstCard"
+          >
             <img
               src={process.env.PUBLIC_URL + dealerCardOne}
               height="199.6488px"
@@ -2870,18 +2913,39 @@ function TableOptions({
                   .alt
               }
             ></img>
-          </div>
-          <div className="otherCard">
-            <img
-              src={process.env.PUBLIC_URL + dealerCardTwo}
-              height="199.6488px"
-              width="136.4688px"
-              alt={
-                cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card]
-                  .alt
-              }
-            ></img>
-          </div>
+          </motion.div>
+
+          {dealTimer === 1 && (
+            <motion.div
+              initial={{
+                opacity: 1,
+                translateY: -85,
+                translateX: -390,
+                scale: 0.76,
+                // rotateY: 200,
+              }} // initial
+              animate={{
+                opacity: 1,
+                translateY: 0,
+                translateX: 0,
+                scale: 1,
+                rotateZ: Math.random() * 3,
+                // rotateY: 0,
+              }} // animate is the target value
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="otherCard"
+            >
+              <img
+                src={process.env.PUBLIC_URL + dealerCardTwo}
+                height="199.6488px"
+                width="136.4688px"
+                alt={
+                  cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card]
+                    .alt
+                }
+              ></img>
+            </motion.div>
+          )}
           <div className="thirdCard" style={thirdDealerDisplay}>
             <img
               src={process.env.PUBLIC_URL + dealerThird}
@@ -3054,7 +3118,7 @@ function App() {
     document.body.classList.add(bodyTheme)
   }, [])
 
-  const bodyChange = newBodyTheme => {
+  const bodyChange = (newBodyTheme) => {
     document.body.classList.remove(bodyTheme)
     document.body.classList.add(newBodyTheme)
   }
@@ -3062,44 +3126,44 @@ function App() {
   const goldTheme = {
     borderColor: "#e7bd52",
     backgroundColor: "rgba(40, 47, 93, .5)",
-    color: "#e7bd52"
+    color: "#e7bd52",
   }
 
   const goldColor = {
-    color: "#e7bd52"
+    color: "#e7bd52",
   }
   const goldColorString = "#e7bd52"
 
   const purpleTheme = {
     borderColor: "#392950",
     backgroundColor: "#392950",
-    color: "white"
+    color: "white",
   }
 
   const purpleColor = {
-    color: "#392950"
+    color: "#392950",
   }
   const purpleColorString = "#392950"
 
   const redTheme = {
     borderColor: "#c12f2f",
     backgroundColor: "rgba(244, 244, 244, .2)",
-    color: "#c12f2f"
+    color: "#c12f2f",
   }
 
   const redColor = {
-    color: "#c12f2f"
+    color: "#c12f2f",
   }
   const redColorString = "#c12f2f"
 
   const greenTheme = {
     borderColor: "#48b74d",
     backgroundColor: "rgba(42, 31, 73, .5)",
-    color: "#48b74d"
+    color: "#48b74d",
   }
 
   const greenColor = {
-    color: "#48b74d"
+    color: "#48b74d",
   }
   const greenColorString = "#48b74d"
 
@@ -3122,7 +3186,7 @@ function App() {
     textDecoration: "none",
     borderStyle: "solid",
     borderRadius: "10px",
-    outline: "none"
+    outline: "none",
   }
 
   const altButtonSettings = {
@@ -3137,18 +3201,18 @@ function App() {
     textDecoration: "none",
     borderStyle: "solid",
     borderRadius: "10px",
-    outline: "none"
+    outline: "none",
   }
 
   // Format: object; This should stay consistent
   const [buttonTheme, setButtonTheme] = useState({
     ...buttonSettings,
-    ...purpleTheme
+    ...purpleTheme,
   })
 
   const [altButtonTheme, setAltButtonTheme] = useState({
     ...altButtonSettings,
-    ...purpleTheme
+    ...purpleTheme,
   })
 
   // Need to add the change to the function theme change
@@ -3156,7 +3220,7 @@ function App() {
     ...altButtonSettings,
     ...purpleTheme,
     backgroundColor: "#DBD8DF",
-    color: "#392950"
+    color: "#392950",
   })
 
   // Format: string
@@ -3172,17 +3236,17 @@ function App() {
     setDisplayCard(cards.t1.spade.ace.src)
     setButtonTheme({
       ...buttonSettings,
-      ...goldTheme
+      ...goldTheme,
     })
     setAltButtonTheme({
       ...altButtonSettings,
-      ...goldTheme
+      ...goldTheme,
     })
     setAltButtonThemeActive({
       ...altButtonSettings,
       ...goldTheme,
       backgroundColor: "#e7bd52",
-      color: "rgba(40, 47, 93, 1)"
+      color: "rgba(40, 47, 93, 1)",
     })
     setTextColor(goldColor)
     setIconTheme(goldColorString)
@@ -3195,17 +3259,17 @@ function App() {
     setDisplayCard(cards.t2.spade.ace.src)
     setButtonTheme({
       ...buttonSettings,
-      ...purpleTheme
+      ...purpleTheme,
     })
     setAltButtonTheme({
       ...altButtonSettings,
-      ...purpleTheme
+      ...purpleTheme,
     })
     setAltButtonThemeActive({
       ...altButtonSettings,
       ...purpleTheme,
       backgroundColor: "#DBD8DF",
-      color: "#392950"
+      color: "#392950",
     })
     setTextColor(purpleColor)
     setIconTheme(purpleColorString)
@@ -3218,17 +3282,17 @@ function App() {
     setDisplayCard(cards.t3.spade.ace.src)
     setButtonTheme({
       ...buttonSettings,
-      ...redTheme
+      ...redTheme,
     })
     setAltButtonTheme({
       ...altButtonSettings,
-      ...redTheme
+      ...redTheme,
     })
     setAltButtonThemeActive({
       ...altButtonSettings,
       ...redTheme,
       backgroundColor: "#c12f2f",
-      color: "#fff"
+      color: "#fff",
     })
     setTextColor(redColor)
     setIconTheme(redColorString)
@@ -3241,18 +3305,18 @@ function App() {
     setDisplayCard(cards.t4.spade.ace.src)
     setButtonTheme({
       ...buttonSettings,
-      ...greenTheme
+      ...greenTheme,
     })
     setAltButtonTheme({
       ...altButtonSettings,
-      ...greenTheme
+      ...greenTheme,
     })
     setAltButtonThemeActive({
       ...altButtonSettings,
       ...greenTheme,
       borderColor: "rgba(42, 31, 73, 1)",
       backgroundColor: "#48b74d",
-      color: "rgba(42, 31, 73, 1)"
+      color: "rgba(42, 31, 73, 1)",
     })
     setTextColor(greenColor)
     setIconTheme(greenColorString)
@@ -3275,17 +3339,17 @@ function App() {
         setDisplayCard(cards.t1.spade.ace.src)
         setButtonTheme({
           ...buttonSettings,
-          ...goldTheme
+          ...goldTheme,
         })
         setAltButtonTheme({
           ...altButtonSettings,
-          ...goldTheme
+          ...goldTheme,
         })
         setAltButtonThemeActive({
           ...altButtonSettings,
           ...goldTheme,
           backgroundColor: "#e7bd52",
-          color: "rgba(40, 47, 93, 1)"
+          color: "rgba(40, 47, 93, 1)",
         })
         setTextColor(goldColor)
         setIconTheme(goldColorString)
@@ -3298,17 +3362,17 @@ function App() {
         setDisplayCard(cards.t2.spade.ace.src)
         setButtonTheme({
           ...buttonSettings,
-          ...purpleTheme
+          ...purpleTheme,
         })
         setAltButtonTheme({
           ...altButtonSettings,
-          ...purpleTheme
+          ...purpleTheme,
         })
         setAltButtonThemeActive({
           ...altButtonSettings,
           ...purpleTheme,
           backgroundColor: "#DBD8DF",
-          color: "#392950"
+          color: "#392950",
         })
         setTextColor(purpleColor)
         setIconTheme(purpleColorString)
@@ -3321,17 +3385,17 @@ function App() {
         setDisplayCard(cards.t3.spade.ace.src)
         setButtonTheme({
           ...buttonSettings,
-          ...redTheme
+          ...redTheme,
         })
         setAltButtonTheme({
           ...altButtonSettings,
-          ...redTheme
+          ...redTheme,
         })
         setAltButtonThemeActive({
           ...altButtonSettings,
           ...redTheme,
           backgroundColor: "#c12f2f",
-          color: "#fff"
+          color: "#fff",
         })
         setTextColor(redColor)
         setIconTheme(redColorString)
@@ -3344,18 +3408,18 @@ function App() {
         setDisplayCard(cards.t4.spade.ace.src)
         setButtonTheme({
           ...buttonSettings,
-          ...greenTheme
+          ...greenTheme,
         })
         setAltButtonTheme({
           ...altButtonSettings,
-          ...greenTheme
+          ...greenTheme,
         })
         setAltButtonThemeActive({
           ...altButtonSettings,
           ...greenTheme,
           borderColor: "rgba(42, 31, 73, 1)",
           backgroundColor: "#48b74d",
-          color: "rgba(42, 31, 73, 1)"
+          color: "rgba(42, 31, 73, 1)",
         })
         setTextColor(greenColor)
         setIconTheme(greenColorString)
@@ -3388,319 +3452,319 @@ function App() {
       value2: 1,
       name: "Ace of Clubs",
       suit: "club",
-      card: "ace"
+      card: "ace",
     },
     {
       value: 2,
       name: "Two of Clubs",
       suit: "club",
-      card: "two"
+      card: "two",
     },
     {
       value: 3,
       name: "Three of Clubs",
       suit: "club",
-      card: "three"
+      card: "three",
     },
     {
       value: 4,
       name: "Four of Clubs",
       suit: "club",
-      card: "four"
+      card: "four",
     },
     {
       value: 5,
       name: "Five of Clubs",
       suit: "club",
-      card: "five"
+      card: "five",
     },
     {
       value: 6,
       name: "Six of Clubs",
       suit: "club",
-      card: "six"
+      card: "six",
     },
     {
       value: 7,
       name: "Seven of Clubs",
       suit: "club",
-      card: "seven"
+      card: "seven",
     },
     {
       value: 8,
       name: "Eight of Clubs",
       suit: "club",
-      card: "eight"
+      card: "eight",
     },
     {
       value: 9,
       name: "Nine of Clubs",
       suit: "club",
-      card: "nine"
+      card: "nine",
     },
     {
       value: 10,
       name: "Ten of Clubs",
       suit: "club",
-      card: "ten"
+      card: "ten",
     },
     {
       value: 10,
       name: "Jack of Clubs",
       suit: "club",
-      card: "jack"
+      card: "jack",
     },
     {
       value: 10,
       name: "Queen of Clubs",
       suit: "club",
-      card: "queen"
+      card: "queen",
     },
     {
       value: 10,
       name: "King of Clubs",
       suit: "club",
-      card: "king"
+      card: "king",
     },
     {
       value: 11,
       value2: 1,
       name: "Ace of Diamonds",
       suit: "diamond",
-      card: "ace"
+      card: "ace",
     },
     {
       value: 2,
       name: "Two of Diamonds",
       suit: "diamond",
-      card: "two"
+      card: "two",
     },
     {
       value: 3,
       name: "Three of Diamonds",
       suit: "diamond",
-      card: "three"
+      card: "three",
     },
     {
       value: 4,
       name: "Four of Diamonds",
       suit: "diamond",
-      card: "four"
+      card: "four",
     },
     {
       value: 5,
       name: "Five of Diamonds",
       suit: "diamond",
-      card: "five"
+      card: "five",
     },
     {
       value: 6,
       name: "Six of Diamonds",
       suit: "diamond",
-      card: "six"
+      card: "six",
     },
     {
       value: 7,
       name: "Seven of Diamonds",
       suit: "diamond",
-      card: "seven"
+      card: "seven",
     },
     {
       value: 8,
       name: "Eight of Diamonds",
       suit: "diamond",
-      card: "eight"
+      card: "eight",
     },
     {
       value: 9,
       name: "Nine of Diamonds",
       suit: "diamond",
-      card: "nine"
+      card: "nine",
     },
     {
       value: 10,
       name: "Ten of Diamonds",
       suit: "diamond",
-      card: "ten"
+      card: "ten",
     },
     {
       value: 10,
       name: "Jack of Diamonds",
       suit: "diamond",
-      card: "jack"
+      card: "jack",
     },
     {
       value: 10,
       name: "Queen of Diamonds",
       suit: "diamond",
-      card: "queen"
+      card: "queen",
     },
     {
       value: 10,
       name: "King of Diamonds",
       suit: "diamond",
-      card: "king"
+      card: "king",
     },
     {
       value: 11,
       value2: 1,
       name: "Ace of Hearts",
       suit: "heart",
-      card: "ace"
+      card: "ace",
     },
     {
       value: 2,
       name: "Two of Hearts",
       suit: "heart",
-      card: "two"
+      card: "two",
     },
     {
       value: 3,
       name: "Three of Hearts",
       suit: "heart",
-      card: "three"
+      card: "three",
     },
     {
       value: 4,
       name: "Four of Hearts",
       suit: "heart",
-      card: "four"
+      card: "four",
     },
     {
       value: 5,
       name: "Five of Hearts",
       suit: "heart",
-      card: "five"
+      card: "five",
     },
     {
       value: 6,
       name: "Six of Hearts",
       suit: "heart",
-      card: "six"
+      card: "six",
     },
     {
       value: 7,
       name: "Seven of Hearts",
       suit: "heart",
-      card: "seven"
+      card: "seven",
     },
     {
       value: 8,
       name: "Eight of Hearts",
       suit: "heart",
-      card: "eight"
+      card: "eight",
     },
     {
       value: 9,
       name: "Nine of Hearts",
       suit: "heart",
-      card: "nine"
+      card: "nine",
     },
     {
       value: 10,
       name: "Ten of Hearts",
       suit: "heart",
-      card: "ten"
+      card: "ten",
     },
     {
       value: 10,
       name: "Jack of Hearts",
       suit: "heart",
-      card: "jack"
+      card: "jack",
     },
     {
       value: 10,
       name: "Queen of Hearts",
       suit: "heart",
-      card: "queen"
+      card: "queen",
     },
     {
       value: 10,
       name: "King of Hearts",
       suit: "heart",
-      card: "king"
+      card: "king",
     },
     {
       value: 11,
       value2: 1,
       name: "Ace of Spades",
       suit: "spade",
-      card: "ace"
+      card: "ace",
     },
     {
       value: 2,
       name: "Two of Spades",
       suit: "spade",
-      card: "two"
+      card: "two",
     },
     {
       value: 3,
       name: "Three of Spades",
       suit: "spade",
-      card: "three"
+      card: "three",
     },
     {
       value: 4,
       name: "Four of Spades",
       suit: "spade",
-      card: "four"
+      card: "four",
     },
     {
       value: 5,
       name: "Five of Spades",
       suit: "spade",
-      card: "five"
+      card: "five",
     },
     {
       value: 6,
       name: "Six of Spades",
       suit: "spade",
-      card: "six"
+      card: "six",
     },
     {
       value: 7,
       name: "Seven of Spades",
       suit: "spade",
-      card: "seven"
+      card: "seven",
     },
     {
       value: 8,
       name: "Eight of Spades",
       suit: "spade",
-      card: "eight"
+      card: "eight",
     },
     {
       value: 9,
       name: "Nine of Spades",
       suit: "spade",
-      card: "nine"
+      card: "nine",
     },
     {
       value: 10,
       name: "Ten of Spades",
       suit: "spade",
-      card: "ten"
+      card: "ten",
     },
     {
       value: 10,
       name: "Jack of Spades",
       suit: "spade",
-      card: "jack"
+      card: "jack",
     },
     {
       value: 10,
       name: "Queen of Spades",
       suit: "spade",
-      card: "queen"
+      card: "queen",
     },
     {
       value: 10,
       name: "King of Spades",
       suit: "spade",
-      card: "king"
-    }
+      card: "king",
+    },
   ])
-  const deckUpdate = value => {
+  const deckUpdate = (value) => {
     setDeck(value)
   }
   // const deckUpdate = value => { This is for iterating state not replacing it
@@ -3711,7 +3775,7 @@ function App() {
   const [deckCount, setDeckCount] = useState(1)
 
   // If there is a state we want children to modify we use this structure of function and pass it down.
-  const theDeckCountValue = count => {
+  const theDeckCountValue = (count) => {
     // This is a function that is being passed to the child of start screen so that deckCount in the parent can be modified from there.
     setDeckCount(count)
   }
@@ -3729,20 +3793,20 @@ function App() {
   }, [deckCount])
 
   const [cutPosition, setCutPosition] = useState("none")
-  const shoeCount = amount => {
+  const shoeCount = (amount) => {
     setCutPosition(amount)
   }
 
   const [discardPile, setDiscardPile] = useState([]) // discardPile is not iterable // Objects are outside the array
-  const discardPileUpdate = value => {
+  const discardPileUpdate = (value) => {
     discardPile.push(value)
   }
-  const realDiscardPileUpdate = value => {
-    setDiscardPile(discardPile => [...discardPile, value])
+  const realDiscardPileUpdate = (value) => {
+    setDiscardPile((discardPile) => [...discardPile, value])
   }
 
   const [oldDiscardPile, setOldDiscardPile] = useState(discardPile)
-  const oldDiscardPileUpdate = value => {
+  const oldDiscardPileUpdate = (value) => {
     setOldDiscardPile(value)
   }
 
@@ -3765,13 +3829,13 @@ function App() {
   //   const [handCount, setHandCount] = useState(0)
 
   const [yourCards, setYourCards] = useState([])
-  const yourCardsValue = value => {
+  const yourCardsValue = (value) => {
     setYourCards(value)
   }
 
   // To be used when splitting cards
   const [yourCards2, setYourCards2] = useState([])
-  const yourCardsValue2 = value => {
+  const yourCardsValue2 = (value) => {
     setYourCards2(value)
   }
 
@@ -3794,7 +3858,7 @@ function App() {
   // The number of additional players
   const [otherPlayers, setOtherPlayers] = useState(0)
 
-  const otherPlayersValue = value => {
+  const otherPlayersValue = (value) => {
     setOtherPlayers(value)
   }
 
@@ -3817,15 +3881,15 @@ function App() {
   }
 
   const [playerBet, setPlayerBet] = useState(5)
-  const playerBetUpdate = value => {
+  const playerBetUpdate = (value) => {
     setPlayerBet(value)
   }
 
   function playerBetModify(action, value) {
     if (action === "add") {
-      setPlayerBet(prevBet => prevBet + value)
+      setPlayerBet((prevBet) => prevBet + value)
     } else if (action === "subtract") {
-      setPlayerBet(prevBet => prevBet - value)
+      setPlayerBet((prevBet) => prevBet - value)
     }
   }
 
@@ -3850,7 +3914,7 @@ function App() {
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
     let card = thisDeck[cardIndex]
     thisDeck.splice(cardIndex, 1)
-    setDiscardPile(discardPile => [...discardPile, card])
+    setDiscardPile((discardPile) => [...discardPile, card])
     setDeck(thisDeck)
     yourCards.push(card)
     setYourCards([...yourCards])
@@ -3864,9 +3928,9 @@ function App() {
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
     let card = thisDeck[cardIndex]
     thisDeck.splice(cardIndex, 1)
-    setDiscardPile(discardPile => [...discardPile, card])
+    setDiscardPile((discardPile) => [...discardPile, card])
     setDeck(thisDeck)
-    setYourCards(yourCards => [...yourCards, card])
+    setYourCards((yourCards) => [...yourCards, card])
 
     // doubleCard.push(card)
     setDoubleCard(card)
@@ -3877,11 +3941,11 @@ function App() {
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
     let card = thisDeck[cardIndex]
     thisDeck.splice(cardIndex, 1)
-    setDiscardPile(discardPile => [...discardPile, card]) // We use two ways of doing this need to see if there is a difference
+    setDiscardPile((discardPile) => [...discardPile, card]) // We use two ways of doing this need to see if there is a difference
     setDeck(thisDeck)
     yourCards2.push(card)
     // Now update hand
-    setYourCards2(yourCards2 => [...yourCards2])
+    setYourCards2((yourCards2) => [...yourCards2])
   }
 
   // Flag to indicate if standing should end the turn
@@ -3897,7 +3961,7 @@ function App() {
 
   const [yourMoney, setYourMoney] = useState(100)
 
-  const yourMoneyValue = value => {
+  const yourMoneyValue = (value) => {
     setYourMoney(value)
   }
 
@@ -3907,7 +3971,7 @@ function App() {
 
   const [tableStart, setTableStart] = useState(1)
   const tableStartZero = () => {
-    setTableStart(x => x + 1)
+    setTableStart((x) => x + 1)
   }
   const tableStartOne = () => {
     setTableStart(1)

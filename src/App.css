@@ -968,12 +968,14 @@ COLUMNS going vertically
 }
 .firstCard {
   /* border: solid; */
+  z-index: -1;
 }
 .otherCard {
   /* border: solid; */
   width: 13.6em;
   position: relative;
   margin-left: -9.3em;
+  z-index: -1;
 }
 .thirdCard {
   display: block;
