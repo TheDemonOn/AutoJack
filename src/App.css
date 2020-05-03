@@ -584,6 +584,12 @@ p {
   text-align: center;
 }
 
+.cardCount {
+  position: absolute;
+  text-align: center;
+  left: 15%;
+}
+
 .moneyWrapper {
   position: fixed;
   right: 22%;
@@ -1030,7 +1036,7 @@ COLUMNS going vertically
   /* border: solid; */
   display: grid;
   position: absolute;
-  margin-top: -15em;
+  top: 44em;
   right: 18em;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   width: 44em;
@@ -1040,6 +1046,13 @@ COLUMNS going vertically
   position: fixed;
   right: 22%;
   top: 12em;
+}
+
+.cBet {
+  position: absolute;
+  left: 50%;
+  margin-left: -50px;
+  top: 59em;
 }
 
 .resultIcon {

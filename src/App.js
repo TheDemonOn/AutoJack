@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useLayoutEffect } from "react"
 import "./App.css"
 import Button from "./MinorComponents/Button.js"
 import GithubSVG from "./MinorComponents/GithubSVG.js"
@@ -856,7 +856,7 @@ function RoundStart({
             alt="Ace of spades card."
           ></img>
         </div>
-        <div>{cardsLeft}</div>
+        <div className="cardCount">{cardsLeft}</div>
       </div>
 
       <div className="moneyWrapper">
@@ -2839,21 +2839,115 @@ function TableOptions({
 
   // Animation logic
 
+  const [initialSetting, setInitialSetting] = useState({
+    opacity: 1,
+    translateY: -85,
+    translateX: -390,
+    scale: 0.76,
+  })
+  const [initialSettingAlt, setInitialSettingAlt] = useState({
+    opacity: 1,
+    translateY: -360,
+    translateX: -390,
+    scale: 0.76,
+  })
 
+  const [animateSetting, setAnimateSetting] = useState({
+    opacity: 1,
+    translateY: 0,
+    translateX: 0,
+    scale: 1,
+    rotateZ: Math.random() * -3,
+  })
+  const [animateSettingAlt, setAnimateSettingAlt] = useState({
+    opacity: 1,
+    translateY: 0,
+    translateX: 0,
+    scale: 1,
+    rotateZ: Math.random() * 3,
+  })
 
-  const [dealTimer, setDealTimer] = useState(0)
+  const [animateSettingPlayer, setAnimateSettingPlayer] = useState({
+    opacity: 1,
+    translateY: 0,
+    translateX: 0,
+    scale: 1,
+    rotateZ: Math.random() * -3,
+  })
+  const [animateSettingAltPlayer, setAnimateSettingAltPlayer] = useState({
+    opacity: 1,
+    translateY: 0,
+    translateX: 0,
+    scale: 1,
+    rotateZ: Math.random() * 3,
+  })
+
+  const [transitionSetting, setTransitionSetting] = useState({
+    duration: 0.4,
+    ease: "easeOut",
+  })
+  const [transitionSettingAlt, setTransitionSettingAlt] = useState({
+    duration: 0.5,
+    ease: "easeOut",
+  })
+
+  const [dealTimer, setDealTimer] = useState()
+
+  const [playerTimer, setPlayerTimer] = useState()
+
+  useEffect(() => {
+    if (yourCards2.length === 2) {
+      setPlayerTimer()
+    }
+  }, [yourCards2])
 
   const timePusher = () => {
     setDealTimer((t) => t + 1)
   }
+  const timePusherAlt = () => {
+    setDealTimer(1)
+  }
+
+  const playPusher = () => {
+    // if (playerTimer) {
+    setPlayerTimer((t) => t + 1)
+    // }
+
+    // The issue here is that I need to indicate
+  }
+  const playPusherAlt = () => {
+    setPlayerTimer(1)
+  }
 
   useEffect(() => {
-    // console.log(
-    //   document.getElementsByClassName("firstCard")[0].style["z-index"]
-    // )
-    setTimeout(timePusher, 200)
-    setTimeout(timePusher, 400)
+    setTimeout(timePusherAlt, 200)
+    setTimeout(playPusherAlt, 300)
+    setTimeout(playPusher, 500)
   }, [])
+
+  const [additional, setAdditional] = useState()
+
+  const addPlus = () => {
+    setAdditional((t) => t + 1)
+  }
+
+  useEffect(() => {
+    if (thirdDealerDisplay.display === "block") {
+      // This runs when the dealer starts drawing cards after stand
+      console.log(dealerCards.length)
+      setAdditional(0)
+      addPlus()
+      setInterval(addPlus, 400)
+      // Then here I can just use the dealerCard,length - 2 to determine how much longer the screen should be clear,(before the filters)
+      // Also Might want to update the cardTotal that is displayed to work like the money system in splits
+    }
+  }, [thirdDealerDisplay])
+
+  useLayoutEffect(() => {
+    playPusher()
+  }, [yourCards])
+
+  // The thing about the animation is that it already occurs even if it is display none
 
   useEffect(() => {
     console.log(dealTimer)
@@ -2886,22 +2980,9 @@ function TableOptions({
 
         <div className="dealerCardsWrap">
           <motion.div
-            initial={{
-              opacity: 1,
-              translateY: -85,
-              translateX: -390,
-              scale: 0.76,
-              // rotateY: 200,
-            }} // initial
-            animate={{
-              opacity: 1,
-              translateY: 0,
-              translateX: 0,
-              scale: 1,
-              rotateZ: Math.random() * -3,
-              // rotateY: 0,
-            }} // animate is the target value
-            transition={{ duration: 0.4, ease: "easeOut" }} // It appears to be about 0.5 sec default for transition with no ease?
+            initial={initialSetting}
+            animate={animateSetting}
+            transition={transitionSetting}
             className="firstCard"
           >
             <img
@@ -2915,24 +2996,11 @@ function TableOptions({
             ></img>
           </motion.div>
 
-          {dealTimer === 1 && (
+          {dealTimer && ( // More of this
             <motion.div
-              initial={{
-                opacity: 1,
-                translateY: -85,
-                translateX: -390,
-                scale: 0.76,
-                // rotateY: 200,
-              }} // initial
-              animate={{
-                opacity: 1,
-                translateY: 0,
-                translateX: 0,
-                scale: 1,
-                rotateZ: Math.random() * 3,
-                // rotateY: 0,
-              }} // animate is the target value
-              transition={{ duration: 0.4, ease: "easeOut" }}
+              initial={initialSetting}
+              animate={animateSettingAlt}
+              transition={transitionSetting}
               className="otherCard"
             >
               <img
@@ -2946,109 +3014,214 @@ function TableOptions({
               ></img>
             </motion.div>
           )}
-          <div className="thirdCard" style={thirdDealerDisplay}>
-            <img
-              src={process.env.PUBLIC_URL + dealerThird}
-              height="199.6488px"
-              width="136.4688px"
-              alt={dealerThirdAlt}
-            ></img>
-          </div>
-          <div className="fourthCard" style={fourthDealerDisplay}>
-            <img
-              src={process.env.PUBLIC_URL + dealerFourth}
-              height="199.6488px"
-              width="136.4688px"
-              alt={dealerFourthAlt}
-            ></img>
-          </div>
-          <div className="fifthCard" style={fifthDealerDisplay}>
-            <img
-              src={process.env.PUBLIC_URL + dealerFifth}
-              height="199.6488px"
-              width="136.4688px"
-              alt={dealerFifthAlt}
-            ></img>
-          </div>
-          <div className="sixthCard" style={sixthDealerDisplay}>
-            <img
-              src={process.env.PUBLIC_URL + dealerSixth}
-              height="199.6488px"
-              width="136.4688px"
-              alt={dealerSixthAlt}
-            ></img>
-          </div>
-          <div className="seventhCard" style={seventhDealerDisplay}>
-            <img
-              src={process.env.PUBLIC_URL + dealerSeventh}
-              height="199.6488px"
-              width="136.4688px"
-              alt={dealerSeventhAlt}
-            ></img>
-          </div>
+
+          {additional && (
+            <motion.div
+              initial={initialSetting}
+              animate={animateSetting}
+              transition={transitionSetting}
+              className="thirdCard"
+              style={thirdDealerDisplay}
+            >
+              <img
+                src={process.env.PUBLIC_URL + dealerThird}
+                height="199.6488px"
+                width="136.4688px"
+                alt={dealerThirdAlt}
+              ></img>
+            </motion.div>
+          )}
+
+          {additional > 1 && (
+            <motion.div
+              initial={initialSetting}
+              animate={animateSettingAlt}
+              transition={transitionSetting}
+              className="fourthCard"
+              style={fourthDealerDisplay}
+            >
+              <img
+                src={process.env.PUBLIC_URL + dealerFourth}
+                height="199.6488px"
+                width="136.4688px"
+                alt={dealerFourthAlt}
+              ></img>
+            </motion.div>
+          )}
+
+          {additional > 2 && (
+            <motion.div
+              initial={initialSetting}
+              animate={animateSetting}
+              transition={transitionSetting}
+              className="fifthCard"
+              style={fifthDealerDisplay}
+            >
+              <img
+                src={process.env.PUBLIC_URL + dealerFifth}
+                height="199.6488px"
+                width="136.4688px"
+                alt={dealerFifthAlt}
+              ></img>
+            </motion.div>
+          )}
+
+          {additional > 3 && (
+            <motion.div
+              initial={initialSetting}
+              animate={animateSettingAlt}
+              transition={transitionSetting}
+              className="sixthCard"
+              style={sixthDealerDisplay}
+            >
+              <img
+                src={process.env.PUBLIC_URL + dealerSixth}
+                height="199.6488px"
+                width="136.4688px"
+                alt={dealerSixthAlt}
+              ></img>
+            </motion.div>
+          )}
+
+          {additional > 4 && (
+            <motion.div
+              initial={initialSetting}
+              animate={animateSetting}
+              transition={transitionSetting}
+              className="seventhCard"
+              style={seventhDealerDisplay}
+            >
+              <img
+                src={process.env.PUBLIC_URL + dealerSeventh}
+                height="199.6488px"
+                width="136.4688px"
+                alt={dealerSeventhAlt}
+              ></img>
+            </motion.div>
+          )}
         </div>
 
         <div className="playerCardsWrap">
-          <div className="firstCard">
-            <img
-              src={process.env.PUBLIC_URL + playerCardOne}
-              height="199.6488px"
-              width="136.4688px"
-              alt={
-                cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt
-              }
-            ></img>
-          </div>
-          <div className="otherCard">
-            <img
-              src={process.env.PUBLIC_URL + playerCardTwo}
-              height="199.6488px"
-              width="136.4688px"
-              alt={
-                cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].alt
-              }
-            ></img>
-          </div>
-          <div className="thirdCard" style={thirdDisplay}>
-            <img
-              src={process.env.PUBLIC_URL + playerThird}
-              height="199.6488px"
-              width="136.4688px"
-              alt={playerThirdAlt}
-            ></img>
-          </div>
-          <div className="fourthCard" style={fourthDisplay}>
-            <img
-              src={process.env.PUBLIC_URL + playerFourth}
-              height="199.6488px"
-              width="136.4688px"
-              alt={playerFourthAlt}
-            ></img>
-          </div>
-          <div className="fifthCard" style={fifthDisplay}>
-            <img
-              src={process.env.PUBLIC_URL + playerFifth}
-              height="199.6488px"
-              width="136.4688px"
-              alt={playerFifthAlt}
-            ></img>
-          </div>
-          <div className="sixthCard" style={sixthDisplay}>
-            <img
-              src={process.env.PUBLIC_URL + playerSixth}
-              height="199.6488px"
-              width="136.4688px"
-              alt={playerSixthAlt}
-            ></img>
-          </div>
-          <div className="seventhCard" style={seventhDisplay}>
-            <img
-              src={process.env.PUBLIC_URL + playerSeventh}
-              height="199.6488px"
-              width="136.4688px"
-              alt={playerSeventhAlt}
-            ></img>
-          </div>
+          {playerTimer > 0 && (
+            <motion.div
+              initial={initialSettingAlt}
+              animate={animateSettingPlayer}
+              transition={transitionSettingAlt}
+              className="firstCard"
+            >
+              <img
+                src={process.env.PUBLIC_URL + playerCardOne}
+                height="199.6488px"
+                width="136.4688px"
+                alt={
+                  cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt
+                }
+              ></img>
+            </motion.div>
+          )}
+
+          {playerTimer > 1 && (
+            <motion.div
+              initial={initialSettingAlt}
+              animate={animateSettingAltPlayer}
+              transition={transitionSettingAlt}
+              className="otherCard"
+            >
+              <img
+                src={process.env.PUBLIC_URL + playerCardTwo}
+                height="199.6488px"
+                width="136.4688px"
+                alt={
+                  cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].alt
+                }
+              ></img>
+            </motion.div>
+          )}
+
+          {playerTimer > 2 && (
+            <motion.div
+              initial={initialSettingAlt}
+              animate={animateSettingPlayer}
+              transition={transitionSettingAlt}
+              className="thirdCard"
+              style={thirdDisplay}
+            >
+              <img
+                src={process.env.PUBLIC_URL + playerThird}
+                height="199.6488px"
+                width="136.4688px"
+                alt={playerThirdAlt}
+              ></img>
+            </motion.div>
+          )}
+
+          {playerTimer > 3 && (
+            <motion.div
+              initial={initialSettingAlt}
+              animate={animateSettingAltPlayer}
+              transition={transitionSettingAlt}
+              className="fourthCard"
+              style={fourthDisplay}
+            >
+              <img
+                src={process.env.PUBLIC_URL + playerFourth}
+                height="199.6488px"
+                width="136.4688px"
+                alt={playerFourthAlt}
+              ></img>
+            </motion.div>
+          )}
+
+          {playerTimer > 4 && (
+            <motion.div
+              initial={initialSettingAlt}
+              animate={animateSettingPlayer}
+              transition={transitionSettingAlt}
+              className="fifthCard"
+              style={fifthDisplay}
+            >
+              <img
+                src={process.env.PUBLIC_URL + playerFifth}
+                height="199.6488px"
+                width="136.4688px"
+                alt={playerFifthAlt}
+              ></img>
+            </motion.div>
+          )}
+
+          {playerTimer > 5 && (
+            <motion.div
+              initial={initialSettingAlt}
+              animate={animateSettingAltPlayer}
+              transition={transitionSettingAlt}
+              className="sixthCard"
+              style={sixthDisplay}
+            >
+              <img
+                src={process.env.PUBLIC_URL + playerSixth}
+                height="199.6488px"
+                width="136.4688px"
+                alt={playerSixthAlt}
+              ></img>
+            </motion.div>
+          )}
+
+          {playerTimer > 6 && (
+            <motion.div
+              initial={initialSettingAlt}
+              animate={animateSettingPlayer}
+              transition={transitionSettingAlt}
+              className="seventhCard"
+              style={seventhDisplay}
+            >
+              <img
+                src={process.env.PUBLIC_URL + playerSeventh}
+                height="199.6488px"
+                width="136.4688px"
+                alt={playerSeventhAlt}
+              ></img>
+            </motion.div>
+          )}
         </div>
 
         <div className="playerCards2Wrap">
@@ -3086,7 +3259,7 @@ function TableOptions({
           </p>
         </div>
 
-        <div>
+        <div className="cBet">
           <p style={textColor} id="bet">
             ${bet}
           </p>
