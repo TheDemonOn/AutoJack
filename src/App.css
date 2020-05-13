@@ -949,6 +949,7 @@ p {
   /* border: solid; */
   top: 33.6em;
   left: 49.4%;
+  z-index: -9;
 }
 
 .dealerCardsWrap {
@@ -1024,12 +1025,16 @@ COLUMNS going vertically
   justify-content: center;
   top: 39em;
   width: 60%;
-  /* border: solid; */
 }
+
 .splitCard2 {
   /* width: 13.6em; */
   position: relative;
+  /* margin-left: -6.8em; */
   margin-left: -4.65em;
+}
+.splitCard2Alt {
+  margin-left: -6.8em;
 }
 
 .playerActions {

@@ -1240,88 +1240,91 @@ function TableOptions({
   let dealerHitLostCards = []
 
   const dealerHit = () => {
-    console.log("Dealer Hitting")
-    if (localDealerCards.map((x) => x.value).reduce((x, y) => x + y) < 17) {
-      let thisDeck = deck
-      let cardIndex = Math.floor(Math.random() * thisDeck.length)
-      let card = thisDeck[cardIndex]
-      thisDeck.splice(cardIndex, 1)
-      realDiscardPileUpdate(card)
-      dealerHitLostCards.push(card)
-      if (
-        localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
-          card.value <
-        17
-      ) {
-        let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
-        let card2 = thisDeck[cardIndex2]
-        thisDeck.splice(cardIndex2, 1)
-        realDiscardPileUpdate(card2)
-        dealerHitLostCards.push(card2)
+    if (yourCards2.length === 0 && bust) {
+    } else {
+      console.log("Dealer Hitting")
+      if (localDealerCards.map((x) => x.value).reduce((x, y) => x + y) < 17) {
+        let thisDeck = deck
+        let cardIndex = Math.floor(Math.random() * thisDeck.length)
+        let card = thisDeck[cardIndex]
+        thisDeck.splice(cardIndex, 1)
+        realDiscardPileUpdate(card)
+        dealerHitLostCards.push(card)
         if (
           localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
-            card.value +
-            card2.value <
+            card.value <
           17
         ) {
-          let cardIndex3 = Math.floor(Math.random() * thisDeck.length)
-          let card3 = thisDeck[cardIndex3]
-          thisDeck.splice(cardIndex3, 1)
-          realDiscardPileUpdate(card3)
-          dealerHitLostCards.push(card3)
+          let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
+          let card2 = thisDeck[cardIndex2]
+          thisDeck.splice(cardIndex2, 1)
+          realDiscardPileUpdate(card2)
+          dealerHitLostCards.push(card2)
           if (
             localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
               card.value +
-              card2.value +
-              card3.value <
+              card2.value <
             17
           ) {
-            let cardIndex4 = Math.floor(Math.random() * thisDeck.length)
-            let card4 = thisDeck[cardIndex4]
-            thisDeck.splice(cardIndex4, 1)
-            realDiscardPileUpdate(card4)
-            dealerHitLostCards.push(card4)
+            let cardIndex3 = Math.floor(Math.random() * thisDeck.length)
+            let card3 = thisDeck[cardIndex3]
+            thisDeck.splice(cardIndex3, 1)
+            realDiscardPileUpdate(card3)
+            dealerHitLostCards.push(card3)
             if (
               localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
                 card.value +
                 card2.value +
-                card3.value +
-                card4.value <
+                card3.value <
               17
             ) {
-              let cardIndex5 = Math.floor(Math.random() * thisDeck.length)
-              let card5 = thisDeck[cardIndex5]
-              thisDeck.splice(cardIndex5, 1)
-              realDiscardPileUpdate(card5)
-              dealerHitLostCards.push(card5)
+              let cardIndex4 = Math.floor(Math.random() * thisDeck.length)
+              let card4 = thisDeck[cardIndex4]
+              thisDeck.splice(cardIndex4, 1)
+              realDiscardPileUpdate(card4)
+              dealerHitLostCards.push(card4)
+              if (
+                localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
+                  card.value +
+                  card2.value +
+                  card3.value +
+                  card4.value <
+                17
+              ) {
+                let cardIndex5 = Math.floor(Math.random() * thisDeck.length)
+                let card5 = thisDeck[cardIndex5]
+                thisDeck.splice(cardIndex5, 1)
+                realDiscardPileUpdate(card5)
+                dealerHitLostCards.push(card5)
+                setDeck(thisDeck)
+                localDealerCards.push(card)
+                localDealerCards.push(card2)
+                localDealerCards.push(card3)
+                localDealerCards.push(card4)
+                localDealerCards.push(card5)
+                return
+              }
               setDeck(thisDeck)
               localDealerCards.push(card)
               localDealerCards.push(card2)
               localDealerCards.push(card3)
               localDealerCards.push(card4)
-              localDealerCards.push(card5)
               return
             }
             setDeck(thisDeck)
             localDealerCards.push(card)
             localDealerCards.push(card2)
             localDealerCards.push(card3)
-            localDealerCards.push(card4)
             return
           }
           setDeck(thisDeck)
           localDealerCards.push(card)
           localDealerCards.push(card2)
-          localDealerCards.push(card3)
           return
         }
         setDeck(thisDeck)
         localDealerCards.push(card)
-        localDealerCards.push(card2)
-        return
       }
-      setDeck(thisDeck)
-      localDealerCards.push(card)
     }
   }
 
@@ -1516,6 +1519,10 @@ function TableOptions({
     }
   }, [splitCard2Flag])
 
+  // I need to move all the cards from the main hand to the side pile and vice versa, BEFORE yourCards actually switched
+  // Then when they do switch I need their initial values to be set to the default with no animation or transitions so it looks like nothing
+  // has changed.
+
   let stand = () => {
     if (yourCards2.length === 0) {
       // If split is not triggered
@@ -1562,63 +1569,288 @@ function TableOptions({
         setCardTotal2(yourCards.map((x) => x.value).reduce((x, y) => x + y))
       }
 
-      setSplitCard2("//:0")
-      setSplitCard2Display({
-        display: "none",
-      })
-      setPlayerThirdCardFlag("//:0")
-      setThirdDisplay({ display: "none" })
-      setPlayerFourthCardFlag("//:0")
-      setFourthDisplay({ display: "none" })
-      setPlayerFifthCardFlag("//:0")
-      setFifthDisplay({ display: "none" })
-      setPlayerSixthCardFlag("//:0")
-      setSixthDisplay({ display: "none" })
-      setPlayerSeventhCardFlag("//:0")
-      setSeventhDisplay({ display: "none" })
+      // {
+      //   translateY: 0,
+      //   translateX: 0,
+      //   scale: 1,
+      //   rotateZ: Math.random() * -3,
+      // }
+      // {
+      // duration: 0.4,
+      // ease: "easeOut",
+      // }
+      //
+      // translateY: -310,
+      // translateX: -115,
 
-      setSplitCard1(
-        cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
-          yourCards[yourCards.length - 1].card
-        ].src +
-          "#" +
-          new Date().getTime()
-      )
-      setSplitCard1Alt(
-        cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
-          yourCards[yourCards.length - 1].card
-        ].alt
-      )
-      let cards1 = []
-      let cards2 = []
-      cards1.push(...yourCards)
-      cards2.push(...yourCards2)
-      // This swaps the hands
-      setYourCards2(cards1)
-      setYourCards(cards2)
-      let newHit = () => {
-        let thisDeck = deck
-        let cardIndex = Math.floor(Math.random() * thisDeck.length)
-        let card = thisDeck[cardIndex]
-        thisDeck.splice(cardIndex, 1)
-        setDiscardPile((discardPile) => [...discardPile, card])
-        setDeck(thisDeck)
-        cards2.push(card) // cards 2 is what is being used as yourCards
-        setYourCards([...cards2])
+      // INITIAL: doesn't do anything other than when it enters existence. Can only be used by turning the div off then on again
+      // HOWEVER IN THE NEXT STEP NEW CARDS COME INTO EXISTENCE CAUSING THE INITIAL TO MATTER AGAIN
+      // ANIMATE: This will update to affect them. Therefore if I want to put them all back I want to animate to position 0 and
+      // set the transition to 0 seconds so it is instant
+
+      setCard1Animate({
+        translateX: -286,
+        translateY: -34,
+        scale: 0.49,
+        rotateZ: 0,
+      })
+      setCard2Animate({
+        translateX: -330,
+        translateY: -34,
+        scale: 0.49,
+        rotateZ: 0,
+      })
+      setCard3Animate({
+        translateX: -377,
+        translateY: -46,
+        scale: 0.49,
+        rotateZ: 0,
+      })
+      setCard4Animate({
+        translateX: -410,
+        translateY: -46,
+        scale: 0.49,
+        rotateZ: 0,
+      })
+      setCard5Animate({
+        translateX: -443,
+        translateY: -46,
+        scale: 0.49,
+        rotateZ: 0,
+      })
+      setCard6Animate({
+        translateX: -476,
+        translateY: -46,
+        scale: 0.49,
+        rotateZ: 0,
+      })
+      setCard7Animate({
+        translateX: -509,
+        translateY: -46,
+        scale: 0.49,
+        rotateZ: 0,
+      })
+
+      // setHand2Card1Initial()
+      setHand2Card1Animate({
+        translateY: 34,
+        translateX: 297,
+        scale: 2,
+      })
+      // setHand2Card2Initial()
+      setHand2Card2Animate({
+        translateY: 34,
+        translateX: 319,
+        scale: 2,
+      })
+
+      //////
+
+      // const goBack = () => {
+      //   setCard1Animate({
+      //     translateX: 0,
+      //     translateY: 0,
+      //     scale: 1,
+      //     rotateZ: 0,
+      //   })
+      //   setCard2Animate({
+      //     translateX: 0,
+      //     translateY: 0,
+      //     scale: 1,
+      //     rotateZ: 0,
+      //   })
+      //   setCard3Animate({
+      //     translateX: 0,
+      //     translateY: 0,
+      //     scale: 1,
+      //     rotateZ: 0,
+      //   })
+      //   setCard4Animate({
+      //     translateX: 0,
+      //     translateY: 0,
+      //     scale: 1,
+      //     rotateZ: 0,
+      //   })
+      //   setCard5Animate({
+      //     translateX: 0,
+      //     translateY: 0,
+      //     scale: 1,
+      //     rotateZ: 0,
+      //   })
+      //   setCard6Animate({
+      //     translateX: 0,
+      //     translateY: 0,
+      //     scale: 1,
+      //     rotateZ: 0,
+      //   })
+      //   setCard7Animate({
+      //     translateX: 0,
+      //     translateY: 0,
+      //     scale: 1,
+      //     rotateZ: 0,
+      //   })
+
+      //   setHand2Card1Animate({
+      //     translateY: 0,
+      //     translateX: 0,
+      //     scale: 1,
+      //   })
+      //   setHand2Card2Animate({
+      //     translateY: 0,
+      //     translateX: 0,
+      //     scale: 1,
+      //   })
+      // }
+
+      // setTimeout(goBack, 2000)
+
+      const doEverything = () => {
+        // setInitial({
+        //   translateY: 0,
+        //   translateX: 0,
+        // })
+        setInitialSetting({
+          translateY: 0,
+          translateX: 0,
+        })
+        // setTransition({
+        //   duration: 99,
+        // }) // this doesn't do anything I think?
+        setCard1Transition({
+          duration: 0,
+        })
+        setCard2Transition({
+          duration: 0,
+        })
+        setCard3Transition({
+          duration: 0,
+        })
+
+        setHand2Card1Transition({
+          duration: 0,
+        })
+        setHand2Card2Transition({
+          duration: 0,
+        })
+        setHand2Card1Initial({
+          translateY: 0,
+          translateX: 0,
+        })
+        setHand2Card2Initial({
+          translateY: 0,
+          translateX: 0,
+        })
+        setCard1Animate({
+          translateX: 0,
+          translateY: 0,
+          scale: 1,
+          rotateZ: 0,
+        })
+        setCard2Animate({
+          translateX: 0,
+          translateY: 0,
+          scale: 1,
+          rotateZ: 0,
+        })
+        setCard3Animate({
+          translateX: 0,
+          translateY: 0,
+          scale: 1,
+          rotateZ: 0,
+        })
+        setCard4Animate({
+          translateX: 0,
+          translateY: 0,
+          scale: 1,
+          rotateZ: 0,
+        })
+        setCard5Animate({
+          translateX: 0,
+          translateY: 0,
+          scale: 1,
+          rotateZ: 0,
+        })
+        setCard6Animate({
+          translateX: 0,
+          translateY: 0,
+          scale: 1,
+          rotateZ: 0,
+        })
+        setCard7Animate({
+          translateX: 0,
+          translateY: 0,
+          scale: 1,
+          rotateZ: 0,
+        })
+
+        setHand2Card1Animate({
+          translateY: 0,
+          translateX: 0,
+          scale: 1,
+        })
+        setHand2Card2Animate({
+          translateY: 0,
+          translateX: 0,
+          scale: 1,
+        })
+
+        let cards1 = []
+        let cards2 = []
+        cards1.push(...yourCards)
+        cards2.push(...yourCards2)
+        // This swaps the hands
+        setYourCards2(cards1)
+        setYourCards(cards2)
+        setSplitCard2("//:0")
+        setSplitCard2Display({
+          display: "none",
+        })
+        setPlayerThirdCardFlag("//:0")
+        setThirdDisplay({ display: "none" })
+        setPlayerFourthCardFlag("//:0")
+        setFourthDisplay({ display: "none" })
+        setPlayerFifthCardFlag("//:0")
+        setFifthDisplay({ display: "none" })
+        setPlayerSixthCardFlag("//:0")
+        setSixthDisplay({ display: "none" })
+        setPlayerSeventhCardFlag("//:0")
+        setSeventhDisplay({ display: "none" })
+        setSplitCard1(
+          cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
+            yourCards[yourCards.length - 1].card
+          ].src +
+            "#" +
+            new Date().getTime()
+        )
+        setSplitCard1Alt(
+          cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
+            yourCards[yourCards.length - 1].card
+          ].alt
+        )
+        let newHit = () => {
+          let thisDeck = deck
+          let cardIndex = Math.floor(Math.random() * thisDeck.length)
+          let card = thisDeck[cardIndex]
+          thisDeck.splice(cardIndex, 1)
+          setDiscardPile((discardPile) => [...discardPile, card])
+          setDeck(thisDeck)
+          cards2.push(card) // cards 2 is what is being used as yourCards
+          setYourCards([...cards2])
+        }
+        setSplitCard2Alt()
+        setStandElement(
+          <a className="hoverHover" onClick={stand2}>
+            <StandIcon iconTheme={iconTheme}></StandIcon>
+          </a>
+        )
+        setHitElement(
+          <a className="hoverHover" onClick={newHit}>
+            <HitIcon iconTheme={iconTheme}></HitIcon>
+          </a>
+        )
+        setSecondHand(1)
       }
-      setSplitCard2Alt()
-      setStandElement(
-        <a className="hoverHover" onClick={stand2}>
-          <StandIcon iconTheme={iconTheme}></StandIcon>
-        </a>
-      )
-      setHitElement(
-        <a className="hoverHover" onClick={newHit}>
-          <HitIcon iconTheme={iconTheme}></HitIcon>
-        </a>
-      )
-      // setDoubleDownElement()
-      setSecondHand(1)
+      setTimeout(doEverything, 450)
     }
   }
 
@@ -1938,6 +2170,7 @@ function TableOptions({
     }
   }, [cutPosition, discardPile])
   //
+
   const [thirdDisplay, setThirdDisplay] = useState({ display: "none" })
   const [playerThirdCardFlag, setPlayerThirdCardFlag] = useState("//:0")
   const [playerThirdAlt, setPlayerThirdAlt] = useState()
@@ -2837,7 +3070,7 @@ function TableOptions({
     }
   }, [secondHand, yourCards, yourCards2])
 
-  // Animation logic
+  // Defined values
 
   const [initialSetting, setInitialSetting] = useState({
     opacity: 1,
@@ -2891,13 +3124,93 @@ function TableOptions({
     ease: "easeOut",
   })
 
+  // Animation logic // These should all be player based //
+
+  const [initial, setInitial] = useState(initialSettingAlt) // This is just one // initialSettingAlt
+
+  const [animate, setAnimate] = useState(animateSettingPlayer) // Can be for both // animateSettingPlayer
+  const [animateAlt, setAnimateAlt] = useState(animateSettingAltPlayer) // Can be for both // animateSettingAltPlayer
+
+  const [transition, setTransition] = useState(transitionSettingAlt) // These I think will be from scratch
+
+  // I may not need any initial other than default, just animates to send and transition for the speed
+
+  const [card1Animate, setCard1Animate] = useState(animate)
+  const [card1Transition, setCard1Transition] = useState(transition)
+
+  const [card2Animate, setCard2Animate] = useState(animateAlt)
+  const [card2Transition, setCard2Transition] = useState(transition)
+
+  const [card3Animate, setCard3Animate] = useState(animate)
+  const [card3Transition, setCard3Transition] = useState(transition)
+
+  const [card4Animate, setCard4Animate] = useState(animateAlt)
+  const [card4Transition, setCard4Transition] = useState(transition)
+
+  const [card5Animate, setCard5Animate] = useState(animate)
+  const [card5Transition, setCard5Transition] = useState(transition)
+
+  const [card6Animate, setCard6Animate] = useState(animateAlt)
+  const [card6Transition, setCard6Transition] = useState(transition)
+
+  const [card7Animate, setCard7Animate] = useState(animate)
+  const [card7Transition, setCard7Transition] = useState(transition)
+
+  // // //
+
+  const [hand2Card1Animate, setHand2Card1Animate] = useState({
+    translateY: 0,
+    translateX: 0,
+    scale: 1,
+  })
+
+  const [hand2Card1Transition, setHand2Card1Transition] = useState({
+    duration: 0.5,
+    ease: "easeOut",
+  })
+  const [hand2Card1Initial, setHand2Card1Initial] = useState({
+    translateY: 35,
+    translateX: 345,
+    scale: 2,
+  })
+
+  const [hand2Card2Animate, setHand2Card2Animate] = useState({
+    translateY: 0,
+    translateX: 0,
+    scale: 1,
+  })
+  const [hand2Card2Transition, setHand2Card2Transition] = useState({
+    duration: 0.5,
+    ease: "easeOut",
+  })
+  const [hand2Card2Initial, setHand2Card2Initial] = useState({
+    translateY: -310,
+    translateX: -115,
+    scale: 1.5,
+  })
+
+  //  //  //
+
   const [dealTimer, setDealTimer] = useState()
 
   const [playerTimer, setPlayerTimer] = useState()
 
+  const [hand2Timer, setHand2Timer] = useState()
+
+  const secondCardDraw = () => {
+    setPlayerTimer((t) => t + 1)
+  }
+  const hand2CardDraw = () => {
+    setHand2Timer((t) => t + 1)
+  }
+
   useEffect(() => {
     if (yourCards2.length === 2) {
-      setPlayerTimer()
+      // Need to turn off then turn back on
+      setPlayerTimer(1)
+      setTimeout(secondCardDraw, 10) // This Is the time to draw
+      setHand2Timer(1)
+      setTimeout(hand2CardDraw, 200) // This draws the hand2Card2
     }
   }, [yourCards2])
 
@@ -2909,11 +3222,7 @@ function TableOptions({
   }
 
   const playPusher = () => {
-    // if (playerTimer) {
     setPlayerTimer((t) => t + 1)
-    // }
-
-    // The issue here is that I need to indicate
   }
   const playPusherAlt = () => {
     setPlayerTimer(1)
@@ -2953,6 +3262,10 @@ function TableOptions({
     console.log(dealTimer)
   }, [dealTimer])
 
+  // I need to move all the cards from the main hand to the side pile and vice versa, BEFORE yourCards actually switched
+  // Then when they do switch I need their initial values to be set to the default with no animation or transitions so it looks like nothing
+  // has changed.
+
   return (
     <div>
       <div>{outcomeComponent}</div>
@@ -2981,7 +3294,7 @@ function TableOptions({
         <div className="dealerCardsWrap">
           <motion.div
             initial={initialSetting}
-            animate={animateSetting}
+            animate={animateSettingAlt}
             transition={transitionSetting}
             className="firstCard"
           >
@@ -2999,7 +3312,7 @@ function TableOptions({
           {dealTimer && ( // More of this
             <motion.div
               initial={initialSetting}
-              animate={animateSettingAlt}
+              animate={animateSetting}
               transition={transitionSetting}
               className="otherCard"
             >
@@ -3018,7 +3331,7 @@ function TableOptions({
           {additional && (
             <motion.div
               initial={initialSetting}
-              animate={animateSetting}
+              animate={animateSettingAlt}
               transition={transitionSetting}
               className="thirdCard"
               style={thirdDealerDisplay}
@@ -3035,7 +3348,7 @@ function TableOptions({
           {additional > 1 && (
             <motion.div
               initial={initialSetting}
-              animate={animateSettingAlt}
+              animate={animateSetting}
               transition={transitionSetting}
               className="fourthCard"
               style={fourthDealerDisplay}
@@ -3052,7 +3365,7 @@ function TableOptions({
           {additional > 2 && (
             <motion.div
               initial={initialSetting}
-              animate={animateSetting}
+              animate={animateSettingAlt}
               transition={transitionSetting}
               className="fifthCard"
               style={fifthDealerDisplay}
@@ -3069,7 +3382,7 @@ function TableOptions({
           {additional > 3 && (
             <motion.div
               initial={initialSetting}
-              animate={animateSettingAlt}
+              animate={animateSetting}
               transition={transitionSetting}
               className="sixthCard"
               style={sixthDealerDisplay}
@@ -3086,7 +3399,7 @@ function TableOptions({
           {additional > 4 && (
             <motion.div
               initial={initialSetting}
-              animate={animateSetting}
+              animate={animateSettingAlt}
               transition={transitionSetting}
               className="seventhCard"
               style={seventhDealerDisplay}
@@ -3104,9 +3417,9 @@ function TableOptions({
         <div className="playerCardsWrap">
           {playerTimer > 0 && (
             <motion.div
-              initial={initialSettingAlt}
-              animate={animateSettingPlayer}
-              transition={transitionSettingAlt}
+              initial={initial}
+              animate={card1Animate}
+              transition={card1Transition}
               className="firstCard"
             >
               <img
@@ -3122,9 +3435,9 @@ function TableOptions({
 
           {playerTimer > 1 && (
             <motion.div
-              initial={initialSettingAlt}
-              animate={animateSettingAltPlayer}
-              transition={transitionSettingAlt}
+              initial={initial}
+              animate={card2Animate}
+              transition={card2Transition}
               className="otherCard"
             >
               <img
@@ -3140,9 +3453,9 @@ function TableOptions({
 
           {playerTimer > 2 && (
             <motion.div
-              initial={initialSettingAlt}
-              animate={animateSettingPlayer}
-              transition={transitionSettingAlt}
+              initial={initial}
+              animate={card3Animate}
+              transition={card3Transition}
               className="thirdCard"
               style={thirdDisplay}
             >
@@ -3157,9 +3470,9 @@ function TableOptions({
 
           {playerTimer > 3 && (
             <motion.div
-              initial={initialSettingAlt}
-              animate={animateSettingAltPlayer}
-              transition={transitionSettingAlt}
+              initial={initial}
+              animate={card4Animate}
+              transition={card4Transition}
               className="fourthCard"
               style={fourthDisplay}
             >
@@ -3174,9 +3487,9 @@ function TableOptions({
 
           {playerTimer > 4 && (
             <motion.div
-              initial={initialSettingAlt}
-              animate={animateSettingPlayer}
-              transition={transitionSettingAlt}
+              initial={initial}
+              animate={card5Animate}
+              transition={card5Transition}
               className="fifthCard"
               style={fifthDisplay}
             >
@@ -3191,9 +3504,9 @@ function TableOptions({
 
           {playerTimer > 5 && (
             <motion.div
-              initial={initialSettingAlt}
-              animate={animateSettingAltPlayer}
-              transition={transitionSettingAlt}
+              initial={initial}
+              animate={card6Animate}
+              transition={card6Transition}
               className="sixthCard"
               style={sixthDisplay}
             >
@@ -3208,9 +3521,9 @@ function TableOptions({
 
           {playerTimer > 6 && (
             <motion.div
-              initial={initialSettingAlt}
-              animate={animateSettingPlayer}
-              transition={transitionSettingAlt}
+              initial={initial}
+              animate={card7Animate}
+              transition={card7Transition}
               className="seventhCard"
               style={seventhDisplay}
             >
@@ -3225,22 +3538,39 @@ function TableOptions({
         </div>
 
         <div className="playerCards2Wrap">
-          <div className="splitCard1" style={splitCard1Display}>
-            <img
-              src={process.env.PUBLIC_URL + splitCard1}
-              height="99.8244"
-              width="68.2344px"
-              alt={splitCard1Alt}
-            ></img>
-          </div>
-          <div className="splitCard2" style={splitCard2Display}>
-            <img
-              src={process.env.PUBLIC_URL + splitCard2}
-              height="99.8244"
-              width="68.2344px"
-              alt={splitCard2Alt}
-            ></img>
-          </div>
+          {hand2Timer > 0 && (
+            <motion.div
+              initial={hand2Card1Initial}
+              animate={hand2Card1Animate}
+              transition={hand2Card1Transition}
+              className="splitCard1"
+              style={splitCard1Display}
+            >
+              <img
+                src={process.env.PUBLIC_URL + splitCard1}
+                height="99.8244"
+                width="68.2344px"
+                alt={splitCard1Alt}
+              ></img>
+            </motion.div>
+          )}
+
+          {hand2Timer > 1 && (
+            <motion.div
+              initial={hand2Card2Initial}
+              animate={hand2Card2Animate}
+              transition={hand2Card2Transition}
+              className="splitCard2"
+              style={splitCard2Display}
+            >
+              <img
+                src={process.env.PUBLIC_URL + splitCard2}
+                height="99.8244"
+                width="68.2344px"
+                alt={splitCard2Alt}
+              ></img>
+            </motion.div>
+          )}
         </div>
 
         <div className="playerActions">
