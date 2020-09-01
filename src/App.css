@@ -973,8 +973,12 @@ COLUMNS going vertically
   width: 100%;
   /* border: solid; */
 }
+.load {
+  display: none;
+}
 .firstCard {
   /* border: solid; */
+  display: inline;
   z-index: -1;
 }
 .otherCard {

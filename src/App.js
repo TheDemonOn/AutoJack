@@ -1602,107 +1602,47 @@ function TableOptions({
       })
       setCard3Animate({
         translateX: -377,
-        translateY: -46,
+        translateY: -34,
         scale: 0.49,
         rotateZ: 0,
       })
       setCard4Animate({
         translateX: -410,
-        translateY: -46,
+        translateY: -34,
         scale: 0.49,
         rotateZ: 0,
       })
       setCard5Animate({
         translateX: -443,
-        translateY: -46,
+        translateY: -34,
         scale: 0.49,
         rotateZ: 0,
       })
       setCard6Animate({
         translateX: -476,
-        translateY: -46,
+        translateY: -34,
         scale: 0.49,
         rotateZ: 0,
       })
       setCard7Animate({
         translateX: -509,
-        translateY: -46,
+        translateY: -34,
         scale: 0.49,
         rotateZ: 0,
       })
 
-      // setHand2Card1Initial()
       setHand2Card1Animate({
-        translateY: 34,
+        translateY: 46,
         translateX: 297,
         scale: 2,
       })
-      // setHand2Card2Initial()
       setHand2Card2Animate({
-        translateY: 34,
+        translateY: 46,
         translateX: 319,
         scale: 2,
       })
 
       //////
-
-      // const goBack = () => {
-      //   setCard1Animate({
-      //     translateX: 0,
-      //     translateY: 0,
-      //     scale: 1,
-      //     rotateZ: 0,
-      //   })
-      //   setCard2Animate({
-      //     translateX: 0,
-      //     translateY: 0,
-      //     scale: 1,
-      //     rotateZ: 0,
-      //   })
-      //   setCard3Animate({
-      //     translateX: 0,
-      //     translateY: 0,
-      //     scale: 1,
-      //     rotateZ: 0,
-      //   })
-      //   setCard4Animate({
-      //     translateX: 0,
-      //     translateY: 0,
-      //     scale: 1,
-      //     rotateZ: 0,
-      //   })
-      //   setCard5Animate({
-      //     translateX: 0,
-      //     translateY: 0,
-      //     scale: 1,
-      //     rotateZ: 0,
-      //   })
-      //   setCard6Animate({
-      //     translateX: 0,
-      //     translateY: 0,
-      //     scale: 1,
-      //     rotateZ: 0,
-      //   })
-      //   setCard7Animate({
-      //     translateX: 0,
-      //     translateY: 0,
-      //     scale: 1,
-      //     rotateZ: 0,
-      //   })
-
-      //   setHand2Card1Animate({
-      //     translateY: 0,
-      //     translateX: 0,
-      //     scale: 1,
-      //   })
-      //   setHand2Card2Animate({
-      //     translateY: 0,
-      //     translateX: 0,
-      //     scale: 1,
-      //   })
-      // }
-
-      // setTimeout(goBack, 2000)
 
       const doEverything = () => {
         // setInitial({
@@ -2052,22 +1992,33 @@ function TableOptions({
   // The bust below is determined as the cardTotal is being calculated, meaning after it has triggered once we just reset is then it
   // should all work as planned
 
-  // Checks for bust on split for both hands/
+  // Checks for bust on split for both hands
+  const [bustAnimate, setBustAnimate] = useState(0)
   useEffect(() => {
     if (yourCards2.length) {
       if (bust && cardTotal2 === 0) {
         if (roundResultKey2) {
         } else {
           console.log("Bust 2")
-          setRoundResultKey2("bust")
-          stand()
+          setBustAnimate((v) => v + 1)
+          let go = () => {
+            setRoundResultKey2("bust")
+            stand()
+            setBustAnimate(0)
+          }
+          setTimeout(go, 1500) // This will delay for the drawn animation to finish before busting // But then you could still draw
         }
       } else if (bust && cardTotal2) {
         if (roundResultKey) {
         } else {
           console.log("Bust 1")
-          setRoundResultKey("bust")
-          stand2()
+          setBustAnimate((v) => v + 1)
+          let gogo = () => {
+            setRoundResultKey("bust")
+            stand2()
+            setBustAnimate(0)
+          }
+          setTimeout(gogo, 1500)
         }
       }
     }
@@ -2135,6 +2086,18 @@ function TableOptions({
           <DoubleIcon iconTheme={iconTheme}></DoubleIcon>
         </a>
       )
+    } else if (bustAnimate) {
+      setDoubleDownElement(
+        <a>
+          <DoubleIcon iconTheme={iconTheme} opacity={"50%"}></DoubleIcon>
+        </a>
+      )
+    } else if (bustAnimate === 0) {
+      setDoubleDownElement(
+        <a className="hoverHover" onClick={doubleDown}>
+          <DoubleIcon iconTheme={iconTheme}></DoubleIcon>
+        </a>
+      )
     } else {
       setDoubleDownElement(
         // Unusable version
@@ -2152,7 +2115,7 @@ function TableOptions({
         </a>
       )
     }
-  }, [yourCards, endPlayerTurn])
+  }, [yourCards, endPlayerTurn, bustAnimate])
 
   const [cardsLeft, setCardsLeft] = useState()
 
@@ -2949,6 +2912,18 @@ function TableOptions({
           <StandIcon iconTheme={iconTheme} opacity={"50%"}></StandIcon>
         </a>
       )
+    } else if (bustAnimate) {
+      setStandElement(
+        <a>
+          <StandIcon iconTheme={iconTheme} opacity={"50%"}></StandIcon>
+        </a>
+      )
+    } else if (bustAnimate === 0) {
+      setStandElement(
+        <a className="hoverHover" onClick={stand}>
+          <StandIcon iconTheme={iconTheme}></StandIcon>
+        </a>
+      )
     }
   }, [endPlayerTurn])
 
@@ -2966,8 +2941,20 @@ function TableOptions({
           <HitIcon iconTheme={iconTheme} opacity={"50%"}></HitIcon>
         </a>
       )
+    } else if (bustAnimate) {
+      setHitElement(
+        <a>
+          <HitIcon iconTheme={iconTheme} opacity={"50%"}></HitIcon>
+        </a>
+      )
+    } else if (bustAnimate === 0) {
+      setHitElement(
+        <a className="hoverHover" onClick={playerHit}>
+          <HitIcon iconTheme={iconTheme}></HitIcon>
+        </a>
+      )
     }
-  }, [endPlayerTurn])
+  }, [endPlayerTurn, bustAnimate])
 
   const [themesButtonToggle, setThemesButtonToggle] = useState(
     <a className="hoverHover" onClick={settingsFlagSwitch}>
@@ -3191,9 +3178,7 @@ function TableOptions({
 
   //  //  //
 
-  const [dealTimer, setDealTimer] = useState()
-
-  const [playerTimer, setPlayerTimer] = useState()
+  const [playerTimer, setPlayerTimer] = useState(2)
 
   const [hand2Timer, setHand2Timer] = useState()
 
@@ -3214,13 +3199,6 @@ function TableOptions({
     }
   }, [yourCards2])
 
-  const timePusher = () => {
-    setDealTimer((t) => t + 1)
-  }
-  const timePusherAlt = () => {
-    setDealTimer(1)
-  }
-
   const playPusher = () => {
     setPlayerTimer((t) => t + 1)
   }
@@ -3228,11 +3206,11 @@ function TableOptions({
     setPlayerTimer(1)
   }
 
-  useEffect(() => {
-    setTimeout(timePusherAlt, 200)
-    setTimeout(playPusherAlt, 300)
-    setTimeout(playPusher, 500)
-  }, [])
+  // useEffect(() => {
+  //   setTimeout(timePusherAlt, 200)
+  //   setTimeout(playPusherAlt, 300)
+  //   setTimeout(playPusher, 500)
+  // }, [])
 
   const [additional, setAdditional] = useState()
 
@@ -3252,19 +3230,191 @@ function TableOptions({
     }
   }, [thirdDealerDisplay])
 
-  useLayoutEffect(() => {
-    playPusher()
-  }, [yourCards])
+  // useLayoutEffect(() => {
+  //   playPusher()
+  // }, [yourCards])
+
+  //
+
+  // dealTimer is for the second dealer draw (first is automatic)
+  // additional is timer of dealer draw after stand
+  // playerTimer is timer for first auto draw of second and subsequent hits
+
+  //
 
   // The thing about the animation is that it already occurs even if it is display none
-
-  useEffect(() => {
-    console.log(dealTimer)
-  }, [dealTimer])
 
   // I need to move all the cards from the main hand to the side pile and vice versa, BEFORE yourCards actually switched
   // Then when they do switch I need their initial values to be set to the default with no animation or transitions so it looks like nothing
   // has changed.
+
+  const [dealerLoad1, setDealerLoad1] = useState()
+  const dealLoad1 = () => {
+    setDealerLoad1(1)
+  }
+
+  const [dealerLoad2, setDealerLoad2] = useState()
+  const dealLoad2 = () => {
+    setDealerLoad2(1)
+  }
+
+  const [cardLoad1, setCardLoad1] = useState()
+  const load1 = () => {
+    setCardLoad1(1)
+  }
+
+  const [cardLoad2, setCardLoad2] = useState()
+  const load2 = () => {
+    console.log("2")
+    setCardLoad2(1)
+  }
+
+  const [cardLoad3, setCardLoad3] = useState()
+  const load3 = () => {
+    setCardLoad3(1)
+  }
+
+  // I will have a timer for the functions that determine timing can use to tell how much time has passed.
+  // This will be used to tell if they should delay at all for
+
+  const [duration, setDuration] = useState(0)
+  const incrDur = () => {
+    setDuration((t) => t + 1)
+  }
+
+  useEffect(() => {
+    let incrDurInterval = setInterval(incrDur, 100)
+    return () => {
+      clearInterval(incrDurInterval)
+    }
+  }, [])
+
+  // const [playerTimerInit, setPlayerTimerInit] = useState(1) // Second player card
+
+  const [delayKey, setDelayKey] = useState([])
+
+  useEffect(() => {
+    console.log(duration)
+    console.log(delayKey)
+  }, [duration])
+
+  // a function to check how much time has passed to see if a delay is necesesary
+
+  const timeCheck = () => {
+    // This updates the delayKey to hold the time the first animation starts to play
+    delayKey.push(duration)
+  }
+
+  const dealLoad2Check = () => {
+    console.log(duration)
+    console.log(delayKey[0])
+    if (delayKey[0]) {
+      // delayKey[0] being the time when the first card's animation started playing
+      if (duration - delayKey[0] >= 2) {
+        dealLoad2() // if it takes longer than 2 ticks between the first animating and the second loading, go now
+      } else if (duration - delayKey[0] === 1) {
+        setTimeout(dealLoad2, 100)
+      } else {
+        setTimeout(dealLoad2, 200)
+      }
+    } else {
+      console.log("There was no delay Key.")
+      setTimeout(dealLoad2, 200)
+    }
+  }
+
+  const load2Check = () => {
+    // This should load the second card
+    console.log(duration)
+    console.log(delayKey)
+    console.log(delayKey[1])
+    if (delayKey[1]) {
+      // delayKey[0] being the time when the first card's animation started playing
+      if (duration - delayKey[1] >= 2) {
+        load2() // if it takes longer than 2 ticks between the first animating and the second loading, go now
+      } else if (duration - delayKey[1] === 1) {
+        setTimeout(load2, 100)
+      } else {
+        setTimeout(load2, 200)
+      }
+    } else {
+      console.log("There was no delay Key.")
+      setTimeout(load2, 200)
+    }
+  }
+
+  const [dealerDrawKey, setDealerDrawKey] = useState([])
+  // What this should do is enforce a 400 millisecond delay between an animation playing and the next one being able to play
+  const dealerDrawKeyAdd = () => {
+    setTimeout(() => {
+      dealerDrawKey.push(1)
+    }, 400)
+  }
+
+  // const dealerDraw = () => {
+  //   console.log(duration)
+
+  // }
+
+  const timer3 = () => {
+    console.log("Timer Check 3")
+    if (playerThird !== "//:0") {
+      setPlayerTimer(3)
+    }
+  }
+
+  const timer4 = () => {
+    console.log("Timer Check 4")
+    if (playerFourth !== "//:0") {
+      setPlayerTimer(4)
+    }
+  }
+  const timer5 = () => {
+    console.log("Timer Check 5")
+    if (playerFifth !== "//:0") {
+      setPlayerTimer(5)
+    }
+  }
+  const timer6 = () => {
+    console.log("Timer Check 6")
+    if (playerSixth !== "//:0") {
+      setPlayerTimer(6)
+    }
+  }
+  const timer7 = () => {
+    console.log("Timer Check 7")
+    if (playerSeventh !== "//:0") {
+      setPlayerTimer(7)
+    }
+  }
+
+  // These are working and making sure the dealers cards are loaded before playing the animation
+  // I think I need an onload for the animations in order to use the duration and add some timing like with the player's initial draw
+
+  const [dealerThree, setDealerThree] = useState()
+  const addThird = () => {
+    setDealerThree(1)
+  }
+
+  const [dealerFour, setDealerFour] = useState()
+  const addFourth = () => {
+    setDealerFour(1)
+  }
+
+  const [dealerFive, setDealerFive] = useState()
+  const addFifth = () => {
+    setDealerFive(1)
+  }
+
+  const [dealerSix, setDealerSix] = useState()
+  const addSixth = () => {
+    setDealerSix(1)
+  }
+
+  const [dealerSeven, setDealerSeven] = useState()
+  const addSeventh = () => {
+    setDealerSeven(1)
+  }
 
   return (
     <div>
@@ -3292,24 +3442,47 @@ function TableOptions({
         </div>
 
         <div className="dealerCardsWrap">
-          <motion.div
-            initial={initialSetting}
-            animate={animateSettingAlt}
-            transition={transitionSetting}
-            className="firstCard"
-          >
+          <div className="load">
             <img
               src={process.env.PUBLIC_URL + dealerCardOne}
+              // when this onload fires it reveals the real card and its animation
+              onLoad={dealLoad1}
               height="199.6488px"
               width="136.4688px"
-              alt={
-                cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card]
-                  .alt
-              }
             ></img>
-          </motion.div>
+          </div>
 
-          {dealTimer && ( // More of this
+          {dealerLoad1 && (
+            <motion.div
+              initial={initialSetting}
+              animate={animateSettingAlt}
+              transition={transitionSetting}
+              className="firstCard"
+            >
+              <img
+                src={process.env.PUBLIC_URL + dealerCardOne}
+                onLoad={timeCheck}
+                height="199.6488px"
+                width="136.4688px"
+                alt={
+                  cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card]
+                    .alt
+                }
+              ></img>
+            </motion.div>
+          )}
+
+          <div className="load">
+            <img
+              src={process.env.PUBLIC_URL + dealerCardTwo}
+              // when this onload fires it reveals the real card and its animation
+              onLoad={dealLoad2Check}
+              height="199.6488px"
+              width="136.4688px"
+            ></img>
+          </div>
+
+          {dealerLoad2 && ( // More of this
             <motion.div
               initial={initialSetting}
               animate={animateSetting}
@@ -3328,7 +3501,16 @@ function TableOptions({
             </motion.div>
           )}
 
-          {additional && (
+          <div className="load">
+            <img
+              src={process.env.PUBLIC_URL + dealerThird}
+              onLoad={addThird}
+              height="199.6488px"
+              width="136.4688px"
+            ></img>
+          </div>
+
+          {additional && dealerThree && (
             <motion.div
               initial={initialSetting}
               animate={animateSettingAlt}
@@ -3340,12 +3522,22 @@ function TableOptions({
                 src={process.env.PUBLIC_URL + dealerThird}
                 height="199.6488px"
                 width="136.4688px"
+                onLoad={dealerDrawKeyAdd}
                 alt={dealerThirdAlt}
               ></img>
             </motion.div>
           )}
 
-          {additional > 1 && (
+          <div className="load">
+            <img
+              src={process.env.PUBLIC_URL + dealerFourth}
+              onLoad={addFourth}
+              height="199.6488px"
+              width="136.4688px"
+            ></img>
+          </div>
+
+          {additional > 1 && dealerFour && dealerDrawKey[0] && (
             <motion.div
               initial={initialSetting}
               animate={animateSetting}
@@ -3355,6 +3547,7 @@ function TableOptions({
             >
               <img
                 src={process.env.PUBLIC_URL + dealerFourth}
+                onLoad={dealerDrawKeyAdd}
                 height="199.6488px"
                 width="136.4688px"
                 alt={dealerFourthAlt}
@@ -3362,7 +3555,16 @@ function TableOptions({
             </motion.div>
           )}
 
-          {additional > 2 && (
+          <div className="load">
+            <img
+              src={process.env.PUBLIC_URL + dealerFifth}
+              onLoad={addFifth}
+              height="199.6488px"
+              width="136.4688px"
+            ></img>
+          </div>
+
+          {additional > 2 && dealerFive && dealerDrawKey[1] && (
             <motion.div
               initial={initialSetting}
               animate={animateSettingAlt}
@@ -3372,6 +3574,7 @@ function TableOptions({
             >
               <img
                 src={process.env.PUBLIC_URL + dealerFifth}
+                onLoad={dealerDrawKeyAdd}
                 height="199.6488px"
                 width="136.4688px"
                 alt={dealerFifthAlt}
@@ -3379,7 +3582,16 @@ function TableOptions({
             </motion.div>
           )}
 
-          {additional > 3 && (
+          <div className="load">
+            <img
+              src={process.env.PUBLIC_URL + dealerSixth}
+              onLoad={addSixth}
+              height="199.6488px"
+              width="136.4688px"
+            ></img>
+          </div>
+
+          {additional > 3 && dealerSix && dealerDrawKey[2] && (
             <motion.div
               initial={initialSetting}
               animate={animateSetting}
@@ -3389,6 +3601,7 @@ function TableOptions({
             >
               <img
                 src={process.env.PUBLIC_URL + dealerSixth}
+                onLoad={dealerDrawKeyAdd}
                 height="199.6488px"
                 width="136.4688px"
                 alt={dealerSixthAlt}
@@ -3396,34 +3609,57 @@ function TableOptions({
             </motion.div>
           )}
 
-          {additional > 4 && (
-            <motion.div
-              initial={initialSetting}
-              animate={animateSettingAlt}
-              transition={transitionSetting}
-              className="seventhCard"
-              style={seventhDealerDisplay}
-            >
-              <img
-                src={process.env.PUBLIC_URL + dealerSeventh}
-                height="199.6488px"
-                width="136.4688px"
-                alt={dealerSeventhAlt}
-              ></img>
-            </motion.div>
-          )}
+          <div className="load">
+            <img
+              src={process.env.PUBLIC_URL + dealerSeventh}
+              onLoad={addSeventh}
+              height="199.6488px"
+              width="136.4688px"
+            ></img>
+          </div>
+
+          {additional > 4 &&
+            dealerSeven &&
+            dealerDrawKey[3](
+              <motion.div
+                initial={initialSetting}
+                animate={animateSettingAlt}
+                transition={transitionSetting}
+                className="seventhCard"
+                style={seventhDealerDisplay}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + dealerSeventh}
+                  height="199.6488px"
+                  width="136.4688px"
+                  alt={dealerSeventhAlt}
+                ></img>
+              </motion.div>
+            )}
         </div>
 
         <div className="playerCardsWrap">
-          {playerTimer > 0 && (
+          <div className="load">
+            <img
+              src={process.env.PUBLIC_URL + playerCardOne}
+              // when this onload fires it reveals the real card and its animation
+              onLoad={load1}
+              height="199.6488px"
+              width="136.4688px"
+            ></img>
+          </div>
+
+          {cardLoad1 && (
             <motion.div
-              initial={initial}
+              initial={initial} // initial
               animate={card1Animate}
               transition={card1Transition}
               className="firstCard"
+              // style={card1Style}
             >
               <img
                 src={process.env.PUBLIC_URL + playerCardOne}
+                onLoad={timeCheck}
                 height="199.6488px"
                 width="136.4688px"
                 alt={
@@ -3433,7 +3669,18 @@ function TableOptions({
             </motion.div>
           )}
 
-          {playerTimer > 1 && (
+          <div className="load">
+            <img
+              src={process.env.PUBLIC_URL + playerCardTwo}
+              // onload={timeCheck}
+              onLoad={load2Check} // I want to do another timeCheck to compare times between first and last; the time between
+              // the first card animating and the next card loading, if the time is 0 then add 2 ticks if greater than go immidiately
+              height="199.6488px"
+              width="136.4688px"
+            ></img>
+          </div>
+
+          {cardLoad2 && (
             <motion.div
               initial={initial}
               animate={card2Animate}
@@ -3442,6 +3689,7 @@ function TableOptions({
             >
               <img
                 src={process.env.PUBLIC_URL + playerCardTwo}
+                // onLoad={timeCheck}
                 height="199.6488px"
                 width="136.4688px"
                 alt={
@@ -3450,6 +3698,15 @@ function TableOptions({
               ></img>
             </motion.div>
           )}
+
+          <div className="load">
+            <img
+              src={process.env.PUBLIC_URL + playerThird}
+              onLoad={timer3}
+              height="199.6488px"
+              width="136.4688px"
+            ></img>
+          </div>
 
           {playerTimer > 2 && (
             <motion.div
@@ -3468,6 +3725,15 @@ function TableOptions({
             </motion.div>
           )}
 
+          <div className="load">
+            <img
+              src={process.env.PUBLIC_URL + playerFourth}
+              onLoad={timer4}
+              height="199.6488px"
+              width="136.4688px"
+            ></img>
+          </div>
+
           {playerTimer > 3 && (
             <motion.div
               initial={initial}
@@ -3484,6 +3750,15 @@ function TableOptions({
               ></img>
             </motion.div>
           )}
+
+          <div className="load">
+            <img
+              src={process.env.PUBLIC_URL + playerFifth}
+              onLoad={timer5}
+              height="199.6488px"
+              width="136.4688px"
+            ></img>
+          </div>
 
           {playerTimer > 4 && (
             <motion.div
@@ -3502,6 +3777,15 @@ function TableOptions({
             </motion.div>
           )}
 
+          <div className="load">
+            <img
+              src={process.env.PUBLIC_URL + playerSixth}
+              onLoad={timer6}
+              height="199.6488px"
+              width="136.4688px"
+            ></img>
+          </div>
+
           {playerTimer > 5 && (
             <motion.div
               initial={initial}
@@ -3518,6 +3802,15 @@ function TableOptions({
               ></img>
             </motion.div>
           )}
+
+          <div className="load">
+            <img
+              src={process.env.PUBLIC_URL + playerSeventh}
+              onLoad={timer7}
+              height="199.6488px"
+              width="136.4688px"
+            ></img>
+          </div>
 
           {playerTimer > 6 && (
             <motion.div
