@@ -1885,103 +1885,120 @@ function TableOptions({
 
   // What if I just run it once after the second hand if the second hand exists
   useEffect(() => {
-    if (
-      (endPlayerTurn === 1 && yourCards2.length === 0) ||
-      endPlayerTurn === 2
-    ) {
-      console.log("cardTotal:", cardTotal)
-      console.log("cardTotal2:", cardTotal2)
-      console.log("dealerCardTotal:", dealerCardTotal)
-      if (cardTotal > 21 && cardTotal2 === 0) {
-        //
-        console.log("What is this")
-        return
-      } else {
-        console.log("Calculating final round result")
-        if (yourCards2.length === 0) {
-          // If turn has ended and it has not split
-          if (dealerCardTotal === cardTotal) {
-            yourMoneyValue((m) => m + playerBet)
-            setRoundResultKey("push")
-          }
-          if (dealerCardTotal < cardTotal) {
-            if (cardTotal > 21) {
-              return
-            } else if (yourCards[0].value + yourCards[1].value === 21) {
-              yourMoneyValue((m) => m + playerBet + Math.round(playerBet * 1.5))
-              setRoundResultKey("blackjack")
-            } else {
-              yourMoneyValue((m) => m + playerBet * 2)
-              setRoundResultKey("won")
-            }
-          } else if (dealerCardTotal > cardTotal) {
-            if (dealerCards[0].value + dealerCards[1].value === 21) {
-              setRoundResultKey("DealerBlackjack")
-            } else if (dealerCardTotal < 22) {
-              setRoundResultKey("lost")
-            } else if (yourCards[0].value + yourCards[1].value === 21) {
-              yourMoneyValue((m) => m + playerBet + Math.round(playerBet * 1.5))
-              setRoundResultKey("blackjack")
-            } else {
-              yourMoneyValue((m) => m + playerBet * 2)
-              setRoundResultKey("dealerBust")
-            }
-          }
+    console.log(dealerCards.length)
+    setDrawDelay(dealerCards.length)
+    console.log(delayKey[0])
+    if (delayKey[0] > 15) {
+      setDelayScaling(1200)
+    } else if (delayKey[0] > 5) {
+      setDelayScaling(600)
+    } else {
+      setDelayScaling(300)
+    }
+
+    setTimeout(() => {
+      if (
+        (endPlayerTurn === 1 && yourCards2.length === 0) ||
+        endPlayerTurn === 2
+      ) {
+        console.log("cardTotal:", cardTotal)
+        console.log("cardTotal2:", cardTotal2)
+        console.log("dealerCardTotal:", dealerCardTotal)
+        if (cardTotal > 21 && cardTotal2 === 0) {
+          //
+          console.log("What is this")
+          return
         } else {
-          // This will evaluate both the first and second hand sequentially at once
-          // First hand
-          if (cardTotal > 21) {
-            setRoundResultKey("bust")
-          } else if (dealerCardTotal < cardTotal) {
-            if (cardTotal > 21) {
-              // busted
-              setRoundResultKey("bust")
-            } else {
-              yourMoneyValue((m) => m + playerBet2 * 2)
-              setRoundResultKey("won")
-              setHandOneWin(1)
+          console.log("Calculating final round result")
+          if (yourCards2.length === 0) {
+            // If turn has ended and it has not split
+            if (dealerCardTotal === cardTotal) {
+              yourMoneyValue((m) => m + playerBet)
+              setRoundResultKey("push")
             }
-          } else if (dealerCardTotal > cardTotal) {
-            if (dealerCardTotal < 22) {
-              setRoundResultKey("lost")
-            } else {
-              yourMoneyValue((m) => m + playerBet2 * 2)
-              setRoundResultKey("dealerBust")
-              setHandOneWin(1)
+            if (dealerCardTotal < cardTotal) {
+              if (cardTotal > 21) {
+                return
+              } else if (yourCards[0].value + yourCards[1].value === 21) {
+                yourMoneyValue(
+                  (m) => m + playerBet + Math.round(playerBet * 1.5)
+                )
+                setRoundResultKey("blackjack")
+              } else {
+                yourMoneyValue((m) => m + playerBet * 2)
+                setRoundResultKey("won")
+              }
+            } else if (dealerCardTotal > cardTotal) {
+              if (dealerCards[0].value + dealerCards[1].value === 21) {
+                setRoundResultKey("DealerBlackjack")
+              } else if (dealerCardTotal < 22) {
+                setRoundResultKey("lost")
+              } else if (yourCards[0].value + yourCards[1].value === 21) {
+                yourMoneyValue(
+                  (m) => m + playerBet + Math.round(playerBet * 1.5)
+                )
+                setRoundResultKey("blackjack")
+              } else {
+                yourMoneyValue((m) => m + playerBet * 2)
+                setRoundResultKey("dealerBust")
+              }
             }
           } else {
-            yourMoneyValue((m) => m + playerBet2)
-            setRoundResultKey("push")
-            setHandOnePush(1)
-          }
-          // Second hand
-          if (cardTotal2 > 21) {
-            setRoundResultKey2("bust")
-          } else if (dealerCardTotal < cardTotal2) {
-            console.log(cardTotal2)
+            // This will evaluate both the first and second hand sequentially at once
+            // First hand
+            if (cardTotal > 21) {
+              setRoundResultKey("bust")
+            } else if (dealerCardTotal < cardTotal) {
+              if (cardTotal > 21) {
+                // busted
+                setRoundResultKey("bust")
+              } else {
+                yourMoneyValue((m) => m + playerBet2 * 2)
+                setRoundResultKey("won")
+                setHandOneWin(1)
+              }
+            } else if (dealerCardTotal > cardTotal) {
+              if (dealerCardTotal < 22) {
+                setRoundResultKey("lost")
+              } else {
+                yourMoneyValue((m) => m + playerBet2 * 2)
+                setRoundResultKey("dealerBust")
+                setHandOneWin(1)
+              }
+            } else {
+              yourMoneyValue((m) => m + playerBet2)
+              setRoundResultKey("push")
+              setHandOnePush(1)
+            }
+            // Second hand
             if (cardTotal2 > 21) {
               setRoundResultKey2("bust")
+            } else if (dealerCardTotal < cardTotal2) {
+              console.log(cardTotal2)
+              if (cardTotal2 > 21) {
+                setRoundResultKey2("bust")
+              } else {
+                yourMoneyValue((m) => m + playerBet * 2)
+                setRoundResultKey2("won")
+                setHandTwoWin(1)
+              }
+            } else if (dealerCardTotal > cardTotal2) {
+              if (dealerCardTotal < 22) {
+                setRoundResultKey2("lost")
+              } else {
+                yourMoneyValue((m) => m + playerBet * 2)
+                setRoundResultKey2("dealerBust")
+                setHandTwoWin(1)
+              }
             } else {
-              yourMoneyValue((m) => m + playerBet * 2)
-              setRoundResultKey2("won")
-              setHandTwoWin(1)
+              yourMoneyValue((m) => m + playerBet)
+              setRoundResultKey2("push")
+              setHandTwoPush(1)
             }
-          } else if (dealerCardTotal > cardTotal2) {
-            if (dealerCardTotal < 22) {
-              setRoundResultKey2("lost")
-            } else {
-              yourMoneyValue((m) => m + playerBet * 2)
-              setRoundResultKey2("dealerBust")
-              setHandTwoWin(1)
-            }
-          } else {
-            yourMoneyValue((m) => m + playerBet)
-            setRoundResultKey2("push")
-            setHandTwoPush(1)
           }
         }
       }
-    }
+    }, 1)
   }, [endPlayerTurn])
 
   useEffect(() => {
@@ -2545,6 +2562,10 @@ function TableOptions({
     )
   }, [yourCards2, yourCards])
 
+  const [drawDelay, setDrawDelay] = useState()
+
+  const [delayScaling, setDelayScaling] = useState()
+
   let z = document.getElementsByClassName("block")
 
   const backgroundBlur = () => {
@@ -2725,154 +2746,159 @@ function TableOptions({
     console.log("Round Result Keys")
     console.log(roundResultKey)
     console.log(roundResultKey2)
+    console.log(drawDelay)
+    console.log(delayScaling)
+    console.log((drawDelay - 2) * delayScaling)
 
-    if (yourCards2.length === 0) {
-      // There is no split
-      switch (roundResultKey) {
-        case "won":
-          setOutcomeEffect("positive")
-          blur()
-          roundEndAuto()
-          animateAdd(playerBet * 2)
-          break
-        case "lost":
-          setOutcomeEffect("negative")
-          blur()
-          roundEndAuto()
-          break
-        case "push":
-          setOutcomeEffect("neutral")
-          blur()
-          roundEndAuto()
-          animateAdd(playerBet)
-          break
-        case "blackjack":
-          setOutcomeContent("Blackjack.")
-          setOutcomeEffect("positive")
-          blur()
-          roundEndAuto()
-          animateAdd(playerBet + Math.round(playerBet * 1.5))
-          break
-        case "bust":
-          setOutcomeContent("You bust.")
-          setOutcomeEffect("negative")
-          blur()
-          roundEndAuto()
-          break
-        case "dealerBust":
-          setOutcomeContent("Dealer bust.")
-          setOutcomeEffect("positive")
-          blur()
-          roundEndAuto()
-          animateAdd(playerBet * 2)
-          break
-        case "DealerBlackjack":
-          setOutcomeContent("Dealer Blackjack.")
-          setOutcomeEffect("negative")
-          blur()
-          roundEndAuto()
-      }
-      // This checks to see if the splitCards exist and that the first roundResultKey was created then swapped into roundResultKey2.
-      // It is swapped because it uses the same system that evaluates key 1
-    } else if (
-      yourCards2.length &&
-      roundResultKey2 !== "" &&
-      roundResultKey !== ""
-    ) {
-      console.log("SPLIT SWITCH 1")
-      console.log(roundResultKey)
-      console.log(roundResultKey2)
-      console.log(yourMoney)
-      switch (roundResultKey) {
-        case "won":
-          switch (roundResultKey2) {
-            case "won":
-              setYourMoneyUpdater(yourMoney - playerBet * 2)
-              break
-            case "push":
-              setYourMoneyUpdater(yourMoney - playerBet)
-              break
-            case "dealerBust":
-              setYourMoneyUpdater(yourMoney - playerBet * 2)
-              break
-            default:
-              // lost
-              setYourMoneyUpdater(yourMoney)
-              break
-          }
-          animateAdd(playerBet2 * 2)
-          setOutcomeEffect("positive")
-          blur()
-          break
-        case "lost":
-          setOutcomeEffect("negative")
-          blur()
-          break
-        case "push":
-          switch (roundResultKey2) {
-            case "won":
-              setYourMoneyUpdater(yourMoney - playerBet * 2)
-              animateAdd(playerBet * 2)
-              break
-            case "push":
-              setYourMoneyUpdater(yourMoney - playerBet)
-              animateAdd(playerBet)
-              break
-            case "dealerBust":
-              setYourMoneyUpdater(yourMoney - playerBet * 2)
-              animateAdd(playerBet * 2)
-              break
-            default:
-              // lost
-              setYourMoneyUpdater(yourMoney)
-              break
-          }
-          animateAdd(playerBet2)
-          setOutcomeEffect("neutral")
-          blur()
-          break
-        case "bust":
-          setOutcomeContent("You bust.")
-          setOutcomeEffect("negative")
-          blur()
-          break
-        case "dealerBust":
-          switch (roundResultKey2) {
-            case "won":
-              setYourMoneyUpdater(yourMoney - playerBet * 2)
-              break
-            case "push":
-              setYourMoneyUpdater(yourMoney - playerBet)
-              break
-            case "blackjack":
-              setYourMoneyUpdater(yourMoney - playerBet * 2)
-              break
-            case "dealerBust":
-              setYourMoneyUpdater(yourMoney - playerBet * 2)
-              break
-            default:
-              // lost
-              setYourMoneyUpdater(yourMoney)
-              break
-          }
-          animateAdd(playerBet2 * 2)
-          setOutcomeContent("Dealer bust.")
-          setOutcomeEffect("positive")
-          blur()
-          break
-        case "DealerBlackjack":
-          setOutcomeContent("Dealer Blackjack.")
-          setOutcomeEffect("negative")
-          blur()
-      }
-      // Here put a setTimeout that handles resetting the blur and the outcomeComponent that triggers when the time is about the same as a
-      // normal end turn, then after that swap the hands of 1 and 2 then trigger another switch that is basically just the normal one
-      // with the roundEndAuto.
-      // Another thing I would like to add is updating the money during the blur function
+    setTimeout(() => {
+      if (yourCards2.length === 0) {
+        // There is no split
+        switch (roundResultKey) {
+          case "won":
+            setOutcomeEffect("positive")
+            blur()
+            roundEndAuto()
+            animateAdd(playerBet * 2)
+            break
+          case "lost":
+            setOutcomeEffect("negative")
+            blur()
+            roundEndAuto()
+            break
+          case "push":
+            setOutcomeEffect("neutral")
+            blur()
+            roundEndAuto()
+            animateAdd(playerBet)
+            break
+          case "blackjack":
+            setOutcomeContent("Blackjack.")
+            setOutcomeEffect("positive")
+            blur()
+            roundEndAuto()
+            animateAdd(playerBet + Math.round(playerBet * 1.5))
+            break
+          case "bust":
+            setOutcomeContent("You bust.")
+            setOutcomeEffect("negative")
+            blur()
+            roundEndAuto()
+            break
+          case "dealerBust":
+            setOutcomeContent("Dealer bust.")
+            setOutcomeEffect("positive")
+            blur()
+            roundEndAuto()
+            animateAdd(playerBet * 2)
+            break
+          case "DealerBlackjack":
+            setOutcomeContent("Dealer Blackjack.")
+            setOutcomeEffect("negative")
+            blur()
+            roundEndAuto()
+        }
+        // This checks to see if the splitCards exist and that the first roundResultKey was created then swapped into roundResultKey2.
+        // It is swapped because it uses the same system that evaluates key 1
+      } else if (
+        yourCards2.length &&
+        roundResultKey2 !== "" &&
+        roundResultKey !== ""
+      ) {
+        console.log("SPLIT SWITCH 1")
+        console.log(roundResultKey)
+        console.log(roundResultKey2)
+        console.log(yourMoney)
+        switch (roundResultKey) {
+          case "won":
+            switch (roundResultKey2) {
+              case "won":
+                setYourMoneyUpdater(yourMoney - playerBet * 2)
+                break
+              case "push":
+                setYourMoneyUpdater(yourMoney - playerBet)
+                break
+              case "dealerBust":
+                setYourMoneyUpdater(yourMoney - playerBet * 2)
+                break
+              default:
+                // lost
+                setYourMoneyUpdater(yourMoney)
+                break
+            }
+            animateAdd(playerBet2 * 2)
+            setOutcomeEffect("positive")
+            blur()
+            break
+          case "lost":
+            setOutcomeEffect("negative")
+            blur()
+            break
+          case "push":
+            switch (roundResultKey2) {
+              case "won":
+                setYourMoneyUpdater(yourMoney - playerBet * 2)
+                animateAdd(playerBet * 2)
+                break
+              case "push":
+                setYourMoneyUpdater(yourMoney - playerBet)
+                animateAdd(playerBet)
+                break
+              case "dealerBust":
+                setYourMoneyUpdater(yourMoney - playerBet * 2)
+                animateAdd(playerBet * 2)
+                break
+              default:
+                // lost
+                setYourMoneyUpdater(yourMoney)
+                break
+            }
+            animateAdd(playerBet2)
+            setOutcomeEffect("neutral")
+            blur()
+            break
+          case "bust":
+            setOutcomeContent("You bust.")
+            setOutcomeEffect("negative")
+            blur()
+            break
+          case "dealerBust":
+            switch (roundResultKey2) {
+              case "won":
+                setYourMoneyUpdater(yourMoney - playerBet * 2)
+                break
+              case "push":
+                setYourMoneyUpdater(yourMoney - playerBet)
+                break
+              case "blackjack":
+                setYourMoneyUpdater(yourMoney - playerBet * 2)
+                break
+              case "dealerBust":
+                setYourMoneyUpdater(yourMoney - playerBet * 2)
+                break
+              default:
+                // lost
+                setYourMoneyUpdater(yourMoney)
+                break
+            }
+            animateAdd(playerBet2 * 2)
+            setOutcomeContent("Dealer bust.")
+            setOutcomeEffect("positive")
+            blur()
+            break
+          case "DealerBlackjack":
+            setOutcomeContent("Dealer Blackjack.")
+            setOutcomeEffect("negative")
+            blur()
+        }
+        // Here put a setTimeout that handles resetting the blur and the outcomeComponent that triggers when the time is about the same as a
+        // normal end turn, then after that swap the hands of 1 and 2 then trigger another switch that is basically just the normal one
+        // with the roundEndAuto.
+        // Another thing I would like to add is updating the money during the blur function
 
-      // It seems like it mostly worked except the blur and component didn't trigger, nor the ending I think. Better than I expected
-      splitHandleTimeout()
-    }
+        // It seems like it mostly worked except the blur and component didn't trigger, nor the ending I think. Better than I expected
+        splitHandleTimeout()
+      }
+    }, (drawDelay - 2) * delayScaling)
   }, [roundResultKey, roundResultKey2])
 
   const [outcomeComponent, setOutcomeComponent] = useState()
@@ -3219,6 +3245,7 @@ function TableOptions({
   }
 
   useEffect(() => {
+    // This entire system may be redundant
     if (thirdDealerDisplay.display === "block") {
       // This runs when the dealer starts drawing cards after stand
       console.log(dealerCards.length)
@@ -3269,10 +3296,10 @@ function TableOptions({
     setCardLoad2(1)
   }
 
-  const [cardLoad3, setCardLoad3] = useState()
-  const load3 = () => {
-    setCardLoad3(1)
-  }
+  // const [cardLoad3, setCardLoad3] = useState()
+  // const load3 = () => {
+  //   setCardLoad3(1)
+  // }
 
   // I will have a timer for the functions that determine timing can use to tell how much time has passed.
   // This will be used to tell if they should delay at all for
@@ -3293,10 +3320,10 @@ function TableOptions({
 
   const [delayKey, setDelayKey] = useState([])
 
-  useEffect(() => {
-    console.log(duration)
-    console.log(delayKey)
-  }, [duration])
+  // useEffect(() => {
+  //   console.log(duration)
+  //   console.log(delayKey)
+  // }, [duration])
 
   // a function to check how much time has passed to see if a delay is necesesary
 
@@ -3415,6 +3442,14 @@ function TableOptions({
   const addSeventh = () => {
     setDealerSeven(1)
   }
+
+  // useEffect(() => {
+  //   console.log(dealerCards.length)
+  //   // figure out how long I should delay for each card drawn and see if the ratio needs to dynamically change for any reason i.e internet speed
+  //   // Using the dealerDrawKey is too late
+  //   // Can maybe use dealerThree to run checks
+  //   setDrawDelay(dealerCards.length)
+  // }, [dealerThree])
 
   return (
     <div>
