@@ -1588,57 +1588,81 @@ function TableOptions({
       // ANIMATE: This will update to affect them. Therefore if I want to put them all back I want to animate to position 0 and
       // set the transition to 0 seconds so it is instant
 
+      // These were -34 y
+
+      // Use a system similar to the below for variable
+
+      // 286 - 1536  ratio 0.1861979166666667
+
+      let viewportWidth = window.innerWidth
+
+      let stackx = viewportWidth * -0.1861979166666667
+
+      // lets try incr of 33
+
+      // Also try higher y
+
+      let stackY = -44 // Keep going up till about right
+
       setCard1Animate({
-        translateX: -286,
-        translateY: -34,
+        translateX: stackx, // 286
+        translateY: stackY,
         scale: 0.49,
         rotateZ: 0,
-      })
+      }) // 44
       setCard2Animate({
-        translateX: -330,
-        translateY: -34,
+        translateX: stackx - 44, // 330
+        translateY: stackY,
         scale: 0.49,
         rotateZ: 0,
-      })
+      }) // 47
       setCard3Animate({
-        translateX: -377,
-        translateY: -34,
+        translateX: stackx - 91, // 377
+        translateY: stackY,
         scale: 0.49,
         rotateZ: 0,
-      })
+      }) // 33
       setCard4Animate({
-        translateX: -410,
-        translateY: -34,
+        translateX: stackx - 124, // 410
+        translateY: stackY,
         scale: 0.49,
         rotateZ: 0,
       })
       setCard5Animate({
-        translateX: -443,
-        translateY: -34,
+        translateX: stackx - 157, // 443
+        translateY: stackY,
         scale: 0.49,
         rotateZ: 0,
       })
       setCard6Animate({
-        translateX: -476,
-        translateY: -34,
+        translateX: stackx - 190, // 476
+        translateY: stackY,
         scale: 0.49,
         rotateZ: 0,
-      })
+      }) // 33
       setCard7Animate({
-        translateX: -509,
-        translateY: -34,
+        translateX: stackx - 223, // 509
+        translateY: stackY,
         scale: 0.49,
         rotateZ: 0,
       })
 
+      // So the first part animates correctly always because it is animating to a position 0 as opposed to the faking we are doing
+
+      let card1x = viewportWidth * 0.193359375
+
+      // Mine at full screen gave me 1536 so I can base the proportions around that for both smaller and larger
+      // 297 - 1536  A 0.193359375 ratio
+
+      // This works alright as is
       setHand2Card1Animate({
         translateY: 46,
-        translateX: 297,
+        translateX: card1x, // These are what control the incorrect movement // 297
         scale: 2,
       })
       setHand2Card2Animate({
         translateY: 46,
-        translateX: 319,
+        translateX: card1x + 22, // 319
         scale: 2,
       })
 
@@ -3443,6 +3467,11 @@ function TableOptions({
     setDealerSeven(1)
   }
 
+  const [split2Loaded, setSplit2Loaded] = useState()
+  const split2Load = () => {
+    setSplit2Loaded(1)
+  }
+
   // useEffect(() => {
   //   console.log(dealerCards.length)
   //   // figure out how long I should delay for each card drawn and see if the ratio needs to dynamically change for any reason i.e internet speed
@@ -3883,7 +3912,16 @@ function TableOptions({
             </motion.div>
           )}
 
-          {hand2Timer > 1 && (
+          <div className="load">
+            <img
+              src={process.env.PUBLIC_URL + splitCard2}
+              onLoad={split2Load}
+              height="199.6488px"
+              width="136.4688px"
+            ></img>
+          </div>
+
+          {hand2Timer > 1 && split2Loaded && (
             <motion.div
               initial={hand2Card2Initial}
               animate={hand2Card2Animate}
