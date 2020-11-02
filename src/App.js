@@ -102,6 +102,9 @@ function LoadOrder({
   maxBet,
   minBet,
   cardThemeNum,
+  automateFlagSwitch,
+  automateFlag,
+  automateFlagSwitch0
 }) {
   if (settingsFlag) {
     return (
@@ -125,7 +128,19 @@ function LoadOrder({
         textColor={textColor}
         settingsFlagSwitch={settingsFlagSwitch}
         startFlagSwitch={startFlagSwitch}
+        automateFlagSwitch={automateFlagSwitch}
+        automateFlagSwitch0={automateFlagSwitch0}
       ></Home>
+    )
+  } else if (automateFlag) {
+    return (
+      <Automate 
+      buttonTheme={buttonTheme}
+      iconTheme={iconTheme}
+      textColor={textColor}
+      settingsFlagSwitch={settingsFlagSwitch}
+      homeFlagSwitch1={homeFlagSwitch1}
+      ></Automate>
     )
   }
   //switch goes to 0
@@ -225,10 +240,12 @@ function LoadOrder({
 
 function Home({
   homeFlagSwitch,
+  automateFlagSwitch,
   buttonTheme,
   iconTheme,
   textColor,
   settingsFlagSwitch,
+  automateFlagSwitch0,
   homeFlagSwitch1,
   startFlagSwitch,
 }) {
@@ -239,6 +256,10 @@ function Home({
   const [subText, setSubText] = useState(
     <h2 style={textColor}>The Blackjack that plays itself.</h2>
   )
+
+  useEffect(() => {
+    automateFlagSwitch0()
+  }, [])
 
   useEffect(() => {
     let random = Math.random()
@@ -272,7 +293,7 @@ function Home({
           ></Button>
         </div>
         <div id="automated">
-          <Button buttonTheme={buttonTheme} content={"Automated"}></Button>
+          <Button buttonTheme={buttonTheme} content={"Automated"} func={automateFlagSwitch}></Button>
         </div>
 
         {/* This h3 should be seen on the hover of the buttons between the two texts. Do it for the theme and the github buttons */}
@@ -308,6 +329,35 @@ function Home({
   )
 }
 
+function Automate({ buttonTheme, iconTheme, textColor, settingsFlagSwitch, homeFlagSwitch1 }) {
+  useEffect(() => {
+    window.history.pushState("Automate", null, "http://localhost:3000/Automate")
+  }, [])
+
+  return (
+  <div>
+    <div className="tableBack">
+        <Button
+          buttonTheme={buttonTheme}
+          content={"Back"}
+          func={homeFlagSwitch1}
+        ></Button>
+    </div>
+
+    <div className="one">
+      <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
+        <GithubSVG iconTheme={iconTheme}></GithubSVG>
+      </a>
+    </div>
+    <div className="two">
+      <a onClick={settingsFlagSwitch}>
+        <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
+      </a>
+    </div>
+</div>
+)
+}
+
 // Perhaps add a random theme button so that the drawn cards are a mix of all the themes
 
 function ThemeSettings({
@@ -322,7 +372,8 @@ function ThemeSettings({
   useEffect(() => {
     if (
       window.history.state === "Home" ||
-      window.history.state === "StartScreen"
+      window.history.state === "StartScreen" ||
+      window.history.state === "Automate"
     ) {
       window.history.pushState(
         "ThemeSettings",
@@ -407,7 +458,6 @@ function StartScreen({
   minBet,
 }) {
   useEffect(() => {
-    if (window.history.state === "Home")
       window.history.pushState(
         "StartScreen",
         null,
@@ -522,7 +572,7 @@ function StartScreen({
               placeholder="1"
               value={deckValue}
               onChange={(e) => theDeckCountValue(e.target.value)}
-              // onChange={e => theDeckCountValue(e.target.value)}
+            // onChange={e => theDeckCountValue(e.target.value)}
             ></input>
           </div>
           <div>
@@ -1165,7 +1215,7 @@ function TableOptions({
     // Because drawing a card then ending the turn happens in one cycle I have to do a local calculation that checks for Aces
     // because otherwise the cardTotal is set too late for the final evaluation
 
-    let end = () => {}
+    let end = () => { }
     console.log(secondHand)
     if (secondHand) {
       end = () => {
@@ -1183,14 +1233,14 @@ function TableOptions({
       if (
         // Checks for bust with Aces reduced to 1
         yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-          aceCards.length * 11 +
-          aceCards.length >
+        aceCards.length * 11 +
+        aceCards.length >
         21
       ) {
         setCardTotal(
           yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length
+          aceCards.length * 11 +
+          aceCards.length
         )
         setBust((p) => p + 1)
       } else if (yourCards.map((x) => x.value).reduce((x, y) => x + y) <= 21) {
@@ -1201,8 +1251,8 @@ function TableOptions({
         // Draw but with reduced Aces
         setCardTotal(
           yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length
+          aceCards.length * 11 +
+          aceCards.length
         )
         end()
       }
@@ -1252,7 +1302,7 @@ function TableOptions({
         dealerHitLostCards.push(card)
         if (
           localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
-            card.value <
+          card.value <
           17
         ) {
           let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
@@ -1262,8 +1312,8 @@ function TableOptions({
           dealerHitLostCards.push(card2)
           if (
             localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
-              card.value +
-              card2.value <
+            card.value +
+            card2.value <
             17
           ) {
             let cardIndex3 = Math.floor(Math.random() * thisDeck.length)
@@ -1273,9 +1323,9 @@ function TableOptions({
             dealerHitLostCards.push(card3)
             if (
               localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
-                card.value +
-                card2.value +
-                card3.value <
+              card.value +
+              card2.value +
+              card3.value <
               17
             ) {
               let cardIndex4 = Math.floor(Math.random() * thisDeck.length)
@@ -1285,10 +1335,10 @@ function TableOptions({
               dealerHitLostCards.push(card4)
               if (
                 localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
-                  card.value +
-                  card2.value +
-                  card3.value +
-                  card4.value <
+                card.value +
+                card2.value +
+                card3.value +
+                card4.value <
                 17
               ) {
                 let cardIndex5 = Math.floor(Math.random() * thisDeck.length)
@@ -1348,8 +1398,8 @@ function TableOptions({
         console.log("End: Aces, but reduced not needed")
       } else if (
         localDealerCards.map((x) => x.value).reduce((x, y) => x + y) -
-          aceCards.length * 11 +
-          aceCards.length <
+        aceCards.length * 11 +
+        aceCards.length <
         17
       ) {
         // The total with normal Aces is greater than 21, this checks to see if the reduced Aces put it below its goal.
@@ -1388,8 +1438,8 @@ function TableOptions({
       } else {
         setDealerCardTotal(
           localDealerCards.map((x) => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length
+          aceCards.length * 11 +
+          aceCards.length
         )
         console.log("Aces are reduced and the total is at 17 or higher")
         endTurnFlagSwitch()
@@ -1446,7 +1496,7 @@ function TableOptions({
       shoeCount(
         Math.floor(
           (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) *
-            (deck.length + discardPile.length)
+          (deck.length + discardPile.length)
         )
       )
 
@@ -1478,9 +1528,9 @@ function TableOptions({
     console.log("SPLITCARD TRIGGERED")
     setSplitCard1(
       splitCard1Flag ||
-        cards[cardThemeNum][yourCards2[0].suit][yourCards2[0].card].src +
-          "#" +
-          new Date().getTime()
+      cards[cardThemeNum][yourCards2[0].suit][yourCards2[0].card].src +
+      "#" +
+      new Date().getTime()
     )
     if (splitCard1Flag != "//:0") {
       setSplitCard1Display({ display: "block" })
@@ -1507,9 +1557,9 @@ function TableOptions({
   useEffect(() => {
     setSplitCard2(
       splitCard2Flag ||
-        cards[cardThemeNum][yourCards2[1].suit][yourCards2[1].card].src +
-          "#" +
-          new Date().getTime()
+      cards[cardThemeNum][yourCards2[1].suit][yourCards2[1].card].src +
+      "#" +
+      new Date().getTime()
     )
     if (splitCard2Flag != "//:0") {
       setSplitCard2Display({ display: "block" })
@@ -1539,14 +1589,14 @@ function TableOptions({
         if (
           // Checks for bust with Aces reduced to 1
           yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length >
+          aceCards.length * 11 +
+          aceCards.length >
           21
         ) {
           setCardTotal2(
             yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-              aceCards.length * 11 +
-              aceCards.length
+            aceCards.length * 11 +
+            aceCards.length
           )
         } else if (
           yourCards.map((x) => x.value).reduce((x, y) => x + y) <= 21
@@ -1557,8 +1607,8 @@ function TableOptions({
           // Draw but with reduced Aces
           setCardTotal2(
             yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-              aceCards.length * 11 +
-              aceCards.length
+            aceCards.length * 11 +
+            aceCards.length
           )
         }
       } else if (yourCards.map((x) => x.value).reduce((x, y) => x + y) > 21) {
@@ -1783,8 +1833,8 @@ function TableOptions({
           cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
             yourCards[yourCards.length - 1].card
           ].src +
-            "#" +
-            new Date().getTime()
+          "#" +
+          new Date().getTime()
         )
         setSplitCard1Alt(
           cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
@@ -1858,14 +1908,14 @@ function TableOptions({
           if (
             // Checks for bust with Aces reduced to 1
             yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-              aceCards.length * 11 +
-              aceCards.length >
+            aceCards.length * 11 +
+            aceCards.length >
             21
           ) {
             setCardTotal(
               yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-                aceCards.length * 11 +
-                aceCards.length
+              aceCards.length * 11 +
+              aceCards.length
             )
             setBust((p) => p + 1)
           } else if (
@@ -1878,8 +1928,8 @@ function TableOptions({
             // console.log("This is where we are")
             setCardTotal(
               yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-                aceCards.length * 11 +
-                aceCards.length
+              aceCards.length * 11 +
+              aceCards.length
             )
           }
         } else if (yourCards.map((x) => x.value).reduce((x, y) => x + y) > 21) {
@@ -2200,9 +2250,9 @@ function TableOptions({
   useEffect(() => {
     setPlayerThird(
       playerThirdCardFlag ||
-        cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src +
-          "#" +
-          new Date().getTime()
+      cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src +
+      "#" +
+      new Date().getTime()
     )
     if (playerThirdCardFlag != "//:0") {
       setThirdDisplay({ display: "block" })
@@ -2241,9 +2291,9 @@ function TableOptions({
   useEffect(() => {
     setPlayerFourth(
       playerFourthCardFlag ||
-        cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].src +
-          "#" +
-          new Date().getTime()
+      cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].src +
+      "#" +
+      new Date().getTime()
     )
     if (playerFourthCardFlag != "//:0") {
       setFourthDisplay({ display: "block" })
@@ -2281,9 +2331,9 @@ function TableOptions({
   useEffect(() => {
     setPlayerFifth(
       playerFifthCardFlag ||
-        cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src +
-          "#" +
-          new Date().getTime()
+      cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src +
+      "#" +
+      new Date().getTime()
     )
     if (playerFifthCardFlag != "//:0") {
       setFifthDisplay({ display: "block" })
@@ -2321,9 +2371,9 @@ function TableOptions({
   useEffect(() => {
     setPlayerSixth(
       playerSixthCardFlag ||
-        cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src +
-          "#" +
-          new Date().getTime()
+      cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src +
+      "#" +
+      new Date().getTime()
     )
     if (playerSixthCardFlag != "//:0") {
       setSixthDisplay({ display: "block" })
@@ -2361,9 +2411,9 @@ function TableOptions({
   useEffect(() => {
     setPlayerSeventh(
       playerSeventhCardFlag ||
-        cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src +
-          "#" +
-          new Date().getTime()
+      cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src +
+      "#" +
+      new Date().getTime()
     )
     if (playerSeventhCardFlag != "//:0") {
       setSeventhDisplay({ display: "block" })
@@ -2394,10 +2444,10 @@ function TableOptions({
   useEffect(() => {
     setDealerThird(
       dealerThirdCardFlag ||
-        cards[cardThemeNum][localDealerCards[2].suit][localDealerCards[2].card]
-          .src +
-          "#" +
-          new Date().getTime()
+      cards[cardThemeNum][localDealerCards[2].suit][localDealerCards[2].card]
+        .src +
+      "#" +
+      new Date().getTime()
     )
     if (dealerThirdCardFlag != "//:0") {
       setThirdDealerDisplay({ display: "block" })
@@ -2425,9 +2475,9 @@ function TableOptions({
   useEffect(() => {
     setDealerFourth(
       dealerFourthCardFlag ||
-        cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src +
-          "#" +
-          new Date().getTime()
+      cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src +
+      "#" +
+      new Date().getTime()
     )
     if (dealerFourthCardFlag != "//:0") {
       setFourthDealerDisplay({ display: "block" })
@@ -2457,9 +2507,9 @@ function TableOptions({
     if (dealerCards[4]) {
       setDealerFifth(
         dealerFifthCardFlag ||
-          cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src +
-            "#" +
-            new Date().getTime()
+        cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src +
+        "#" +
+        new Date().getTime()
       )
       if (dealerFifthCardFlag != "//:0") {
         setFifthDealerDisplay({ display: "block" })
@@ -2487,9 +2537,9 @@ function TableOptions({
   useEffect(() => {
     setDealerSixth(
       dealerSixthCardFlag ||
-        cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].src +
-          "#" +
-          new Date().getTime()
+      cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].src +
+      "#" +
+      new Date().getTime()
     )
     if (dealerSixthCardFlag != "//:0") {
       setSixthDealerDisplay({ display: "block" })
@@ -2516,9 +2566,9 @@ function TableOptions({
   useEffect(() => {
     setDealerSeventh(
       dealerSeventhCardFlag ||
-        cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].src +
-          "#" +
-          new Date().getTime()
+      cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].src +
+      "#" +
+      new Date().getTime()
     )
     if (dealerSeventhCardFlag != "//:0") {
       setSeventhDealerDisplay({ display: "block" })
@@ -2532,57 +2582,57 @@ function TableOptions({
 
   const [dealerCardOne, setDealerCardOne] = useState(
     process.env.PUBLIC_URL +
-      cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].src +
-      "#" +
-      new Date().getTime()
+    cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].src +
+    "#" +
+    new Date().getTime()
   )
 
   const [dealerCardTwo, setDealerCardTwo] = useState(
     process.env.PUBLIC_URL +
-      cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].src +
-      "#" +
-      new Date().getTime()
+    cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].src +
+    "#" +
+    new Date().getTime()
   )
 
   const [playerCardOne, setPlayerCardOne] = useState(
     process.env.PUBLIC_URL +
-      cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
-      "#" +
-      new Date().getTime()
+    cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
+    "#" +
+    new Date().getTime()
   )
 
   const [playerCardTwo, setPlayerCardTwo] = useState(
     process.env.PUBLIC_URL +
-      cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
-      "#" +
-      new Date().getTime()
+    cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
+    "#" +
+    new Date().getTime()
   )
 
   // This is here I believe to ensure that they properly update
   useEffect(() => {
     setDealerCardOne(
       process.env.PUBLIC_URL +
-        cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].src +
-        "#" +
-        new Date().getTime()
+      cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].src +
+      "#" +
+      new Date().getTime()
     )
     setDealerCardTwo(
       process.env.PUBLIC_URL +
-        cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].src +
-        "#" +
-        new Date().getTime()
+      cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].src +
+      "#" +
+      new Date().getTime()
     )
     setPlayerCardOne(
       process.env.PUBLIC_URL +
-        cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
-        "#" +
-        new Date().getTime()
+      cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
+      "#" +
+      new Date().getTime()
     )
     setPlayerCardTwo(
       process.env.PUBLIC_URL +
-        cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
-        "#" +
-        new Date().getTime()
+      cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
+      "#" +
+      new Date().getTime()
     )
   }, [yourCards2, yourCards])
 
@@ -2728,8 +2778,8 @@ function TableOptions({
       cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
         yourCards[yourCards.length - 1].card
       ].src +
-        "#" +
-        new Date().getTime()
+      "#" +
+      new Date().getTime()
     )
     setSplitCard1Alt(
       cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
@@ -3719,7 +3769,7 @@ function TableOptions({
               animate={card1Animate}
               transition={card1Transition}
               className="firstCard"
-              // style={card1Style}
+            // style={card1Style}
             >
               <img
                 src={process.env.PUBLIC_URL + playerCardOne}
@@ -4313,6 +4363,15 @@ function App() {
   }
   const homeFlagSwitch1 = () => {
     setHomeFlag(1)
+  }
+
+  const [automateFlag, setAutomateFlag] = useState(0)
+  const automateFlagSwitch = () => {
+    setAutomateFlag(1)
+    setHomeFlag(0)
+  }
+  const automateFlagSwitch0 = () => {
+    setAutomateFlag(0)
   }
 
   const [deck, setDeck] = useState([
@@ -4940,6 +4999,9 @@ function App() {
       maxBet={maxBet}
       minBet={minBet}
       cardThemeNum={cardThemeNum}
+      automateFlagSwitch={automateFlagSwitch}
+      automateFlag={automateFlag}
+      automateFlagSwitch0={automateFlagSwitch0}
     ></LoadOrder>
   )
 }
