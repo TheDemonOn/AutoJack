@@ -34,6 +34,9 @@ import { motion } from "framer-motion"
 
 // Important thing perhaps is don't setState in a useEffect that I intend to use for a calculation in the same cycle
 
+// At roundStart for automated just have there be a check for 2 buttons one that just uses basic strategy and another one
+//that brings you to a modified version of the bet screen that has a section for how many rounds to run
+
 function LoadOrder({
   startFlag,
   theDeckCountValue,
@@ -69,18 +72,13 @@ function LoadOrder({
   shoeCount,
   remainingCards,
   discardPile,
-  oldDiscardPileUpdate,
-  oldDiscardPile,
   cutPosition,
-  shuffleDeck,
   tableStart,
   tableStartZero,
   tableStartOne,
   setDiscardPile,
-  playerHitAlt,
   realDiscardPileUpdate,
   deckUpdate,
-  doubleCard,
   homeFlag,
   homeFlagSwitch,
   homeFlagSwitch1,
@@ -104,7 +102,8 @@ function LoadOrder({
   cardThemeNum,
   automateFlagSwitch,
   automateFlag,
-  automateFlagSwitch0
+  automateFlagSwitch0,
+  autoFlag,
 }) {
   if (settingsFlag) {
     return (
@@ -130,17 +129,8 @@ function LoadOrder({
         startFlagSwitch={startFlagSwitch}
         automateFlagSwitch={automateFlagSwitch}
         automateFlagSwitch0={automateFlagSwitch0}
+        autoFlag={autoFlag}
       ></Home>
-    )
-  } else if (automateFlag) {
-    return (
-      <Automate 
-      buttonTheme={buttonTheme}
-      iconTheme={iconTheme}
-      textColor={textColor}
-      settingsFlagSwitch={settingsFlagSwitch}
-      homeFlagSwitch1={homeFlagSwitch1}
-      ></Automate>
     )
   }
   //switch goes to 0
@@ -187,6 +177,7 @@ function LoadOrder({
         maxBet={maxBet}
         minBet={minBet}
         cardThemeNum={cardThemeNum}
+        automateFlag={automateFlag}
       ></RoundStart>
     )
   } else if (tableStart) {
@@ -219,20 +210,17 @@ function LoadOrder({
         shoeCount={shoeCount}
         remainingCards={remainingCards}
         discardPile={discardPile}
-        oldDiscardPileUpdate={oldDiscardPileUpdate}
-        oldDiscardPile={oldDiscardPile}
         cutPosition={cutPosition}
-        shuffleDeck={shuffleDeck}
         setDiscardPile={setDiscardPile}
-        playerHitAlt={playerHitAlt}
         realDiscardPileUpdate={realDiscardPileUpdate}
         deckUpdate={deckUpdate}
-        doubleCard={doubleCard}
         buttonTheme={buttonTheme}
         iconTheme={iconTheme}
         textColor={textColor}
         settingsFlagSwitch={settingsFlagSwitch}
         cardThemeNum={cardThemeNum}
+        automateFlag={automateFlag}
+        autoFlag={autoFlag}
       ></TableOptions>
     )
   }
@@ -248,6 +236,7 @@ function Home({
   automateFlagSwitch0,
   homeFlagSwitch1,
   startFlagSwitch,
+  autoFlag,
 }) {
   useEffect(() => {
     window.history.replaceState("Home", null, "http://localhost:3000/Home")
@@ -293,7 +282,11 @@ function Home({
           ></Button>
         </div>
         <div id="automated">
-          <Button buttonTheme={buttonTheme} content={"Automated"} func={automateFlagSwitch}></Button>
+          <Button
+            buttonTheme={buttonTheme}
+            content={"Automated"}
+            func={automateFlagSwitch}
+          ></Button>
         </div>
 
         {/* This h3 should be seen on the hover of the buttons between the two texts. Do it for the theme and the github buttons */}
@@ -327,35 +320,6 @@ function Home({
       {/* Github button image and setting button here */}
     </div>
   )
-}
-
-function Automate({ buttonTheme, iconTheme, textColor, settingsFlagSwitch, homeFlagSwitch1 }) {
-  useEffect(() => {
-    window.history.pushState("Automate", null, "http://localhost:3000/Automate")
-  }, [])
-
-  return (
-  <div>
-    <div className="tableBack">
-        <Button
-          buttonTheme={buttonTheme}
-          content={"Back"}
-          func={homeFlagSwitch1}
-        ></Button>
-    </div>
-
-    <div className="one">
-      <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
-        <GithubSVG iconTheme={iconTheme}></GithubSVG>
-      </a>
-    </div>
-    <div className="two">
-      <a onClick={settingsFlagSwitch}>
-        <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
-      </a>
-    </div>
-</div>
-)
 }
 
 // Perhaps add a random theme button so that the drawn cards are a mix of all the themes
@@ -458,11 +422,11 @@ function StartScreen({
   minBet,
 }) {
   useEffect(() => {
-      window.history.pushState(
-        "StartScreen",
-        null,
-        "http://localhost:3000/StartScreen"
-      )
+    window.history.pushState(
+      "StartScreen",
+      null,
+      "http://localhost:3000/StartScreen"
+    )
   }, [])
 
   const [deckSize, setDeckSize] = useState(8)
@@ -572,7 +536,7 @@ function StartScreen({
               placeholder="1"
               value={deckValue}
               onChange={(e) => theDeckCountValue(e.target.value)}
-            // onChange={e => theDeckCountValue(e.target.value)}
+              // onChange={e => theDeckCountValue(e.target.value)}
             ></input>
           </div>
           <div>
@@ -740,6 +704,7 @@ function RoundStart({
   maxBet,
   minBet,
   cardThemeNum,
+  automateFlag,
 }) {
   useEffect(() => {
     window.history.pushState(
@@ -747,6 +712,23 @@ function RoundStart({
       null,
       "http://localhost:3000/RoundStart"
     )
+  }, [])
+
+  const auto = {
+    display: "none",
+  }
+
+  const [automatedVersion, setAutomatedVersion] = useState(auto)
+
+  const [manualVersion, setManualVersion] = useState(auto)
+
+  useEffect(() => {
+    // Basically it starts off as being off then uses this check to turn the betting screen back on
+    if (!automateFlag) {
+      setManualVersion()
+    } else {
+      setAutomatedVersion()
+    }
   }, [])
 
   // So it appears that even when thr function is called from the child it still executes in the location it was defined (the parent) and had access to everything it would normally.
@@ -895,93 +877,140 @@ function RoundStart({
   }, [])
 
   return (
-    <div className="block">
-      <div className="remainingCards">
-        <div>
-          <img
-            className="drawPile"
-            src={process.env.PUBLIC_URL + cardBack}
-            height="153.576px"
-            width="104.976px"
-            alt="Ace of spades card."
-          ></img>
-        </div>
-        <div className="cardCount">{cardsLeft}</div>
-      </div>
+    <div>
+      <div style={manualVersion}>
+        <div className="block">
+          <div className="remainingCards">
+            <div>
+              <img
+                className="drawPile"
+                src={process.env.PUBLIC_URL + cardBack}
+                height="153.576px"
+                width="104.976px"
+                alt="Ace of spades card."
+              ></img>
+            </div>
+            <div className="cardCount">{cardsLeft}</div>
+          </div>
 
-      <div className="moneyWrapper">
-        <p style={textColor} id="bet">
-          ${yourMoney}
-        </p>
-        <p style={textColor} id="currentBet">
-          Your Money
-        </p>
-      </div>
-
-      <div className="topContainer">
-        <div className="chipsTop">
-          <a className="hoverHover" onClick={one}>
-            <img src={chip1} height="100px" width="100px" alt="Chip 1"></img>
-          </a>
-          <a className="hoverHover" onClick={five}>
-            <img src={chip5} height="100px" width="100px" alt="Chip 1"></img>
-          </a>
-          <a className="hoverHover" onClick={ten}>
-            <img src={chip10} height="100px" width="100px" alt="Chip 1"></img>
-          </a>
-        </div>
-      </div>
-
-      <div className="botContainer">
-        <div className="chipsBot">
-          <a className="hoverHover" onClick={twentyFive}>
-            <img src={chip25} height="100px" width="100px" alt="Chip 1"></img>
-          </a>
-          <a className="hoverHover" onClick={fifty}>
-            <img src={chip50} height="100px" width="100px" alt="Chip 1"></img>
-          </a>
-          <a className="hoverHover" onClick={oneHundred}>
-            <img src={chip100} height="100px" width="100px" alt="Chip 1"></img>
-          </a>
-          <a className="hoverHover" onClick={fiveHundred}>
-            <img src={chip500} height="100px" width="100px" alt="Chip 1"></img>
-          </a>
-        </div>
-      </div>
-
-      <div className="underWrapper">
-        <div className="underChipSection">
-          <Button
-            buttonTheme={activeStateOpposite}
-            func={switchActive}
-            ID="minus"
-            content={"−"}
-          ></Button>
-
-          <div className="bet">
+          <div className="moneyWrapper">
             <p style={textColor} id="bet">
-              ${playerBet}
+              ${yourMoney}
             </p>
             <p style={textColor} id="currentBet">
-              Current bet
+              Your Money
             </p>
           </div>
-          <Button
-            buttonTheme={activeState}
-            func={switchActiveBack}
-            ID="plus"
-            content={"+"}
-          ></Button>
 
-          <Button
-            buttonTheme={buttonTheme}
-            func={deal}
-            content={"Deal"}
-            ID={"mobileDeal"}
-          ></Button>
+          <div className="topContainer">
+            <div className="chipsTop">
+              <a className="hoverHover" onClick={one}>
+                <img
+                  src={chip1}
+                  height="100px"
+                  width="100px"
+                  alt="Chip 1"
+                ></img>
+              </a>
+              <a className="hoverHover" onClick={five}>
+                <img
+                  src={chip5}
+                  height="100px"
+                  width="100px"
+                  alt="Chip 1"
+                ></img>
+              </a>
+              <a className="hoverHover" onClick={ten}>
+                <img
+                  src={chip10}
+                  height="100px"
+                  width="100px"
+                  alt="Chip 1"
+                ></img>
+              </a>
+            </div>
+          </div>
+
+          <div className="botContainer">
+            <div className="chipsBot">
+              <a className="hoverHover" onClick={twentyFive}>
+                <img
+                  src={chip25}
+                  height="100px"
+                  width="100px"
+                  alt="Chip 1"
+                ></img>
+              </a>
+              <a className="hoverHover" onClick={fifty}>
+                <img
+                  src={chip50}
+                  height="100px"
+                  width="100px"
+                  alt="Chip 1"
+                ></img>
+              </a>
+              <a className="hoverHover" onClick={oneHundred}>
+                <img
+                  src={chip100}
+                  height="100px"
+                  width="100px"
+                  alt="Chip 1"
+                ></img>
+              </a>
+              <a className="hoverHover" onClick={fiveHundred}>
+                <img
+                  src={chip500}
+                  height="100px"
+                  width="100px"
+                  alt="Chip 1"
+                ></img>
+              </a>
+            </div>
+          </div>
+
+          <div className="underWrapper">
+            <div className="underChipSection">
+              <Button
+                buttonTheme={activeStateOpposite}
+                func={switchActive}
+                ID="minus"
+                content={"−"}
+              ></Button>
+
+              <div className="bet">
+                <p style={textColor} id="bet">
+                  ${playerBet}
+                </p>
+                <p style={textColor} id="currentBet">
+                  Current bet
+                </p>
+              </div>
+              <Button
+                buttonTheme={activeState}
+                func={switchActiveBack}
+                ID="plus"
+                content={"+"}
+              ></Button>
+
+              <Button
+                buttonTheme={buttonTheme}
+                func={deal}
+                content={"Deal"}
+                ID={"mobileDeal"}
+              ></Button>
+            </div>
+          </div>
         </div>
       </div>
-
+      <div style={automatedVersion} className="block">
+        <h1>Betting strategy</h1>
+        <Button
+          buttonTheme={buttonTheme}
+          func={deal}
+          content={"Deal"}
+          ID={"mobileDeal"}
+        ></Button>
+      </div>
       <div className="one">
         <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
           <GithubSVG iconTheme={iconTheme}></GithubSVG>
@@ -1001,7 +1030,6 @@ function TableOptions({
   playerHit,
   yourCards,
   yourCards2,
-  // splitting,
   playerBet,
   playerBetUpdate,
   dealerCards,
@@ -1025,21 +1053,18 @@ function TableOptions({
   shoeCount,
   remainingCards,
   discardPile,
-  oldDiscardPileUpdate,
-  oldDiscardPile,
   cutPosition,
-  shuffleDeck,
   tableStart,
   setDiscardPile,
-  playerHitAlt,
   realDiscardPileUpdate,
   deckUpdate,
-  doubleCard,
   buttonTheme,
   iconTheme,
   textColor,
   settingsFlagSwitch,
   cardThemeNum,
+  autoFlag,
+  automateFlag,
 }) {
   useEffect(() => {
     window.history.replaceState("Table", null, "http://localhost:3000/Table")
@@ -1215,7 +1240,7 @@ function TableOptions({
     // Because drawing a card then ending the turn happens in one cycle I have to do a local calculation that checks for Aces
     // because otherwise the cardTotal is set too late for the final evaluation
 
-    let end = () => { }
+    let end = () => {}
     console.log(secondHand)
     if (secondHand) {
       end = () => {
@@ -1233,14 +1258,14 @@ function TableOptions({
       if (
         // Checks for bust with Aces reduced to 1
         yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-        aceCards.length * 11 +
-        aceCards.length >
+          aceCards.length * 11 +
+          aceCards.length >
         21
       ) {
         setCardTotal(
           yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-          aceCards.length * 11 +
-          aceCards.length
+            aceCards.length * 11 +
+            aceCards.length
         )
         setBust((p) => p + 1)
       } else if (yourCards.map((x) => x.value).reduce((x, y) => x + y) <= 21) {
@@ -1251,8 +1276,8 @@ function TableOptions({
         // Draw but with reduced Aces
         setCardTotal(
           yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-          aceCards.length * 11 +
-          aceCards.length
+            aceCards.length * 11 +
+            aceCards.length
         )
         end()
       }
@@ -1302,7 +1327,7 @@ function TableOptions({
         dealerHitLostCards.push(card)
         if (
           localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
-          card.value <
+            card.value <
           17
         ) {
           let cardIndex2 = Math.floor(Math.random() * thisDeck.length)
@@ -1312,8 +1337,8 @@ function TableOptions({
           dealerHitLostCards.push(card2)
           if (
             localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
-            card.value +
-            card2.value <
+              card.value +
+              card2.value <
             17
           ) {
             let cardIndex3 = Math.floor(Math.random() * thisDeck.length)
@@ -1323,9 +1348,9 @@ function TableOptions({
             dealerHitLostCards.push(card3)
             if (
               localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
-              card.value +
-              card2.value +
-              card3.value <
+                card.value +
+                card2.value +
+                card3.value <
               17
             ) {
               let cardIndex4 = Math.floor(Math.random() * thisDeck.length)
@@ -1335,10 +1360,10 @@ function TableOptions({
               dealerHitLostCards.push(card4)
               if (
                 localDealerCards.map((x) => x.value).reduce((x, y) => x + y) +
-                card.value +
-                card2.value +
-                card3.value +
-                card4.value <
+                  card.value +
+                  card2.value +
+                  card3.value +
+                  card4.value <
                 17
               ) {
                 let cardIndex5 = Math.floor(Math.random() * thisDeck.length)
@@ -1398,8 +1423,8 @@ function TableOptions({
         console.log("End: Aces, but reduced not needed")
       } else if (
         localDealerCards.map((x) => x.value).reduce((x, y) => x + y) -
-        aceCards.length * 11 +
-        aceCards.length <
+          aceCards.length * 11 +
+          aceCards.length <
         17
       ) {
         // The total with normal Aces is greater than 21, this checks to see if the reduced Aces put it below its goal.
@@ -1438,8 +1463,8 @@ function TableOptions({
       } else {
         setDealerCardTotal(
           localDealerCards.map((x) => x.value).reduce((x, y) => x + y) -
-          aceCards.length * 11 +
-          aceCards.length
+            aceCards.length * 11 +
+            aceCards.length
         )
         console.log("Aces are reduced and the total is at 17 or higher")
         endTurnFlagSwitch()
@@ -1496,7 +1521,7 @@ function TableOptions({
       shoeCount(
         Math.floor(
           (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) *
-          (deck.length + discardPile.length)
+            (deck.length + discardPile.length)
         )
       )
 
@@ -1528,9 +1553,9 @@ function TableOptions({
     console.log("SPLITCARD TRIGGERED")
     setSplitCard1(
       splitCard1Flag ||
-      cards[cardThemeNum][yourCards2[0].suit][yourCards2[0].card].src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][yourCards2[0].suit][yourCards2[0].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (splitCard1Flag != "//:0") {
       setSplitCard1Display({ display: "block" })
@@ -1557,9 +1582,9 @@ function TableOptions({
   useEffect(() => {
     setSplitCard2(
       splitCard2Flag ||
-      cards[cardThemeNum][yourCards2[1].suit][yourCards2[1].card].src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][yourCards2[1].suit][yourCards2[1].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (splitCard2Flag != "//:0") {
       setSplitCard2Display({ display: "block" })
@@ -1589,14 +1614,14 @@ function TableOptions({
         if (
           // Checks for bust with Aces reduced to 1
           yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-          aceCards.length * 11 +
-          aceCards.length >
+            aceCards.length * 11 +
+            aceCards.length >
           21
         ) {
           setCardTotal2(
             yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length
+              aceCards.length * 11 +
+              aceCards.length
           )
         } else if (
           yourCards.map((x) => x.value).reduce((x, y) => x + y) <= 21
@@ -1607,8 +1632,8 @@ function TableOptions({
           // Draw but with reduced Aces
           setCardTotal2(
             yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length
+              aceCards.length * 11 +
+              aceCards.length
           )
         }
       } else if (yourCards.map((x) => x.value).reduce((x, y) => x + y) > 21) {
@@ -1833,8 +1858,8 @@ function TableOptions({
           cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
             yourCards[yourCards.length - 1].card
           ].src +
-          "#" +
-          new Date().getTime()
+            "#" +
+            new Date().getTime()
         )
         setSplitCard1Alt(
           cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
@@ -1908,14 +1933,14 @@ function TableOptions({
           if (
             // Checks for bust with Aces reduced to 1
             yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-            aceCards.length * 11 +
-            aceCards.length >
+              aceCards.length * 11 +
+              aceCards.length >
             21
           ) {
             setCardTotal(
               yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-              aceCards.length * 11 +
-              aceCards.length
+                aceCards.length * 11 +
+                aceCards.length
             )
             setBust((p) => p + 1)
           } else if (
@@ -1928,8 +1953,8 @@ function TableOptions({
             // console.log("This is where we are")
             setCardTotal(
               yourCards.map((x) => x.value).reduce((x, y) => x + y) -
-              aceCards.length * 11 +
-              aceCards.length
+                aceCards.length * 11 +
+                aceCards.length
             )
           }
         } else if (yourCards.map((x) => x.value).reduce((x, y) => x + y) > 21) {
@@ -2250,9 +2275,9 @@ function TableOptions({
   useEffect(() => {
     setPlayerThird(
       playerThirdCardFlag ||
-      cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (playerThirdCardFlag != "//:0") {
       setThirdDisplay({ display: "block" })
@@ -2291,9 +2316,9 @@ function TableOptions({
   useEffect(() => {
     setPlayerFourth(
       playerFourthCardFlag ||
-      cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (playerFourthCardFlag != "//:0") {
       setFourthDisplay({ display: "block" })
@@ -2331,9 +2356,9 @@ function TableOptions({
   useEffect(() => {
     setPlayerFifth(
       playerFifthCardFlag ||
-      cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (playerFifthCardFlag != "//:0") {
       setFifthDisplay({ display: "block" })
@@ -2371,9 +2396,9 @@ function TableOptions({
   useEffect(() => {
     setPlayerSixth(
       playerSixthCardFlag ||
-      cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (playerSixthCardFlag != "//:0") {
       setSixthDisplay({ display: "block" })
@@ -2411,9 +2436,9 @@ function TableOptions({
   useEffect(() => {
     setPlayerSeventh(
       playerSeventhCardFlag ||
-      cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (playerSeventhCardFlag != "//:0") {
       setSeventhDisplay({ display: "block" })
@@ -2444,10 +2469,10 @@ function TableOptions({
   useEffect(() => {
     setDealerThird(
       dealerThirdCardFlag ||
-      cards[cardThemeNum][localDealerCards[2].suit][localDealerCards[2].card]
-        .src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][localDealerCards[2].suit][localDealerCards[2].card]
+          .src +
+          "#" +
+          new Date().getTime()
     )
     if (dealerThirdCardFlag != "//:0") {
       setThirdDealerDisplay({ display: "block" })
@@ -2475,9 +2500,9 @@ function TableOptions({
   useEffect(() => {
     setDealerFourth(
       dealerFourthCardFlag ||
-      cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (dealerFourthCardFlag != "//:0") {
       setFourthDealerDisplay({ display: "block" })
@@ -2507,9 +2532,9 @@ function TableOptions({
     if (dealerCards[4]) {
       setDealerFifth(
         dealerFifthCardFlag ||
-        cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src +
-        "#" +
-        new Date().getTime()
+          cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src +
+            "#" +
+            new Date().getTime()
       )
       if (dealerFifthCardFlag != "//:0") {
         setFifthDealerDisplay({ display: "block" })
@@ -2537,9 +2562,9 @@ function TableOptions({
   useEffect(() => {
     setDealerSixth(
       dealerSixthCardFlag ||
-      cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (dealerSixthCardFlag != "//:0") {
       setSixthDealerDisplay({ display: "block" })
@@ -2566,9 +2591,9 @@ function TableOptions({
   useEffect(() => {
     setDealerSeventh(
       dealerSeventhCardFlag ||
-      cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].src +
+          "#" +
+          new Date().getTime()
     )
     if (dealerSeventhCardFlag != "//:0") {
       setSeventhDealerDisplay({ display: "block" })
@@ -2582,57 +2607,57 @@ function TableOptions({
 
   const [dealerCardOne, setDealerCardOne] = useState(
     process.env.PUBLIC_URL +
-    cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].src +
-    "#" +
-    new Date().getTime()
+      cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].src +
+      "#" +
+      new Date().getTime()
   )
 
   const [dealerCardTwo, setDealerCardTwo] = useState(
     process.env.PUBLIC_URL +
-    cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].src +
-    "#" +
-    new Date().getTime()
+      cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].src +
+      "#" +
+      new Date().getTime()
   )
 
   const [playerCardOne, setPlayerCardOne] = useState(
     process.env.PUBLIC_URL +
-    cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
-    "#" +
-    new Date().getTime()
+      cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
+      "#" +
+      new Date().getTime()
   )
 
   const [playerCardTwo, setPlayerCardTwo] = useState(
     process.env.PUBLIC_URL +
-    cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
-    "#" +
-    new Date().getTime()
+      cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
+      "#" +
+      new Date().getTime()
   )
 
   // This is here I believe to ensure that they properly update
   useEffect(() => {
     setDealerCardOne(
       process.env.PUBLIC_URL +
-      cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].src +
+        "#" +
+        new Date().getTime()
     )
     setDealerCardTwo(
       process.env.PUBLIC_URL +
-      cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].src +
+        "#" +
+        new Date().getTime()
     )
     setPlayerCardOne(
       process.env.PUBLIC_URL +
-      cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
+        "#" +
+        new Date().getTime()
     )
     setPlayerCardTwo(
       process.env.PUBLIC_URL +
-      cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
-      "#" +
-      new Date().getTime()
+        cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
+        "#" +
+        new Date().getTime()
     )
   }, [yourCards2, yourCards])
 
@@ -2646,8 +2671,8 @@ function TableOptions({
     z[0].style.filter = "blur(4px) grayscale(85%)"
   }
 
-  const roundEndAuto = () => {
-    setTimeout(roundStartFlagReset, 3000)
+  const roundEndAuto = (dealerNum) => {
+    setTimeout(roundStartFlagReset, 2600 + dealerNum * 200)
   }
   const roundEndAuto2 = () => {
     setTimeout(roundStartFlagReset, 4000)
@@ -2778,8 +2803,8 @@ function TableOptions({
       cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
         yourCards[yourCards.length - 1].card
       ].src +
-      "#" +
-      new Date().getTime()
+        "#" +
+        new Date().getTime()
     )
     setSplitCard1Alt(
       cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
@@ -2831,45 +2856,45 @@ function TableOptions({
           case "won":
             setOutcomeEffect("positive")
             blur()
-            roundEndAuto()
+            roundEndAuto(dealerCards.length)
             animateAdd(playerBet * 2)
             break
           case "lost":
             setOutcomeEffect("negative")
             blur()
-            roundEndAuto()
+            roundEndAuto(dealerCards.length)
             break
           case "push":
             setOutcomeEffect("neutral")
             blur()
-            roundEndAuto()
+            roundEndAuto(dealerCards.length)
             animateAdd(playerBet)
             break
           case "blackjack":
             setOutcomeContent("Blackjack.")
             setOutcomeEffect("positive")
             blur()
-            roundEndAuto()
+            roundEndAuto(dealerCards.length)
             animateAdd(playerBet + Math.round(playerBet * 1.5))
             break
           case "bust":
             setOutcomeContent("You bust.")
             setOutcomeEffect("negative")
             blur()
-            roundEndAuto()
+            roundEndAuto(dealerCards.length)
             break
           case "dealerBust":
             setOutcomeContent("Dealer bust.")
             setOutcomeEffect("positive")
             blur()
-            roundEndAuto()
+            roundEndAuto(dealerCards.length)
             animateAdd(playerBet * 2)
             break
           case "DealerBlackjack":
             setOutcomeContent("Dealer Blackjack.")
             setOutcomeEffect("negative")
             blur()
-            roundEndAuto()
+            roundEndAuto(dealerCards.length)
         }
         // This checks to see if the splitCards exist and that the first roundResultKey was created then swapped into roundResultKey2.
         // It is swapped because it uses the same system that evaluates key 1
@@ -3530,488 +3555,707 @@ function TableOptions({
   //   setDrawDelay(dealerCards.length)
   // }, [dealerThree])
 
+  const auto = {
+    display: "none",
+  }
+
+  const [manualOrAutomated, setManualOrAutomated] = useState()
+
+  const [faceUpCard, setFaceUpCard] = useState(dealerCards[0].value)
+
+  useEffect(() => {
+    if (automateFlag) {
+      setTimeout(() => {
+        if (yourCards2[0]) {
+          // Doesn't quite work because it may not be adding to the correct version
+          // Split has occurred // Also we can double, just not after hitting in a hand // case 9 and 10 need more care with hard
+          if (yourCards[0].value === 11 || yourCards[1].value === 11) {
+            // Soft Hands
+            switch (cardTotal) {
+              case 2:
+                playerHit()
+                break
+              case 13:
+              case 14:
+                if (yourCards.length === 2) {
+                  faceUpCard === 5 || faceUpCard === 6
+                    ? doubleDown()
+                    : playerHit()
+                } else {
+                  playerHit()
+                }
+                break
+              case 15:
+              case 16:
+                if (yourCards.length === 2) {
+                  faceUpCard <= 3 || faceUpCard >= 7
+                    ? playerHit()
+                    : doubleDown()
+                } else {
+                  playerHit()
+                }
+                break
+              case 17:
+                if (yourCards.length === 2) {
+                  faceUpCard === 2 || faceUpCard >= 7
+                    ? playerHit()
+                    : doubleDown()
+                } else {
+                  playerHit()
+                }
+                break
+              case 18:
+                if (yourCards.length === 2) {
+                  if (
+                    faceUpCard === 2 ||
+                    faceUpCard === 7 ||
+                    faceUpCard === 8
+                  ) {
+                    stand()
+                  } else if (faceUpCard <= 6) {
+                    doubleDown()
+                  } else {
+                    playerHit()
+                  }
+                } else {
+                  faceUpCard <= 8 ? stand() : playerHit()
+                }
+                break
+              default:
+                stand()
+                break
+            }
+          } else {
+            // Hard Hands
+            switch (cardTotal) {
+              case 5:
+              case 6:
+              case 7:
+              case 8:
+                playerHit()
+                break
+              case 9:
+                if (yourCards.length === 2) {
+                  faceUpCard === 9 || faceUpCard >= 7
+                    ? playerHit()
+                    : doubleDown()
+                } else {
+                  playerHit()
+                }
+                break
+              case 10:
+                if (yourCards.length === 2) {
+                  faceUpCard <= 9 ? doubleDown() : playerHit()
+                } else {
+                  playerHit()
+                }
+                break
+              case 11:
+                if (yourCards.length === 2) {
+                  faceUpCard <= 10 ? doubleDown() : playerHit()
+                } else {
+                  playerHit()
+                }
+                break
+              case 12:
+                faceUpCard <= 3 || faceUpCard >= 7 ? playerHit() : stand()
+                break
+              case 13:
+              case 14:
+              case 15:
+              case 16:
+                faceUpCard <= 6 ? stand() : playerHit()
+                break
+              default:
+                stand()
+            }
+          }
+        } else if (
+          yourCards[0].value === yourCards[1].value &&
+          yourCards.length === 2
+        ) {
+          // Pair
+          switch (yourCards[0].value) {
+            case 2:
+            case 3:
+              faceUpCard <= 7 ? splitting() : playerHit()
+              break
+            case 4:
+              faceUpCard === 5 || faceUpCard === 6 ? playerHit() : splitting()
+              break
+            case 5:
+              faceUpCard <= 9 ? doubleDown() : playerHit()
+              break
+            case 6:
+              faceUpCard <= 6 ? splitting() : playerHit()
+              break
+            case 7:
+              faceUpCard <= 7 ? splitting() : playerHit()
+              break
+            case 8:
+              splitting()
+              break
+            case 9:
+              faceUpCard === 7 || faceUpCard >= 10 ? stand() : splitting()
+              break
+            case 10:
+              stand()
+              break
+            case 11:
+              splitting()
+              break
+          }
+        } else if (yourCards[0].value === 11 || yourCards[1].value === 11) {
+          // Soft Hands
+          switch (cardTotal) {
+            case 13:
+            case 14:
+              faceUpCard === 5 || faceUpCard === 6 ? doubleDown() : playerHit()
+              break
+            case 15:
+            case 16:
+              faceUpCard <= 3 || faceUpCard >= 7 ? playerHit() : doubleDown()
+              break
+            case 17:
+              faceUpCard === 2 || faceUpCard >= 7 ? playerHit() : doubleDown()
+              break
+            case 18:
+              if (faceUpCard === 2 || faceUpCard === 7 || faceUpCard === 8) {
+                stand()
+              } else if (faceUpCard <= 6) {
+                doubleDown()
+              } else {
+                playerHit()
+              }
+              break
+            case 19:
+            case 20:
+              stand()
+              break
+          }
+        } else {
+          // Hard Hands
+          switch (cardTotal) {
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+              playerHit()
+              break
+            case 9:
+              faceUpCard === 9 || faceUpCard >= 7 ? playerHit() : doubleDown()
+              break
+            case 10:
+              faceUpCard <= 9 ? doubleDown() : playerHit()
+              break
+            case 11:
+              faceUpCard <= 10 ? doubleDown() : playerHit()
+              break
+            case 12:
+              faceUpCard <= 3 || faceUpCard >= 7 ? playerHit() : stand()
+              break
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+              faceUpCard <= 6 ? stand() : playerHit()
+              break
+            default:
+              stand()
+          }
+        }
+      }, 1500)
+    }
+  }, [yourCards])
+
   return (
     <div>
-      <div>{outcomeComponent}</div>
-      <div className="block">
-        {animationComponent}
-        <div className="remainingCards">
-          <div>
-            <img
-              className="drawPile"
-              src={process.env.PUBLIC_URL + cardBack}
-              height="153.576px"
-              width="104.976px"
-              alt="Draw pile."
-            ></img>
-          </div>
-          <div>{cardsLeft}</div>
-        </div>
-
-        <div className="dealerTotal">
-          <p style={textColor}>{dealerCardTotal}</p>
-        </div>
-        <div className="playerTotal">
-          <p style={textColor}>{cardTotal}</p>
-        </div>
-
-        <div className="dealerCardsWrap">
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + dealerCardOne}
-              // when this onload fires it reveals the real card and its animation
-              onLoad={dealLoad1}
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
+      <div style={manualOrAutomated}>
+        <div>{outcomeComponent}</div>
+        <div className="block">
+          {animationComponent}
+          <div className="remainingCards">
+            <div>
+              <img
+                className="drawPile"
+                src={process.env.PUBLIC_URL + cardBack}
+                height="153.576px"
+                width="104.976px"
+                alt="Draw pile."
+              ></img>
+            </div>
+            <div>{cardsLeft}</div>
           </div>
 
-          {dealerLoad1 && (
-            <motion.div
-              initial={initialSetting}
-              animate={animateSettingAlt}
-              transition={transitionSetting}
-              className="firstCard"
-            >
+          <div className="dealerTotal">
+            <p style={textColor}>{dealerCardTotal}</p>
+          </div>
+          <div className="playerTotal">
+            <p style={textColor}>{cardTotal}</p>
+          </div>
+
+          <div className="dealerCardsWrap">
+            <div className="load">
               <img
                 src={process.env.PUBLIC_URL + dealerCardOne}
-                onLoad={timeCheck}
+                // when this onload fires it reveals the real card and its animation
+                onLoad={dealLoad1}
                 height="199.6488px"
                 width="136.4688px"
-                alt={
-                  cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card]
-                    .alt
-                }
               ></img>
-            </motion.div>
-          )}
+            </div>
 
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + dealerCardTwo}
-              // when this onload fires it reveals the real card and its animation
-              onLoad={dealLoad2Check}
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
-          </div>
-
-          {dealerLoad2 && ( // More of this
-            <motion.div
-              initial={initialSetting}
-              animate={animateSetting}
-              transition={transitionSetting}
-              className="otherCard"
-            >
-              <img
-                src={process.env.PUBLIC_URL + dealerCardTwo}
-                height="199.6488px"
-                width="136.4688px"
-                alt={
-                  cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card]
-                    .alt
-                }
-              ></img>
-            </motion.div>
-          )}
-
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + dealerThird}
-              onLoad={addThird}
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
-          </div>
-
-          {additional && dealerThree && (
-            <motion.div
-              initial={initialSetting}
-              animate={animateSettingAlt}
-              transition={transitionSetting}
-              className="thirdCard"
-              style={thirdDealerDisplay}
-            >
-              <img
-                src={process.env.PUBLIC_URL + dealerThird}
-                height="199.6488px"
-                width="136.4688px"
-                onLoad={dealerDrawKeyAdd}
-                alt={dealerThirdAlt}
-              ></img>
-            </motion.div>
-          )}
-
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + dealerFourth}
-              onLoad={addFourth}
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
-          </div>
-
-          {additional > 1 && dealerFour && dealerDrawKey[0] && (
-            <motion.div
-              initial={initialSetting}
-              animate={animateSetting}
-              transition={transitionSetting}
-              className="fourthCard"
-              style={fourthDealerDisplay}
-            >
-              <img
-                src={process.env.PUBLIC_URL + dealerFourth}
-                onLoad={dealerDrawKeyAdd}
-                height="199.6488px"
-                width="136.4688px"
-                alt={dealerFourthAlt}
-              ></img>
-            </motion.div>
-          )}
-
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + dealerFifth}
-              onLoad={addFifth}
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
-          </div>
-
-          {additional > 2 && dealerFive && dealerDrawKey[1] && (
-            <motion.div
-              initial={initialSetting}
-              animate={animateSettingAlt}
-              transition={transitionSetting}
-              className="fifthCard"
-              style={fifthDealerDisplay}
-            >
-              <img
-                src={process.env.PUBLIC_URL + dealerFifth}
-                onLoad={dealerDrawKeyAdd}
-                height="199.6488px"
-                width="136.4688px"
-                alt={dealerFifthAlt}
-              ></img>
-            </motion.div>
-          )}
-
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + dealerSixth}
-              onLoad={addSixth}
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
-          </div>
-
-          {additional > 3 && dealerSix && dealerDrawKey[2] && (
-            <motion.div
-              initial={initialSetting}
-              animate={animateSetting}
-              transition={transitionSetting}
-              className="sixthCard"
-              style={sixthDealerDisplay}
-            >
-              <img
-                src={process.env.PUBLIC_URL + dealerSixth}
-                onLoad={dealerDrawKeyAdd}
-                height="199.6488px"
-                width="136.4688px"
-                alt={dealerSixthAlt}
-              ></img>
-            </motion.div>
-          )}
-
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + dealerSeventh}
-              onLoad={addSeventh}
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
-          </div>
-
-          {additional > 4 &&
-            dealerSeven &&
-            dealerDrawKey[3](
+            {dealerLoad1 && (
               <motion.div
                 initial={initialSetting}
                 animate={animateSettingAlt}
                 transition={transitionSetting}
-                className="seventhCard"
-                style={seventhDealerDisplay}
+                className="firstCard"
               >
                 <img
-                  src={process.env.PUBLIC_URL + dealerSeventh}
+                  src={process.env.PUBLIC_URL + dealerCardOne}
+                  onLoad={timeCheck}
                   height="199.6488px"
                   width="136.4688px"
-                  alt={dealerSeventhAlt}
+                  alt={
+                    cards[cardThemeNum][dealerCards[0].suit][
+                      dealerCards[0].card
+                    ].alt
+                  }
                 ></img>
               </motion.div>
             )}
-        </div>
 
-        <div className="playerCardsWrap">
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + playerCardOne}
-              // when this onload fires it reveals the real card and its animation
-              onLoad={load1}
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
+            <div className="load">
+              <img
+                src={process.env.PUBLIC_URL + dealerCardTwo}
+                // when this onload fires it reveals the real card and its animation
+                onLoad={dealLoad2Check}
+                height="199.6488px"
+                width="136.4688px"
+              ></img>
+            </div>
+
+            {dealerLoad2 && ( // More of this
+              <motion.div
+                initial={initialSetting}
+                animate={animateSetting}
+                transition={transitionSetting}
+                className="otherCard"
+              >
+                <img
+                  src={process.env.PUBLIC_URL + dealerCardTwo}
+                  height="199.6488px"
+                  width="136.4688px"
+                  alt={
+                    cards[cardThemeNum][dealerCards[1].suit][
+                      dealerCards[1].card
+                    ].alt
+                  }
+                ></img>
+              </motion.div>
+            )}
+
+            <div className="load">
+              <img
+                src={process.env.PUBLIC_URL + dealerThird}
+                onLoad={addThird}
+                height="199.6488px"
+                width="136.4688px"
+              ></img>
+            </div>
+
+            {additional && dealerThree && (
+              <motion.div
+                initial={initialSetting}
+                animate={animateSettingAlt}
+                transition={transitionSetting}
+                className="thirdCard"
+                style={thirdDealerDisplay}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + dealerThird}
+                  height="199.6488px"
+                  width="136.4688px"
+                  onLoad={dealerDrawKeyAdd}
+                  alt={dealerThirdAlt}
+                ></img>
+              </motion.div>
+            )}
+
+            <div className="load">
+              <img
+                src={process.env.PUBLIC_URL + dealerFourth}
+                onLoad={addFourth}
+                height="199.6488px"
+                width="136.4688px"
+              ></img>
+            </div>
+
+            {additional > 1 && dealerFour && dealerDrawKey[0] && (
+              <motion.div
+                initial={initialSetting}
+                animate={animateSetting}
+                transition={transitionSetting}
+                className="fourthCard"
+                style={fourthDealerDisplay}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + dealerFourth}
+                  onLoad={dealerDrawKeyAdd}
+                  height="199.6488px"
+                  width="136.4688px"
+                  alt={dealerFourthAlt}
+                ></img>
+              </motion.div>
+            )}
+
+            <div className="load">
+              <img
+                src={process.env.PUBLIC_URL + dealerFifth}
+                onLoad={addFifth}
+                height="199.6488px"
+                width="136.4688px"
+              ></img>
+            </div>
+
+            {additional > 2 && dealerFive && dealerDrawKey[1] && (
+              <motion.div
+                initial={initialSetting}
+                animate={animateSettingAlt}
+                transition={transitionSetting}
+                className="fifthCard"
+                style={fifthDealerDisplay}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + dealerFifth}
+                  onLoad={dealerDrawKeyAdd}
+                  height="199.6488px"
+                  width="136.4688px"
+                  alt={dealerFifthAlt}
+                ></img>
+              </motion.div>
+            )}
+
+            <div className="load">
+              <img
+                src={process.env.PUBLIC_URL + dealerSixth}
+                onLoad={addSixth}
+                height="199.6488px"
+                width="136.4688px"
+              ></img>
+            </div>
+
+            {additional > 3 && dealerSix && dealerDrawKey[2] && (
+              <motion.div
+                initial={initialSetting}
+                animate={animateSetting}
+                transition={transitionSetting}
+                className="sixthCard"
+                style={sixthDealerDisplay}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + dealerSixth}
+                  onLoad={dealerDrawKeyAdd}
+                  height="199.6488px"
+                  width="136.4688px"
+                  alt={dealerSixthAlt}
+                ></img>
+              </motion.div>
+            )}
+
+            <div className="load">
+              <img
+                src={process.env.PUBLIC_URL + dealerSeventh}
+                onLoad={addSeventh}
+                height="199.6488px"
+                width="136.4688px"
+              ></img>
+            </div>
+
+            {additional > 4 &&
+              dealerSeven &&
+              dealerDrawKey[3](
+                <motion.div
+                  initial={initialSetting}
+                  animate={animateSettingAlt}
+                  transition={transitionSetting}
+                  className="seventhCard"
+                  style={seventhDealerDisplay}
+                >
+                  <img
+                    src={process.env.PUBLIC_URL + dealerSeventh}
+                    height="199.6488px"
+                    width="136.4688px"
+                    alt={dealerSeventhAlt}
+                  ></img>
+                </motion.div>
+              )}
           </div>
 
-          {cardLoad1 && (
-            <motion.div
-              initial={initial} // initial
-              animate={card1Animate}
-              transition={card1Transition}
-              className="firstCard"
-            // style={card1Style}
-            >
+          <div className="playerCardsWrap">
+            <div className="load">
               <img
                 src={process.env.PUBLIC_URL + playerCardOne}
-                onLoad={timeCheck}
+                // when this onload fires it reveals the real card and its animation
+                onLoad={load1}
                 height="199.6488px"
                 width="136.4688px"
-                alt={
-                  cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].alt
-                }
               ></img>
-            </motion.div>
-          )}
+            </div>
 
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + playerCardTwo}
-              // onload={timeCheck}
-              onLoad={load2Check} // I want to do another timeCheck to compare times between first and last; the time between
-              // the first card animating and the next card loading, if the time is 0 then add 2 ticks if greater than go immidiately
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
-          </div>
+            {cardLoad1 && (
+              <motion.div
+                initial={initial} // initial
+                animate={card1Animate}
+                transition={card1Transition}
+                className="firstCard"
+                // style={card1Style}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + playerCardOne}
+                  onLoad={timeCheck}
+                  height="199.6488px"
+                  width="136.4688px"
+                  alt={
+                    cards[cardThemeNum][yourCards[0].suit][yourCards[0].card]
+                      .alt
+                  }
+                ></img>
+              </motion.div>
+            )}
 
-          {cardLoad2 && (
-            <motion.div
-              initial={initial}
-              animate={card2Animate}
-              transition={card2Transition}
-              className="otherCard"
-            >
+            <div className="load">
               <img
                 src={process.env.PUBLIC_URL + playerCardTwo}
-                // onLoad={timeCheck}
+                // onload={timeCheck}
+                onLoad={load2Check} // I want to do another timeCheck to compare times between first and last; the time between
+                // the first card animating and the next card loading, if the time is 0 then add 2 ticks if greater than go immidiately
                 height="199.6488px"
                 width="136.4688px"
-                alt={
-                  cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].alt
-                }
               ></img>
-            </motion.div>
-          )}
+            </div>
 
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + playerThird}
-              onLoad={timer3}
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
-          </div>
+            {cardLoad2 && (
+              <motion.div
+                initial={initial}
+                animate={card2Animate}
+                transition={card2Transition}
+                className="otherCard"
+              >
+                <img
+                  src={process.env.PUBLIC_URL + playerCardTwo}
+                  // onLoad={timeCheck}
+                  height="199.6488px"
+                  width="136.4688px"
+                  alt={
+                    cards[cardThemeNum][yourCards[1].suit][yourCards[1].card]
+                      .alt
+                  }
+                ></img>
+              </motion.div>
+            )}
 
-          {playerTimer > 2 && (
-            <motion.div
-              initial={initial}
-              animate={card3Animate}
-              transition={card3Transition}
-              className="thirdCard"
-              style={thirdDisplay}
-            >
+            <div className="load">
               <img
                 src={process.env.PUBLIC_URL + playerThird}
+                onLoad={timer3}
                 height="199.6488px"
                 width="136.4688px"
-                alt={playerThirdAlt}
               ></img>
-            </motion.div>
-          )}
+            </div>
 
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + playerFourth}
-              onLoad={timer4}
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
-          </div>
+            {playerTimer > 2 && (
+              <motion.div
+                initial={initial}
+                animate={card3Animate}
+                transition={card3Transition}
+                className="thirdCard"
+                style={thirdDisplay}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + playerThird}
+                  height="199.6488px"
+                  width="136.4688px"
+                  alt={playerThirdAlt}
+                ></img>
+              </motion.div>
+            )}
 
-          {playerTimer > 3 && (
-            <motion.div
-              initial={initial}
-              animate={card4Animate}
-              transition={card4Transition}
-              className="fourthCard"
-              style={fourthDisplay}
-            >
+            <div className="load">
               <img
                 src={process.env.PUBLIC_URL + playerFourth}
+                onLoad={timer4}
                 height="199.6488px"
                 width="136.4688px"
-                alt={playerFourthAlt}
               ></img>
-            </motion.div>
-          )}
+            </div>
 
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + playerFifth}
-              onLoad={timer5}
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
-          </div>
+            {playerTimer > 3 && (
+              <motion.div
+                initial={initial}
+                animate={card4Animate}
+                transition={card4Transition}
+                className="fourthCard"
+                style={fourthDisplay}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + playerFourth}
+                  height="199.6488px"
+                  width="136.4688px"
+                  alt={playerFourthAlt}
+                ></img>
+              </motion.div>
+            )}
 
-          {playerTimer > 4 && (
-            <motion.div
-              initial={initial}
-              animate={card5Animate}
-              transition={card5Transition}
-              className="fifthCard"
-              style={fifthDisplay}
-            >
+            <div className="load">
               <img
                 src={process.env.PUBLIC_URL + playerFifth}
+                onLoad={timer5}
                 height="199.6488px"
                 width="136.4688px"
-                alt={playerFifthAlt}
               ></img>
-            </motion.div>
-          )}
+            </div>
 
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + playerSixth}
-              onLoad={timer6}
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
-          </div>
+            {playerTimer > 4 && (
+              <motion.div
+                initial={initial}
+                animate={card5Animate}
+                transition={card5Transition}
+                className="fifthCard"
+                style={fifthDisplay}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + playerFifth}
+                  height="199.6488px"
+                  width="136.4688px"
+                  alt={playerFifthAlt}
+                ></img>
+              </motion.div>
+            )}
 
-          {playerTimer > 5 && (
-            <motion.div
-              initial={initial}
-              animate={card6Animate}
-              transition={card6Transition}
-              className="sixthCard"
-              style={sixthDisplay}
-            >
+            <div className="load">
               <img
                 src={process.env.PUBLIC_URL + playerSixth}
+                onLoad={timer6}
                 height="199.6488px"
                 width="136.4688px"
-                alt={playerSixthAlt}
               ></img>
-            </motion.div>
-          )}
+            </div>
 
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + playerSeventh}
-              onLoad={timer7}
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
-          </div>
+            {playerTimer > 5 && (
+              <motion.div
+                initial={initial}
+                animate={card6Animate}
+                transition={card6Transition}
+                className="sixthCard"
+                style={sixthDisplay}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + playerSixth}
+                  height="199.6488px"
+                  width="136.4688px"
+                  alt={playerSixthAlt}
+                ></img>
+              </motion.div>
+            )}
 
-          {playerTimer > 6 && (
-            <motion.div
-              initial={initial}
-              animate={card7Animate}
-              transition={card7Transition}
-              className="seventhCard"
-              style={seventhDisplay}
-            >
+            <div className="load">
               <img
                 src={process.env.PUBLIC_URL + playerSeventh}
+                onLoad={timer7}
                 height="199.6488px"
                 width="136.4688px"
-                alt={playerSeventhAlt}
               ></img>
-            </motion.div>
-          )}
-        </div>
+            </div>
 
-        <div className="playerCards2Wrap">
-          {hand2Timer > 0 && (
-            <motion.div
-              initial={hand2Card1Initial}
-              animate={hand2Card1Animate}
-              transition={hand2Card1Transition}
-              className="splitCard1"
-              style={splitCard1Display}
-            >
-              <img
-                src={process.env.PUBLIC_URL + splitCard1}
-                height="99.8244"
-                width="68.2344px"
-                alt={splitCard1Alt}
-              ></img>
-            </motion.div>
-          )}
-
-          <div className="load">
-            <img
-              src={process.env.PUBLIC_URL + splitCard2}
-              onLoad={split2Load}
-              height="199.6488px"
-              width="136.4688px"
-            ></img>
+            {playerTimer > 6 && (
+              <motion.div
+                initial={initial}
+                animate={card7Animate}
+                transition={card7Transition}
+                className="seventhCard"
+                style={seventhDisplay}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + playerSeventh}
+                  height="199.6488px"
+                  width="136.4688px"
+                  alt={playerSeventhAlt}
+                ></img>
+              </motion.div>
+            )}
           </div>
 
-          {hand2Timer > 1 && split2Loaded && (
-            <motion.div
-              initial={hand2Card2Initial}
-              animate={hand2Card2Animate}
-              transition={hand2Card2Transition}
-              className="splitCard2"
-              style={splitCard2Display}
-            >
+          <div className="playerCards2Wrap">
+            {hand2Timer > 0 && (
+              <motion.div
+                initial={hand2Card1Initial}
+                animate={hand2Card1Animate}
+                transition={hand2Card1Transition}
+                className="splitCard1"
+                style={splitCard1Display}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + splitCard1}
+                  height="99.8244"
+                  width="68.2344px"
+                  alt={splitCard1Alt}
+                ></img>
+              </motion.div>
+            )}
+
+            <div className="load">
               <img
                 src={process.env.PUBLIC_URL + splitCard2}
-                height="99.8244"
-                width="68.2344px"
-                alt={splitCard2Alt}
+                onLoad={split2Load}
+                height="199.6488px"
+                width="136.4688px"
               ></img>
-            </motion.div>
-          )}
-        </div>
+            </div>
 
-        <div className="playerActions">
-          {standElement}
-          {hitElement}
-          {doubleDownElement}
-          {splitElement}
-        </div>
+            {hand2Timer > 1 && split2Loaded && (
+              <motion.div
+                initial={hand2Card2Initial}
+                animate={hand2Card2Animate}
+                transition={hand2Card2Transition}
+                className="splitCard2"
+                style={splitCard2Display}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + splitCard2}
+                  height="99.8244"
+                  width="68.2344px"
+                  alt={splitCard2Alt}
+                ></img>
+              </motion.div>
+            )}
+          </div>
 
-        <div className="moneyWrapperTable">
-          <p style={textColor} id="bet">
-            ${yourMoneyUpdater}
-          </p>
-          <p style={textColor} id="currentBet">
-            Your Money
-          </p>
-        </div>
+          <div className="playerActions">
+            {standElement}
+            {hitElement}
+            {doubleDownElement}
+            {splitElement}
+          </div>
 
-        <div className="cBet">
-          <p style={textColor} id="bet">
-            ${bet}
-          </p>
-          <p style={textColor} id="currentBet">
-            Current bet
-          </p>
+          <div className="moneyWrapperTable">
+            <p style={textColor} id="bet">
+              ${yourMoneyUpdater}
+            </p>
+            <p style={textColor} id="currentBet">
+              Your Money
+            </p>
+          </div>
+
+          <div className="cBet">
+            <p style={textColor} id="bet">
+              ${bet}
+            </p>
+            <p style={textColor} id="currentBet">
+              Current bet
+            </p>
+          </div>
         </div>
 
         <div className="one">
@@ -4021,6 +4265,16 @@ function TableOptions({
         </div>
 
         <div className="two">{themesButtonToggle}</div>
+      </div>
+      <div className="one">
+        <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
+          <GithubSVG iconTheme={iconTheme}></GithubSVG>
+        </a>
+      </div>
+      <div className="two">
+        <a onClick={settingsFlagSwitch}>
+          <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
+        </a>
       </div>
     </div>
   )
@@ -4692,6 +4946,7 @@ function App() {
       card: "king",
     },
   ])
+
   const deckUpdate = (value) => {
     setDeck(value)
   }
@@ -4731,11 +4986,6 @@ function App() {
   }
   const realDiscardPileUpdate = (value) => {
     setDiscardPile((discardPile) => [...discardPile, value])
-  }
-
-  const [oldDiscardPile, setOldDiscardPile] = useState(discardPile)
-  const oldDiscardPileUpdate = (value) => {
-    setOldDiscardPile(value)
   }
 
   // Used to determine if the startScreen should load.
@@ -4849,21 +5099,6 @@ function App() {
     console.log(yourCards)
   }
 
-  const [doubleCard, setDoubleCard] = useState(["hello"])
-
-  const playerHitAlt = () => {
-    let thisDeck = deck
-    let cardIndex = Math.floor(Math.random() * thisDeck.length)
-    let card = thisDeck[cardIndex]
-    thisDeck.splice(cardIndex, 1)
-    setDiscardPile((discardPile) => [...discardPile, card])
-    setDeck(thisDeck)
-    setYourCards((yourCards) => [...yourCards, card])
-
-    // doubleCard.push(card)
-    setDoubleCard(card)
-  }
-
   const playerHit2 = () => {
     let thisDeck = deck
     let cardIndex = Math.floor(Math.random() * thisDeck.length)
@@ -4903,6 +5138,14 @@ function App() {
   }
   const tableStartOne = () => {
     setTableStart(1)
+  }
+
+  const [automatedFlag, setAutomatedFlag] = useState(0)
+  const autoFlag = () => {
+    homeFlagSwitch()
+    startFlagSwitch()
+    roundStartFlagSwitch()
+    setAutomatedFlag(1)
   }
 
   // Need to figure out why I can't go forward to roundStart when I can go back
@@ -4966,18 +5209,13 @@ function App() {
       roundStartFlag={roundStartFlag}
       shoeCount={shoeCount}
       discardPile={discardPile}
-      oldDiscardPile={oldDiscardPile}
-      oldDiscardPileUpdate={oldDiscardPileUpdate}
       cutPosition={cutPosition}
-      // shuffleDeck={shuffleDeck}
       tableStart={tableStart}
       tableStartZero={tableStartZero}
       tableStartOne={tableStartOne}
       setDiscardPile={setDiscardPile}
       realDiscardPileUpdate={realDiscardPileUpdate}
-      playerHitAlt={playerHitAlt}
       deckUpdate={deckUpdate}
-      doubleCard={doubleCard}
       homeFlag={homeFlag}
       homeFlagSwitch={homeFlagSwitch}
       homeFlagSwitch1={homeFlagSwitch1}
@@ -5002,6 +5240,8 @@ function App() {
       automateFlagSwitch={automateFlagSwitch}
       automateFlag={automateFlag}
       automateFlagSwitch0={automateFlagSwitch0}
+      autoFlag={autoFlag}
+      automatedFlag={automatedFlag}
     ></LoadOrder>
   )
 }
