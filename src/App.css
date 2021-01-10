@@ -598,12 +598,41 @@ p {
 }
 
 .block {
+  /* border: solid; */
   text-align: center;
   /* border: solid; */
   width: 100%;
 
   transition: 1s;
 }
+
+.boo {
+  /* border: solid; */
+  text-align: center;
+  width: 100%;
+  display: inline-block;
+  position: absolute;
+  /* padding: 1em; */
+  top: 30%;
+  /* transform: translateY(-100%); */
+}
+
+.barDeal {
+  /* border: solid; */
+  display: inline-block;
+  /* margin: 2em; */
+  padding: 2em;
+}
+
+/* .tableWrapper {
+  position: absolute;
+  left: 25%;
+  top: 22em;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 6em;
+} */
 
 .chips {
   border: solid;

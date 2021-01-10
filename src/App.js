@@ -105,6 +105,9 @@ function LoadOrder({
   automateFlag,
   automateFlagSwitch0,
   autoFlag,
+  roundsLeft,
+  updateRounds,
+  decrementRounds,
 }) {
   if (settingsFlag) {
     return (
@@ -179,6 +182,8 @@ function LoadOrder({
         minBet={minBet}
         cardThemeNum={cardThemeNum}
         automateFlag={automateFlag}
+        roundsLeft={roundsLeft}
+        updateRounds={updateRounds}
       ></RoundStart>
     )
   } else if (tableStart) {
@@ -222,6 +227,7 @@ function LoadOrder({
         cardThemeNum={cardThemeNum}
         automateFlag={automateFlag}
         autoFlag={autoFlag}
+        decrementRounds={decrementRounds}
       ></TableOptions>
     )
   }
@@ -620,15 +626,6 @@ function StartScreen({
         <h6 style={textColor}>Autojack</h6>
       </div>
       <div className="tableWrapper">
-        {/* 
-        This is a placeholder for the real icons.
-        The way the state will be managed is that the different table options will have an onClick function that will change
-          the state that holds the element of the table parameters box, as well as setting the proper state for things like
-          deck size and bet sizes.
-        The custom will be different because the state changes are static for the 1-3 options whereas the custom will take in an input
-          and constantly update the state to reflect what is inside it to set the parameters to however you would like.
-        */}
-
         {/* These should go down to 9em for the responsitivity */}
         <a className="hoverHover" onClick={lowEnd}>
           <TableLow
@@ -706,6 +703,8 @@ function RoundStart({
   minBet,
   cardThemeNum,
   automateFlag,
+  roundsLeft,
+  updateRounds,
 }) {
   useEffect(() => {
     window.history.pushState(
@@ -740,6 +739,16 @@ function RoundStart({
     dealerDeal()
     roundStartFlagSwitch()
   }
+
+  useEffect(() => {
+    console.log(roundsLeft)
+  }, [])
+
+  useEffect(() => {
+    if (roundsLeft > 1) {
+      deal()
+    }
+  }, [])
 
   const [cardsLeft, setCardsLeft] = useState()
 
@@ -1003,25 +1012,34 @@ function RoundStart({
           </div>
         </div>
       </div>
-      <div style={automatedVersion} className="block">
-        <h1>Betting strategy</h1>
-        <Button
-          buttonTheme={buttonTheme}
-          func={deal}
-          content={"Deal"}
-          ID={"mobileDeal"}
-        ></Button>
-      </div>
-      <div className="one">
-        <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
-          <GithubSVG iconTheme={iconTheme}></GithubSVG>
-        </a>
-      </div>
+      <div style={automatedVersion}>
+        <div className="boo">
+          <h2 style={textColor}>How many rounds</h2>
+          <div className="barDeal">
+            <input
+              type="number"
+              min="1"
+              onChange={(e) => updateRounds(e.target.value)}
+            ></input>
+            <Button
+              buttonTheme={buttonTheme}
+              func={deal}
+              content={"Deal"}
+              ID={"mobileDeal"}
+            ></Button>
+          </div>
+        </div>
+        <div className="one">
+          <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
+            <GithubSVG iconTheme={iconTheme}></GithubSVG>
+          </a>
+        </div>
 
-      <div className="two">
-        <a className="hoverHover" onClick={settingsFlagSwitch}>
-          <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
-        </a>
+        <div className="two">
+          <a className="hoverHover" onClick={settingsFlagSwitch}>
+            <ThemesIcon iconTheme={iconTheme}></ThemesIcon>
+          </a>
+        </div>
       </div>
     </div>
   )
@@ -1066,6 +1084,7 @@ function TableOptions({
   cardThemeNum,
   autoFlag,
   automateFlag,
+  decrementRounds,
 }) {
   useEffect(() => {
     window.history.replaceState("Table", null, "http://localhost:3000/Table")
@@ -1077,6 +1096,10 @@ function TableOptions({
       setYourCards2([])
       console.log("CLEAED YOURCARDS2")
     }
+  }, [])
+
+  useEffect(() => {
+    decrementRounds()
   }, [])
 
   const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
@@ -4478,7 +4501,19 @@ function TableOptions({
 }
 
 function App() {
-  // console.log("Main is looped")
+  const [roundsLeft, setRoundsLeft] = useState(0)
+
+  const updateRounds = (rounds) => {
+    setRoundsLeft(rounds)
+  }
+
+  const decrementRounds = () => {
+    setRoundsLeft((x) => x - 1)
+  }
+
+  // useEffect(() => {
+  //   console.log(roundsLeft)
+  // }, [roundsLeft])
 
   // This is the current/default bodyTheme
   const [bodyTheme, setBodyTheme] = useState("bodyTheme2")
@@ -5439,6 +5474,9 @@ function App() {
       automateFlagSwitch0={automateFlagSwitch0}
       autoFlag={autoFlag}
       automatedFlag={automatedFlag}
+      roundsLeft={roundsLeft}
+      updateRounds={updateRounds}
+      decrementRounds={decrementRounds}
     ></LoadOrder>
   )
 }
