@@ -1149,13 +1149,22 @@ function TableOptions({
   // This checks to see if the bet value changed during the gameplay, and resets it back to the original value after
   let betDoubled = 0
   let prevBet = PreviousBet(playerBet)
+
+  const [originalBet, setOriginalBet] = useState()
+
+  useEffect(() => {
+    setOriginalBet(playerBet)
+  }, [])
+
   useEffect(() => {
     if (prevBet !== playerBet && prevBet) {
       betDoubled = 1
     }
     return () => {
+      // cleanup functions fire when the component is unmounted
       if (betDoubled) {
-        playerBetUpdate(playerBet / 2)
+        // playerBetUpdate(playerBet / 2)
+        playerBetUpdate(originalBet)
       }
     }
   }, [playerBet])
