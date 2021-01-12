@@ -4431,24 +4431,22 @@ function TableOptions({
               ></img>
             </div>
 
-            {additional > 4 &&
-              dealerSeven &&
-              dealerDrawKey[3](
-                <motion.div
-                  initial={initialSetting}
-                  animate={animateSettingAlt}
-                  transition={transitionSetting}
-                  className="seventhCard"
-                  style={seventhDealerDisplay}
-                >
-                  <img
-                    src={process.env.PUBLIC_URL + dealerSeventh}
-                    height="199.6488px"
-                    width="136.4688px"
-                    alt={dealerSeventhAlt}
-                  ></img>
-                </motion.div>
-              )}
+            {additional > 4 && dealerSeven && dealerDrawKey[3] && (
+              <motion.div
+                initial={initialSetting}
+                animate={animateSettingAlt}
+                transition={transitionSetting}
+                className="seventhCard"
+                style={seventhDealerDisplay}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + dealerSeventh}
+                  height="199.6488px"
+                  width="136.4688px"
+                  alt={dealerSeventhAlt}
+                ></img>
+              </motion.div>
+            )}
           </div>
 
           <div className="playerCardsWrap">
