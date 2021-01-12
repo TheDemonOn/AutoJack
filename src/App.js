@@ -108,6 +108,7 @@ function LoadOrder({
   roundsLeft,
   updateRounds,
   decrementRounds,
+  cancelAuto,
 }) {
   if (settingsFlag) {
     return (
@@ -228,6 +229,7 @@ function LoadOrder({
         automateFlag={automateFlag}
         autoFlag={autoFlag}
         decrementRounds={decrementRounds}
+        cancelAuto={cancelAuto}
       ></TableOptions>
     )
   }
@@ -436,6 +438,11 @@ function StartScreen({
     )
   }, [])
 
+  useEffect(() => {
+    theDeckCountValue(8)
+    yourMoneyValue(500)
+  }, [])
+
   const [deckSize, setDeckSize] = useState(8)
 
   const [tableIconSize, setTableIconSize] = useState("130px")
@@ -615,6 +622,12 @@ function StartScreen({
 
   // Need to set a default value for bet on custom
   const custom = () => {
+    theDeckCountValue(1)
+    yourMoneyValue(100)
+    playerBetUpdate(5)
+    betRange("min", 5)
+    betRange("max", 100)
+
     setParameterSection(
       <div className="parameterBox">
         <h4 style={textColor}>Table Rules</h4>
@@ -676,12 +689,18 @@ function StartScreen({
         </div>
       </div>
     )
-    theDeckCountValue(1)
-    yourMoneyValue(100)
-    playerBetUpdate(5)
-    betRange("min", 5)
-    betRange("max", 100)
   }
+
+  useEffect(() => {
+    // If the custom min is set higher than the max, update the max to be the min
+    if (minBet > maxBet) {
+      betRange("max", minBet)
+    }
+  }, [minBet])
+
+  useEffect(() => {
+    playerBetUpdate(minBet)
+  }, [minBet])
 
   const startAndUpdateDeck = () => {
     homeFlagSwitch1()
@@ -1183,15 +1202,18 @@ function RoundStart({
       </div>
       <div style={automatedVersion}>
         <div className="boo">
-          <h2 style={textColor}>How many rounds</h2>
+          <h2 style={textColor}>How many rounds?</h2>
           <div className="barDeal">
             <input
               id="inputThing"
               onFocus={inputFunction}
               onBlur={inputFunctionOff}
               style={inputBorderColor}
-              type="number"
-              min="1"
+              type="text"
+              // min="1"
+              // max="3"
+              maxLength="2"
+              placeholder="1"
               onChange={(e) => updateRounds(e.target.value)}
             ></input>
             <Button
@@ -1258,6 +1280,7 @@ function TableOptions({
   autoFlag,
   automateFlag,
   decrementRounds,
+  cancelAuto,
 }) {
   useEffect(() => {
     window.history.replaceState("Table", null, "http://localhost:3000/Table")
@@ -2130,7 +2153,7 @@ function TableOptions({
         // Blackjack check
         stand()
       } else if (dealerCards[0].value + dealerCards[1].value === 21) {
-        // console.log("DID DEALER BLACKJACK")
+        console.log("DEALER BLACKJACK")
         stand()
       } else {
         if (yourCards.map((x) => x.value).filter((x) => x === 11)[0] > 0) {
@@ -2184,6 +2207,14 @@ function TableOptions({
     }
   }, [bust])
 
+  useEffect(() => {
+    if (typeof playerBet === "string") {
+      playerBetUpdate(parseInt(playerBet, 10))
+    } else if (typeof playerBet2 === "string") {
+      setPlayerBet2(parseInt(playerBet2, 10))
+    }
+  }, [playerBet, playerBet2])
+
   // Creates round result
   // The issue here is that does having this run twice matter
   // This generates resultKeys for both 1 and 2
@@ -2202,6 +2233,7 @@ function TableOptions({
     }
 
     setTimeout(() => {
+      console.log("EndplayerTurn: " + endPlayerTurn)
       if (
         (endPlayerTurn === 1 && yourCards2.length === 0) ||
         endPlayerTurn === 2
@@ -2218,6 +2250,13 @@ function TableOptions({
           if (yourCards2.length === 0) {
             // If turn has ended and it has not split
             if (dealerCardTotal === cardTotal) {
+              console.log("DID IT BREAK HERE")
+              console.log(playerBet)
+              // Why is playerBet a string here?
+
+              // It was always a string that got converted from the math operation to a number
+
+              //
               yourMoneyValue((m) => m + playerBet)
               setRoundResultKey("push")
             }
@@ -4030,14 +4069,24 @@ function TableOptions({
   const [faceUpCard, setFaceUpCard] = useState(dealerCards[0].value)
 
   useEffect(() => {
-    console.log(endPlayerTurn)
+    console.log(dealerCards)
+    console.log(dealerCards[0].value2)
+    console.log(dealerCards[1].value2)
+    if (dealerCards[0].value2 === 1 && dealerCards[1].value2 === 1) {
+      console.log("THIS SHOULD TELL IF IT BROKE OR NOT")
+    }
+    console.log(
+      dealerCardTotal < 21 ||
+        (dealerCards[0].value2 === 1 && dealerCards[1].value2 === 1)
+    )
     if (yourCards2[0]) {
       // Split has occurred // Also we can double, just not after hitting in a hand
       console.log("Taking a Split Action") // This does not run right now
       setAutoSplitSwitch((t) => t + 1)
     } else if (
       yourCards.length > 1 &&
-      dealerCardTotal < 21 &&
+      (dealerCardTotal < 21 ||
+        (dealerCards[0].value2 === 1 && dealerCards[1].value2 === 1)) &&
       endPlayerTurn === 0 &&
       yourCards2.length < 1
     ) {
@@ -4157,18 +4206,25 @@ function TableOptions({
           }
         }, 1500)
       }
+    } else if (dealerCardTotal === 21) {
     }
   }, [cardTotal, cardTotalChangerChecker])
 
-  const [autoActions, setAutoActions] = useState()
   const actionIfAuto = {
     display: "none",
   }
+
+  const [autoActions, setAutoActions] = useState()
+  const [manualAction, setManualAction] = useState(actionIfAuto)
+
   useLayoutEffect(() => {
     if (automateFlag) {
       setAutoActions(actionIfAuto)
+      setManualAction()
     }
   }, [])
+
+  // cancelAuto
 
   return (
     <div>
@@ -4641,6 +4697,14 @@ function TableOptions({
             {splitElement}
           </div>
 
+          <div style={manualAction} className="playerActions">
+            <Button
+              buttonTheme={buttonTheme}
+              content={"Cancel"}
+              func={cancelAuto}
+            ></Button>
+          </div>
+
           <div className="moneyWrapperTable">
             <p style={textColor} id="bet">
               ${yourMoneyUpdater}
@@ -4687,6 +4751,10 @@ function App() {
 
   const updateRounds = (rounds) => {
     setRoundsLeft(rounds)
+  }
+
+  const cancelAuto = () => {
+    setRoundsLeft(0)
   }
 
   const decrementRounds = () => {
@@ -5379,7 +5447,7 @@ function App() {
 
   useEffect(() => {
     // If deck is ever manually updated update the deck
-    if (deckCount !== 1) {
+    if (deckCount > 0) {
       let localDeck = deck
       deck.length = 52
       for (let i = 1; i < deckCount; i++) {
@@ -5659,6 +5727,7 @@ function App() {
       roundsLeft={roundsLeft}
       updateRounds={updateRounds}
       decrementRounds={decrementRounds}
+      cancelAuto={cancelAuto}
     ></LoadOrder>
   )
 }
