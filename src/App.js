@@ -452,6 +452,94 @@ function StartScreen({
     </div>
   )
 
+  const goldColor = {
+    color: "#e7bd52",
+  }
+
+  const purpleColor = {
+    color: "#392950",
+  }
+
+  const redColor = {
+    color: "#c12f2f",
+  }
+
+  const greenColor = {
+    color: "#48b74d",
+  }
+
+  const inputFunction0 = () => {
+    document.getElementsByClassName("inputThing")[0].style.border =
+      "2px solid #555"
+  }
+  const inputFunction1 = () => {
+    document.getElementsByClassName("inputThing")[1].style.border =
+      "2px solid #555"
+  }
+  const inputFunction2 = () => {
+    document.getElementsByClassName("inputThing")[2].style.border =
+      "2px solid #555"
+  }
+  const inputFunction3 = () => {
+    document.getElementsByClassName("inputThing")[3].style.border =
+      "2px solid #555"
+  }
+
+  const inputFunctionOff = () => {
+    for (
+      let i = 0;
+      i < document.getElementsByClassName("inputThing").length;
+      i++
+    ) {
+      switch (textColor.color) {
+        case goldColor.color:
+          document.getElementsByClassName("inputThing")[i].style.border =
+            "2px solid #e7bd52"
+          break
+        case purpleColor.color:
+          document.getElementsByClassName("inputThing")[i].style.border =
+            "2px solid #392950"
+          break
+        case redColor.color:
+          document.getElementsByClassName("inputThing")[i].style.border =
+            "2px solid #c12f2f"
+          break
+        case greenColor.color:
+          document.getElementsByClassName("inputThing")[i].style.border =
+            "2px solid #48b74d"
+          break
+      }
+    }
+  }
+
+  useLayoutEffect(() => {
+    console.log(document.getElementsByClassName("inputThing").length)
+    for (
+      let i = 0;
+      i < document.getElementsByClassName("inputThing").length;
+      i++
+    ) {
+      switch (textColor.color) {
+        case goldColor.color:
+          document.getElementsByClassName("inputThing")[i].style.border =
+            "2px solid #e7bd52"
+          break
+        case purpleColor.color:
+          document.getElementsByClassName("inputThing")[i].style.border =
+            "2px solid #392950"
+          break
+        case redColor.color:
+          document.getElementsByClassName("inputThing")[i].style.border =
+            "2px solid #c12f2f"
+          break
+        case greenColor.color:
+          document.getElementsByClassName("inputThing")[i].style.border =
+            "2px solid #48b74d"
+          break
+      }
+    }
+  }, [parameterSection])
+
   // In the initial values set them to the values of the lowEnd
   // Make lowEnd the default.
   const lowEnd = () => {
@@ -536,7 +624,10 @@ function StartScreen({
             {/* Figure out if type="number" can use maxLength or a variant */}
             {/* Also figure out if you can restrict the input value being higher than the max */}
             <input
+              className="inputThing"
               type="text"
+              onFocus={inputFunction0}
+              onBlur={inputFunctionOff}
               // min="1"
               // max="100"
               maxLength="3"
@@ -549,27 +640,36 @@ function StartScreen({
           <div>
             <h5 style={textColor}>Min Bet: </h5>
             <input
+              className="inputThing"
               type="number"
               min="1"
               placeholder="5"
+              onFocus={inputFunction1}
+              onBlur={inputFunctionOff}
               onChange={(e) => betRange("min", e.target.value)}
             ></input>
           </div>
           <div>
             <h5 style={textColor}>Max Bet: </h5>
             <input
+              className="inputThing"
               type="number"
               min="1"
               placeholder="100"
+              onFocus={inputFunction2}
+              onBlur={inputFunctionOff}
               onChange={(e) => betRange("max", e.target.value)}
             ></input>
           </div>
           <div>
             <h5 style={textColor}>Money: </h5>
             <input
+              className="inputThing"
               type="number"
               min="1"
               placeholder="100"
+              onFocus={inputFunction3}
+              onBlur={inputFunctionOff}
               onChange={(e) => yourMoneyValue(e.target.value)}
             ></input>
           </div>
@@ -886,6 +986,75 @@ function RoundStart({
     }
   }, [])
 
+  const [inputBorderColor, setInputBorderColor] = useState({
+    border: "2px solid rgb(0, 255, 0)",
+  })
+
+  // const purpleTheme = {
+  //   borderColor: "#392950",
+  //   backgroundColor: "#392950",
+  //   color: "white",
+  // }
+
+  // var input = document.getElementById("inputThing")
+  // input.addEventListener("focus", function () {
+  //   this.style.border = "2px solid #555"
+  // })
+
+  const goldColor = {
+    color: "#e7bd52",
+  }
+
+  const purpleColor = {
+    color: "#392950",
+  }
+
+  const redColor = {
+    color: "#c12f2f",
+  }
+
+  const greenColor = {
+    color: "#48b74d",
+  }
+
+  const inputFunction = () => {
+    document.getElementById("inputThing").style.border = "2px solid #555"
+  }
+
+  const inputFunctionOff = () => {
+    switch (textColor.color) {
+      case goldColor.color:
+        document.getElementById("inputThing").style.border = "2px solid #e7bd52"
+        break
+      case purpleColor.color:
+        document.getElementById("inputThing").style.border = "2px solid #392950"
+        break
+      case redColor.color:
+        document.getElementById("inputThing").style.border = "2px solid #c12f2f"
+        break
+      case greenColor.color:
+        document.getElementById("inputThing").style.border = "2px solid #48b74d"
+        break
+    }
+  }
+
+  useLayoutEffect(() => {
+    switch (textColor.color) {
+      case goldColor.color:
+        document.getElementById("inputThing").style.border = "2px solid #e7bd52"
+        break
+      case purpleColor.color:
+        document.getElementById("inputThing").style.border = "2px solid #392950"
+        break
+      case redColor.color:
+        document.getElementById("inputThing").style.border = "2px solid #c12f2f"
+        break
+      case greenColor.color:
+        document.getElementById("inputThing").style.border = "2px solid #48b74d"
+        break
+    }
+  }, [])
+
   return (
     <div>
       <div style={manualVersion}>
@@ -1017,6 +1186,10 @@ function RoundStart({
           <h2 style={textColor}>How many rounds</h2>
           <div className="barDeal">
             <input
+              id="inputThing"
+              onFocus={inputFunction}
+              onBlur={inputFunctionOff}
+              style={inputBorderColor}
               type="number"
               min="1"
               onChange={(e) => updateRounds(e.target.value)}

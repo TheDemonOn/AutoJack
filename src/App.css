@@ -411,7 +411,7 @@ input {
   margin: 8px 0; */
   box-sizing: border-box;
 
-  border: 2px solid red;
+  border: 2px solid rgb(255, 0, 0);
   /* border-bottom: */
   border-style: solid;
   border-radius: 10px;
