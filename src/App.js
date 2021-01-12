@@ -4068,146 +4068,160 @@ function TableOptions({
   }, [autoSplitSwitch])
 
   const [faceUpCard, setFaceUpCard] = useState(dealerCards[0].value)
-
   useEffect(() => {
     console.log(dealerCards)
     console.log(dealerCards[0].value2)
     console.log(dealerCards[1].value2)
-    if (dealerCards[0].value2 === 1 && dealerCards[1].value2 === 1) {
-      console.log("THIS SHOULD TELL IF IT BROKE OR NOT")
-    }
-    console.log(
-      dealerCardTotal < 21 ||
-        (dealerCards[0].value2 === 1 && dealerCards[1].value2 === 1)
-    )
-    if (yourCards2[0]) {
-      // Split has occurred // Also we can double, just not after hitting in a hand
-      console.log("Taking a Split Action") // This does not run right now
-      setAutoSplitSwitch((t) => t + 1)
-    } else if (
-      yourCards.length > 1 &&
-      (dealerCardTotal < 21 ||
-        (dealerCards[0].value2 === 1 && dealerCards[1].value2 === 1)) &&
-      endPlayerTurn === 0 &&
-      yourCards2.length < 1
-    ) {
-      if (automateFlag && bust === 0) {
-        setTimeout(() => {
-          // splitting()
-          // setAutoSplitSwitch((t) => t + 1)
-          // return
-          if (
-            yourCards[0].value === yourCards[1].value &&
-            yourCards.length === 2 &&
-            cardTotal < 22
-          ) {
-            // No split
-            // Pair
-            console.log("PAIR HAND")
-            if (yourCards[1].value === 11) {
-              splitting()
-            } else {
-              switch (yourCards[0].value) {
-                case 2:
-                case 3:
-                  faceUpCard <= 7 ? splitting() : playerHit()
-                  break
-                case 4:
+    console.log(endPlayerTurn)
+    if (endPlayerTurn > 0) {
+      console.log("If this fires does it actually fix anything?")
+    } else {
+      if (dealerCards[0].value2 === 1 && dealerCards[1].value2 === 1) {
+        console.log("THIS SHOULD TELL IF IT BROKE OR NOT")
+      }
+      console.log(
+        dealerCardTotal < 21 ||
+          (dealerCards[0].value2 === 1 && dealerCards[1].value2 === 1)
+      )
+      if (yourCards2[0]) {
+        // Split has occurred // Also we can double, just not after hitting in a hand
+        console.log("Taking a Split Action") // This does not run right now
+        setAutoSplitSwitch((t) => t + 1)
+      } else if (
+        yourCards.length > 1 &&
+        (dealerCardTotal < 21 ||
+          (dealerCards[0].value2 === 1 && dealerCards[1].value2 === 1)) &&
+        endPlayerTurn === 0 &&
+        yourCards2.length < 1
+      ) {
+        if (automateFlag && bust === 0) {
+          setTimeout(() => {
+            // splitting()
+            // setAutoSplitSwitch((t) => t + 1)
+            // return
+            if (
+              yourCards[0].value === yourCards[1].value &&
+              yourCards.length === 2 &&
+              cardTotal < 22
+            ) {
+              // No split
+              // Pair
+              console.log("PAIR HAND")
+              if (yourCards[1].value === 11) {
+                splitting()
+              } else {
+                switch (yourCards[0].value) {
+                  case 2:
+                  case 3:
+                    faceUpCard <= 7 ? splitting() : playerHit()
+                    break
+                  case 4:
+                    faceUpCard === 5 || faceUpCard === 6
+                      ? playerHit()
+                      : splitting()
+                    break
+                  case 5:
+                    faceUpCard <= 9 ? doubleDown() : playerHit()
+                    break
+                  case 6:
+                    faceUpCard <= 6 ? splitting() : playerHit()
+                    break
+                  case 7:
+                    faceUpCard <= 7 ? splitting() : playerHit()
+                    break
+                  case 8:
+                    splitting()
+                    break
+                  case 9:
+                    faceUpCard === 7 || faceUpCard >= 10 ? stand() : splitting()
+                    break
+                  case 10:
+                    stand()
+                    break
+                }
+              }
+            } else if (
+              (yourCards[0].value === 11 || yourCards[1].value === 11) &&
+              yourCards.map((x) => x.value).reduce((x, y) => x + y) <= 21
+            ) {
+              // Soft Hand and Aces not reduced
+              console.log("SOFT HAND")
+              switch (cardTotal) {
+                case 13:
+                case 14:
                   faceUpCard === 5 || faceUpCard === 6
+                    ? doubleDown()
+                    : playerHit()
+                  break
+                case 15:
+                case 16:
+                  faceUpCard <= 3 || faceUpCard >= 7
                     ? playerHit()
-                    : splitting()
+                    : doubleDown()
                   break
-                case 5:
-                  faceUpCard <= 9 ? doubleDown() : playerHit()
+                case 17:
+                  faceUpCard === 2 || faceUpCard >= 7
+                    ? playerHit()
+                    : doubleDown()
                   break
-                case 6:
-                  faceUpCard <= 6 ? splitting() : playerHit()
+                case 18:
+                  if (
+                    faceUpCard === 2 ||
+                    faceUpCard === 7 ||
+                    faceUpCard === 8
+                  ) {
+                    stand()
+                  } else if (faceUpCard <= 6) {
+                    doubleDown()
+                  } else {
+                    playerHit()
+                  }
                   break
-                case 7:
-                  faceUpCard <= 7 ? splitting() : playerHit()
-                  break
-                case 8:
-                  splitting()
-                  break
-                case 9:
-                  faceUpCard === 7 || faceUpCard >= 10 ? stand() : splitting()
-                  break
-                case 10:
+                case 19:
+                case 20:
+                case 21:
                   stand()
                   break
               }
-            }
-          } else if (
-            (yourCards[0].value === 11 || yourCards[1].value === 11) &&
-            yourCards.map((x) => x.value).reduce((x, y) => x + y) <= 21
-          ) {
-            // Soft Hand and Aces not reduced
-            console.log("SOFT HAND")
-            switch (cardTotal) {
-              case 13:
-              case 14:
-                faceUpCard === 5 || faceUpCard === 6
-                  ? doubleDown()
-                  : playerHit()
-                break
-              case 15:
-              case 16:
-                faceUpCard <= 3 || faceUpCard >= 7 ? playerHit() : doubleDown()
-                break
-              case 17:
-                faceUpCard === 2 || faceUpCard >= 7 ? playerHit() : doubleDown()
-                break
-              case 18:
-                if (faceUpCard === 2 || faceUpCard === 7 || faceUpCard === 8) {
-                  stand()
-                } else if (faceUpCard <= 6) {
-                  doubleDown()
-                } else {
+            } else {
+              // Hard Hands
+              console.log("HARD HAND")
+              console.log(cardTotal)
+              switch (cardTotal) {
+                case 5:
+                case 6:
+                case 7:
+                case 8:
                   playerHit()
-                }
-                break
-              case 19:
-              case 20:
-              case 21:
-                stand()
-                break
+                  break
+                case 9:
+                  faceUpCard === 9 || faceUpCard >= 7
+                    ? playerHit()
+                    : doubleDown()
+                  break
+                case 10:
+                  faceUpCard <= 9 ? doubleDown() : playerHit()
+                  break
+                case 11:
+                  faceUpCard <= 10 ? doubleDown() : playerHit()
+                  break
+                case 12:
+                  faceUpCard <= 3 || faceUpCard >= 7 ? playerHit() : stand()
+                  break
+                case 13:
+                case 14:
+                case 15:
+                case 16:
+                  faceUpCard <= 6 ? stand() : playerHit()
+                  break
+                default:
+                  stand()
+              }
             }
-          } else {
-            // Hard Hands
-            console.log("HARD HAND")
-            console.log(cardTotal)
-            switch (cardTotal) {
-              case 5:
-              case 6:
-              case 7:
-              case 8:
-                playerHit()
-                break
-              case 9:
-                faceUpCard === 9 || faceUpCard >= 7 ? playerHit() : doubleDown()
-                break
-              case 10:
-                faceUpCard <= 9 ? doubleDown() : playerHit()
-                break
-              case 11:
-                faceUpCard <= 10 ? doubleDown() : playerHit()
-                break
-              case 12:
-                faceUpCard <= 3 || faceUpCard >= 7 ? playerHit() : stand()
-                break
-              case 13:
-              case 14:
-              case 15:
-              case 16:
-                faceUpCard <= 6 ? stand() : playerHit()
-                break
-              default:
-                stand()
-            }
-          }
-        }, 1500)
+          }, 1500)
+        }
+      } else if (dealerCardTotal === 21) {
       }
-    } else if (dealerCardTotal === 21) {
     }
   }, [cardTotal, cardTotalChangerChecker])
 
