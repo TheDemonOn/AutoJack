@@ -2256,8 +2256,9 @@ function TableOptions({
 
               // It was always a string that got converted from the math operation to a number
 
-              //
-              yourMoneyValue((m) => m + playerBet)
+              // parseInt()
+
+              yourMoneyValue((m) => m + parseInt(playerBet, 10))
               setRoundResultKey("push")
             }
             if (dealerCardTotal < cardTotal) {
@@ -2310,7 +2311,7 @@ function TableOptions({
                 setHandOneWin(1)
               }
             } else {
-              yourMoneyValue((m) => m + playerBet2)
+              yourMoneyValue((m) => m + parseInt(playerBet2, 10))
               setRoundResultKey("push")
               setHandOnePush(1)
             }
@@ -2335,7 +2336,7 @@ function TableOptions({
                 setHandTwoWin(1)
               }
             } else {
-              yourMoneyValue((m) => m + playerBet)
+              yourMoneyValue((m) => m + parseInt(playerBet, 10))
               setRoundResultKey2("push")
               setHandTwoPush(1)
             }
