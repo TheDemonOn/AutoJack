@@ -520,7 +520,6 @@ function StartScreen({
   }
 
   useLayoutEffect(() => {
-    console.log(document.getElementsByClassName("inputThing").length)
     for (
       let i = 0;
       i < document.getElementsByClassName("inputThing").length;
@@ -1287,6 +1286,10 @@ function TableOptions({
   }, [])
 
   useEffect(() => {
+    console.log("//////////////////////////////////")
+  }, [])
+
+  useEffect(() => {
     if (yourCards2[0]) {
       yourCards2.length = 0
       setYourCards2([])
@@ -1407,13 +1410,22 @@ function TableOptions({
   const [doubleSplit, setDoubleSplit] = useState(0)
 
   if (cutPosition === "none") {
-    // If the position is not set then set it to a random point between 70% and 85% of the total deck
+    // If the position is not set then set it to a random point between 70% and 85% of the total deck unless it is a small deck like
+    // 1 or 2 decks in which case it will be 65% to 45%
     // console.log(deck.length)
-    shoeCount(
-      Math.floor(
-        (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) * deck.length
+    if (deck.length <= 104) {
+      shoeCount(
+        Math.floor(
+          (Math.floor(Math.random() * (65 - 45 + 1) + 45) / 100) * deck.length
+        )
       )
-    )
+    } else {
+      shoeCount(
+        Math.floor(
+          (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) * deck.length
+        )
+      )
+    }
   }
 
   // Come back to this and investigate the flag resets for if they are needed
@@ -1452,7 +1464,6 @@ function TableOptions({
     }
 
     if (splitFlag) {
-      console.log("Did this fix the lose money not updating")
       setYourMoneyUpdater((m) => m - playerBet)
     }
 
@@ -1470,7 +1481,6 @@ function TableOptions({
     // because otherwise the cardTotal is set too late for the final evaluation
 
     let end = () => {}
-    console.log(secondHand)
     if (secondHand) {
       end = () => {
         stand2()
@@ -1729,34 +1739,35 @@ function TableOptions({
     // The deck is set to the proper values, but the discard is not set to 0
 
     console.log("Shuffle check")
-    // console.log(cutPosition - discardPile.length)
+
     let together = deck.length + discardPile.length
-    // console.log("Deck + discard: " + together)
-    // console.log("Deck length: " + deck.length)
-    // console.log("discard length: " + discardPile.length)
     let bothLost = dealerHitLostCards.length + doubleLostCards.length
-    // console.log("Number of lost Cards: " + bothLost)
     if (cutPosition - discardPile.length <= 0) {
       console.log("Your Cards: " + yourCards.length)
-      console.log("Dealer card: " + localDealerCards.length)
+      console.log("Dealer cards: " + localDealerCards.length)
 
       discardPile.push(...dealerHitLostCards)
       discardPile.push(...doubleLostCards)
       let placeHolderDeck = [...deck, ...discardPile]
-      console.log(placeHolderDeck.length)
       // let localDiscardPile = discardPile
       console.log("Deck Shuffling")
 
-      shoeCount(
-        Math.floor(
-          (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) *
-            (deck.length + discardPile.length)
+      if (deck.length <= 104) {
+        shoeCount(
+          Math.floor(
+            (Math.floor(Math.random() * (65 - 45 + 1) + 45) / 100) *
+              (deck.length + discardPile.length)
+          )
         )
-      )
+      } else {
+        shoeCount(
+          Math.floor(
+            (Math.floor(Math.random() * (85 - 70 + 1) + 70) / 100) *
+              (deck.length + discardPile.length)
+          )
+        )
+      }
 
-      console.log(yourCards)
-      console.log(localDealerCards)
-      console.log(placeHolderDeck.length)
       deck.length = 0
       deckUpdate(placeHolderDeck)
       discardPile.length = 0
@@ -2139,6 +2150,11 @@ function TableOptions({
 
   // sets yourCards to totalCards
   useEffect(() => {
+    console.log(
+      "Was two Aces drawn initially?: " + yourCards[0].value === 11 &&
+        yourCards[1].value === 11 &&
+        yourCards.length === 2
+    )
     if (
       yourCards[0].value === 11 &&
       yourCards[1].value === 11 &&
@@ -2221,9 +2237,7 @@ function TableOptions({
 
   // What if I just run it once after the second hand if the second hand exists
   useEffect(() => {
-    console.log(dealerCards.length)
     setDrawDelay(dealerCards.length)
-    console.log(delayKey[0])
     if (delayKey[0] > 15) {
       setDelayScaling(1200)
     } else if (delayKey[0] > 5) {
@@ -2243,14 +2257,13 @@ function TableOptions({
         console.log("dealerCardTotal:", dealerCardTotal)
         if (cardTotal > 21 && cardTotal2 === 0) {
           //
-          console.log("What is this")
+          console.log("This should be a bust.")
           return
         } else {
           console.log("Calculating final round result")
           if (yourCards2.length === 0) {
             // If turn has ended and it has not split
             if (dealerCardTotal === cardTotal) {
-              console.log("DID IT BREAK HERE")
               console.log(playerBet)
               // Why is playerBet a string here?
 
@@ -2319,7 +2332,6 @@ function TableOptions({
             if (cardTotal2 > 21) {
               setRoundResultKey2("bust")
             } else if (dealerCardTotal < cardTotal2) {
-              console.log(cardTotal2)
               if (cardTotal2 > 21) {
                 setRoundResultKey2("bust")
               } else {
@@ -2952,8 +2964,8 @@ function TableOptions({
     // When splitHandle Occurs endPlayerTurn needs to have triggered for both of the roundKeys to be created
     // The roundResultKeys are using old state on the first pass
     console.log("Split Handle Starting")
-    console.log(roundResultKey)
-    console.log(roundResultKey2)
+    console.log("Round ResultKey:" + roundResultKey)
+    console.log("Round ResultKey2: " + roundResultKey2)
     switch (roundResultKey) {
       case "push":
         setAnimationComponent(
@@ -2981,10 +2993,7 @@ function TableOptions({
     // This executes twice sometimes
     const switchState = () => {
       // when this executes the round will end
-      console.log("SPLIT SWITCH 2")
-      console.log(roundResultKey2)
-      console.log(yourMoney)
-      console.log(playerBet)
+      console.log("resultKey2 Resolving End")
       // So i can update it manually only if both are positive change; win or push
       switch (roundResultKey2) {
         case "won":
@@ -3070,7 +3079,6 @@ function TableOptions({
     // It seems to just work now
     setYourCards(yourCards2)
 
-    console.log("SECOND HAND 0 (should be first hand)")
     setSecondHand(0)
 
     // I suspect that perhaps I may have to swap the roundResultKey to make things simpler
@@ -3090,12 +3098,8 @@ function TableOptions({
   // Are both roundResultKeys being triggered t the same time?
   useEffect(() => {
     // This is essential  triggers every time
-    console.log("Round Result Keys")
-    console.log(roundResultKey)
-    console.log(roundResultKey2)
-    console.log(drawDelay)
-    console.log(delayScaling)
-    console.log((drawDelay - 2) * delayScaling)
+    console.log("Round ResultKey:" + roundResultKey)
+    console.log("Round ResultKey2: " + roundResultKey2)
 
     setTimeout(() => {
       if (yourCards2.length === 0) {
@@ -3152,8 +3156,8 @@ function TableOptions({
         roundResultKey !== ""
       ) {
         console.log("SPLIT SWITCH 1")
-        console.log(roundResultKey)
-        console.log(roundResultKey2)
+        console.log("Round ResultKey:" + roundResultKey)
+        console.log("Round ResultKey2: " + roundResultKey2)
         console.log(yourMoney)
         switch (roundResultKey) {
           case "won":
@@ -3265,7 +3269,6 @@ function TableOptions({
   // The issue with this i am predicting is what if the outcomeEffect from roundResultKey2 is the same as 1, would this not trigger then?
   useEffect(() => {
     if (outcomeEffect !== "") {
-      console.log("OUTCOME COMPONENT SET")
       setTimeout(outcomeContainer, 1500)
     }
   }, [outcomeEffect])
@@ -3388,7 +3391,6 @@ function TableOptions({
     console.log("YourMoney: " + yourMoney) // This is the money after both have evaluated
     console.log("Displayed: " + yourMoneyUpdater) // This is what is displayed
 
-    console.log(yourMoneyUpdater - prevMoney)
     let thing = yourMoneyUpdater - prevMoney
     if (yourMoneyUpdater - prevMoney && prevMoney) {
       if (yourMoneyUpdater - prevMoney > 0) {
@@ -3421,8 +3423,6 @@ function TableOptions({
   const [bet, setBet] = useState(playerBet)
 
   useEffect(() => {
-    console.log(playerBet)
-    console.log(playerBet2)
     if (secondHand) {
       setBet(playerBet2)
     } else {
@@ -3595,7 +3595,6 @@ function TableOptions({
     // This entire system may be redundant
     if (thirdDealerDisplay.display === "block") {
       // This runs when the dealer starts drawing cards after stand
-      console.log(dealerCards.length)
       setAdditional(0)
       addPlus()
       setInterval(addPlus, 400)
@@ -3639,7 +3638,6 @@ function TableOptions({
 
   const [cardLoad2, setCardLoad2] = useState()
   const load2 = () => {
-    console.log("2")
     setCardLoad2(1)
   }
 
@@ -3667,11 +3665,6 @@ function TableOptions({
 
   const [delayKey, setDelayKey] = useState([])
 
-  // useEffect(() => {
-  //   console.log(duration)
-  //   console.log(delayKey)
-  // }, [duration])
-
   // a function to check how much time has passed to see if a delay is necesesary
 
   const timeCheck = () => {
@@ -3680,8 +3673,6 @@ function TableOptions({
   }
 
   const dealLoad2Check = () => {
-    console.log(duration)
-    console.log(delayKey[0])
     if (delayKey[0]) {
       // delayKey[0] being the time when the first card's animation started playing
       if (duration - delayKey[0] >= 2) {
@@ -3692,16 +3683,12 @@ function TableOptions({
         setTimeout(dealLoad2, 200)
       }
     } else {
-      console.log("There was no delay Key.")
       setTimeout(dealLoad2, 200)
     }
   }
 
   const load2Check = () => {
     // This should load the second card
-    console.log(duration)
-    console.log(delayKey)
-    console.log(delayKey[1])
     if (delayKey[1]) {
       // delayKey[0] being the time when the first card's animation started playing
       if (duration - delayKey[1] >= 2) {
@@ -3712,7 +3699,6 @@ function TableOptions({
         setTimeout(load2, 200)
       }
     } else {
-      console.log("There was no delay Key.")
       setTimeout(load2, 200)
     }
   }
@@ -3725,38 +3711,28 @@ function TableOptions({
     }, 400)
   }
 
-  // const dealerDraw = () => {
-  //   console.log(duration)
-
-  // }
-
   const timer3 = () => {
-    console.log("Timer Check 3")
     if (playerThird !== "//:0") {
       setPlayerTimer(3)
     }
   }
 
   const timer4 = () => {
-    console.log("Timer Check 4")
     if (playerFourth !== "//:0") {
       setPlayerTimer(4)
     }
   }
   const timer5 = () => {
-    console.log("Timer Check 5")
     if (playerFifth !== "//:0") {
       setPlayerTimer(5)
     }
   }
   const timer6 = () => {
-    console.log("Timer Check 6")
     if (playerSixth !== "//:0") {
       setPlayerTimer(6)
     }
   }
   const timer7 = () => {
-    console.log("Timer Check 7")
     if (playerSeventh !== "//:0") {
       setPlayerTimer(7)
     }
@@ -3825,10 +3801,6 @@ function TableOptions({
   const prevCardTotals = PreviousCardTotals([cardTotal, cardTotal2])
 
   useEffect(() => {
-    console.log(
-      prevCardTotals[0] === cardTotal && prevCardTotals[1] === cardTotal2
-    )
-    console.log(yourCards.filter((x) => x.value2 === 1).length == true)
     if (
       prevCardTotals[0] === cardTotal &&
       prevCardTotals[1] === cardTotal2 &&
@@ -3854,11 +3826,11 @@ function TableOptions({
   useEffect(() => {
     // THIS WAS BREAKING BECAUSE HAND 2 USES ITS OWN SEPARATE FUNCTIONS
     // Split has occurred // Also we can double, just not after hitting in a hand
-    console.log(yourCards2.length)
+    console.log("cards2.length: " + yourCards2.length)
     // console.log(autoSplitSwitch) // is 0
-    console.log(dealerCardTotal)
-    console.log(endPlayerTurn)
-    console.log(autoSplitSwitch)
+    console.log("dealerTotal: " + dealerCardTotal)
+    console.log("EndTurn: " + endPlayerTurn)
+    console.log("autoSwitch: " + autoSplitSwitch)
     setAutoSplitSwitch(0)
     if (
       yourCards2.length > 1 &&
@@ -4068,24 +4040,27 @@ function TableOptions({
   }, [autoSplitSwitch])
 
   const [faceUpCard, setFaceUpCard] = useState(dealerCards[0].value)
+
+  // This executes the auto action in non splits.
   useEffect(() => {
-    console.log(dealerCards)
-    console.log(dealerCards[0].value2)
-    console.log(dealerCards[1].value2)
-    console.log(endPlayerTurn)
+    console.log("Endturn: " + endPlayerTurn)
     if (endPlayerTurn > 0) {
       console.log("If this fires does it actually fix anything?")
     } else {
       if (dealerCards[0].value2 === 1 && dealerCards[1].value2 === 1) {
-        console.log("THIS SHOULD TELL IF IT BROKE OR NOT")
+        console.log(
+          "THIS SHOULD TELL IF IT BROKE OR NOT: I think this does nothing"
+        )
       }
       console.log(
-        dealerCardTotal < 21 ||
+        "Is the dealerCardTotal less than 21 or a product of two Aces: " +
+          dealerCardTotal <
+          21 ||
           (dealerCards[0].value2 === 1 && dealerCards[1].value2 === 1)
       )
-      if (yourCards2[0]) {
+      if (yourCards2[0] && endPlayerTurn === 0) {
         // Split has occurred // Also we can double, just not after hitting in a hand
-        console.log("Taking a Split Action") // This does not run right now
+        console.log("Taking a Split Action")
         setAutoSplitSwitch((t) => t + 1)
       } else if (
         yourCards.length > 1 &&
@@ -4099,46 +4074,45 @@ function TableOptions({
             // splitting()
             // setAutoSplitSwitch((t) => t + 1)
             // return
-            if (
+            if (yourCards[0].value2 === 1 && yourCards[1].value2 === 1) {
+              splitting()
+            } else if (
               yourCards[0].value === yourCards[1].value &&
               yourCards.length === 2 &&
               cardTotal < 22
+              // Add a condition for two drawn Aces
             ) {
               // No split
               // Pair
               console.log("PAIR HAND")
-              if (yourCards[1].value === 11) {
-                splitting()
-              } else {
-                switch (yourCards[0].value) {
-                  case 2:
-                  case 3:
-                    faceUpCard <= 7 ? splitting() : playerHit()
-                    break
-                  case 4:
-                    faceUpCard === 5 || faceUpCard === 6
-                      ? playerHit()
-                      : splitting()
-                    break
-                  case 5:
-                    faceUpCard <= 9 ? doubleDown() : playerHit()
-                    break
-                  case 6:
-                    faceUpCard <= 6 ? splitting() : playerHit()
-                    break
-                  case 7:
-                    faceUpCard <= 7 ? splitting() : playerHit()
-                    break
-                  case 8:
-                    splitting()
-                    break
-                  case 9:
-                    faceUpCard === 7 || faceUpCard >= 10 ? stand() : splitting()
-                    break
-                  case 10:
-                    stand()
-                    break
-                }
+              switch (yourCards[0].value) {
+                case 2:
+                case 3:
+                  faceUpCard <= 7 ? splitting() : playerHit()
+                  break
+                case 4:
+                  faceUpCard === 5 || faceUpCard === 6
+                    ? playerHit()
+                    : splitting()
+                  break
+                case 5:
+                  faceUpCard <= 9 ? doubleDown() : playerHit()
+                  break
+                case 6:
+                  faceUpCard <= 6 ? splitting() : playerHit()
+                  break
+                case 7:
+                  faceUpCard <= 7 ? splitting() : playerHit()
+                  break
+                case 8:
+                  splitting()
+                  break
+                case 9:
+                  faceUpCard === 7 || faceUpCard >= 10 ? stand() : splitting()
+                  break
+                case 10:
+                  stand()
+                  break
               }
             } else if (
               (yourCards[0].value === 11 || yourCards[1].value === 11) &&
@@ -4186,7 +4160,7 @@ function TableOptions({
             } else {
               // Hard Hands
               console.log("HARD HAND")
-              console.log(cardTotal)
+              console.log("CardTotal: " + cardTotal)
               switch (cardTotal) {
                 case 5:
                 case 6:
@@ -4773,10 +4747,6 @@ function App() {
   const decrementRounds = () => {
     setRoundsLeft((x) => x - 1)
   }
-
-  // useEffect(() => {
-  //   console.log(roundsLeft)
-  // }, [roundsLeft])
 
   // This is the current/default bodyTheme
   const [bodyTheme, setBodyTheme] = useState("bodyTheme2")
