@@ -3800,17 +3800,30 @@ function TableOptions({
 
   const prevCardTotals = PreviousCardTotals([cardTotal, cardTotal2])
 
+  // Under non-split gameplay the only way a card is drawn and the total does not change is when an Ace is involved.
+  // But for split that is not the case.
   useEffect(() => {
-    if (
-      prevCardTotals[0] === cardTotal &&
-      prevCardTotals[1] === cardTotal2 &&
-      (yourCards.filter((x) => x.value2 === 1).length == true ||
-        yourCards2.filter((x) => x.value2 === 1).length == true)
-    ) {
-      console.log("Card Total stayed the same")
-      setCardTotalChangerChecker((x) => x + 1)
+    if (yourCards2.length === 0) {
+      // non-split
+      if (
+        prevCardTotals[0] === cardTotal &&
+        prevCardTotals[1] === cardTotal2 &&
+        (yourCards.filter((x) => x.value2 === 1).length == true ||
+          yourCards2.filter((x) => x.value2 === 1).length == true)
+      ) {
+        console.log("Card Total stayed the same")
+        setCardTotalChangerChecker((x) => x + 1)
+      } else {
+        console.log("Card Total Changed")
+      }
     } else {
-      console.log("Card Totals Changed")
+      // split
+      if (prevCardTotals[0] === cardTotal && prevCardTotals[1] === cardTotal2) {
+        console.log("Card Totals stayed the same")
+        setCardTotalChangerChecker((x) => x + 1)
+      } else {
+        console.log("Card Totals Changed")
+      }
     }
   }, [yourCards, yourCards2])
 
@@ -3831,6 +3844,7 @@ function TableOptions({
     console.log("dealerTotal: " + dealerCardTotal)
     console.log("EndTurn: " + endPlayerTurn)
     console.log("autoSwitch: " + autoSplitSwitch)
+    console.log("SecondHand?: " + secondHand)
     setAutoSplitSwitch(0)
     if (
       yourCards2.length > 1 &&
