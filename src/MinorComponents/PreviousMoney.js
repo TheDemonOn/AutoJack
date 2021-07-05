@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, {useEffect, useRef } from "react"
 
 // useRef can be used to store a value that does not mutate or reset between unique renders of components allowing a memory
 // of values from previous renders. However once the component is unrendered(unmounted) the value is lost.

@@ -308,7 +308,7 @@ function Home({
       </div>
 
       <div className="one">
-        <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
+        <a href="https://github.com/TheDemonOn/AutoJack" target="_blank" rel="noopener">
           <GithubSVG iconTheme={iconTheme}></GithubSVG>
         </a>
       </div>
@@ -745,28 +745,28 @@ function StartScreen({
       </div>
       <div className="tableWrapper">
         {/* These should go down to 9em for the responsitivity */}
-        <a className="hoverHover" onClick={lowEnd}>
+        <a tabIndex="0" className="hoverHover" onClick={lowEnd}>
           <TableLow
             iconTheme={iconTheme}
             tableIconSize={tableIconSize}
           ></TableLow>
         </a>
 
-        <a className="hoverHover" onClick={midEnd}>
+        <a tabIndex="0" className="hoverHover" onClick={midEnd}>
           <TableMid
             iconTheme={iconTheme}
             tableIconSize={tableIconSize}
           ></TableMid>
         </a>
 
-        <a className="hoverHover" onClick={highEnd}>
+        <a tabIndex="0" className="hoverHover" onClick={highEnd}>
           <TableHigh
             iconTheme={iconTheme}
             tableIconSize={tableIconSize}
           ></TableHigh>
         </a>
 
-        <a className="hoverHover" onClick={custom}>
+        <a tabIndex="0" className="hoverHover" onClick={custom}>
           <TableCustom
             iconTheme={iconTheme}
             tableIconSize={tableIconSize}
@@ -787,6 +787,7 @@ function StartScreen({
         className="one"
         href="https://github.com/TheDemonOn/AutoJack"
         target="_blank"
+        rel="noopener"
       >
         <GithubSVG iconTheme={iconTheme}></GithubSVG>
       </a>
@@ -1224,7 +1225,7 @@ function RoundStart({
           </div>
         </div>
         <div className="one">
-          <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
+          <a href="https://github.com/TheDemonOn/AutoJack" target="_blank" rel="noopener">
             <GithubSVG iconTheme={iconTheme}></GithubSVG>
           </a>
         </div>
@@ -1796,7 +1797,7 @@ function TableOptions({
           "#" +
           new Date().getTime()
     )
-    if (splitCard1Flag != "//:0") {
+    if (splitCard1Flag !== "//:0") {
       console.log("SPLITCARD TRIGGERED")
       setSplitCard1Display({ display: "block" })
       setSplitCard1Alt(
@@ -1826,7 +1827,7 @@ function TableOptions({
           "#" +
           new Date().getTime()
     )
-    if (splitCard2Flag != "//:0") {
+    if (splitCard2Flag !== "//:0") {
       setSplitCard2Display({ display: "block" })
       setSplitCard2Alt(
         cards[cardThemeNum][yourCards2[1].suit][yourCards2[1].card].alt
@@ -2537,7 +2538,7 @@ function TableOptions({
           "#" +
           new Date().getTime()
     )
-    if (playerThirdCardFlag != "//:0") {
+    if (playerThirdCardFlag !== "//:0") {
       setThirdDisplay({ display: "block" })
       setPlayerThirdAlt(
         cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].alt
@@ -2578,7 +2579,7 @@ function TableOptions({
           "#" +
           new Date().getTime()
     )
-    if (playerFourthCardFlag != "//:0") {
+    if (playerFourthCardFlag !== "//:0") {
       setFourthDisplay({ display: "block" })
       setPlayerFourthAlt(
         cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].alt
@@ -2618,7 +2619,7 @@ function TableOptions({
           "#" +
           new Date().getTime()
     )
-    if (playerFifthCardFlag != "//:0") {
+    if (playerFifthCardFlag !== "//:0") {
       setFifthDisplay({ display: "block" })
       setPlayerFifthAlt(
         cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].alt
@@ -2658,7 +2659,7 @@ function TableOptions({
           "#" +
           new Date().getTime()
     )
-    if (playerSixthCardFlag != "//:0") {
+    if (playerSixthCardFlag !== "//:0") {
       setSixthDisplay({ display: "block" })
       setPlayerSixthAlt(
         cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].alt
@@ -2698,7 +2699,7 @@ function TableOptions({
           "#" +
           new Date().getTime()
     )
-    if (playerSeventhCardFlag != "//:0") {
+    if (playerSeventhCardFlag !== "//:0") {
       setSeventhDisplay({ display: "block" })
       setPlayerSeventhAlt(
         cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].alt
@@ -2732,7 +2733,7 @@ function TableOptions({
           "#" +
           new Date().getTime()
     )
-    if (dealerThirdCardFlag != "//:0") {
+    if (dealerThirdCardFlag !== "//:0") {
       setThirdDealerDisplay({ display: "block" })
       setDealerThirdAlt(
         cards[cardThemeNum][localDealerCards[2].suit][localDealerCards[2].card]
@@ -2762,7 +2763,7 @@ function TableOptions({
           "#" +
           new Date().getTime()
     )
-    if (dealerFourthCardFlag != "//:0") {
+    if (dealerFourthCardFlag !== "//:0") {
       setFourthDealerDisplay({ display: "block" })
       setDealerFourthAlt(
         cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].alt
@@ -2794,7 +2795,7 @@ function TableOptions({
             "#" +
             new Date().getTime()
       )
-      if (dealerFifthCardFlag != "//:0") {
+      if (dealerFifthCardFlag !== "//:0") {
         setFifthDealerDisplay({ display: "block" })
         setDealerFifthAlt(
           cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].alt
@@ -2824,7 +2825,7 @@ function TableOptions({
           "#" +
           new Date().getTime()
     )
-    if (dealerSixthCardFlag != "//:0") {
+    if (dealerSixthCardFlag !== "//:0") {
       setSixthDealerDisplay({ display: "block" })
       setDealerSixthAlt(
         cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].alt
@@ -2853,7 +2854,7 @@ function TableOptions({
           "#" +
           new Date().getTime()
     )
-    if (dealerSeventhCardFlag != "//:0") {
+    if (dealerSeventhCardFlag !== "//:0") {
       setSeventhDealerDisplay({ display: "block" })
       setDealerSeventhAlt(
         cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].alt
@@ -3274,7 +3275,7 @@ function TableOptions({
   }, [outcomeEffect])
 
   const [standElement, setStandElement] = useState(
-    <a className="hoverHover" onClick={stand}>
+    <a tabindex="0" className="hoverHover" onClick={stand}>
       <StandIcon iconTheme={iconTheme}></StandIcon>
     </a>
   )
@@ -3284,19 +3285,19 @@ function TableOptions({
     if (endPlayerTurn) {
       console.log("END PLAYER TURN")
       setStandElement(
-        <a>
+        <a tabindex="0">
           <StandIcon iconTheme={iconTheme} opacity={"50%"}></StandIcon>
         </a>
       )
     } else if (bustAnimate) {
       setStandElement(
-        <a>
+        <a tabindex="0">
           <StandIcon iconTheme={iconTheme} opacity={"50%"}></StandIcon>
         </a>
       )
     } else if (bustAnimate === 0) {
       setStandElement(
-        <a className="hoverHover" onClick={stand}>
+        <a tabindex="0" className="hoverHover" onClick={stand}>
           <StandIcon iconTheme={iconTheme}></StandIcon>
         </a>
       )
@@ -3304,7 +3305,7 @@ function TableOptions({
   }, [endPlayerTurn])
 
   const [hitElement, setHitElement] = useState(
-    <a className="hoverHover" onClick={playerHit}>
+    <a tabindex="0" className="hoverHover" onClick={playerHit}>
       <HitIcon iconTheme={iconTheme}></HitIcon>
     </a>
   )
@@ -4726,7 +4727,7 @@ function TableOptions({
         </div>
 
         <div className="one">
-          <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
+          <a href="https://github.com/TheDemonOn/AutoJack" target="_blank" rel="noopener">
             <GithubSVG iconTheme={iconTheme}></GithubSVG>
           </a>
         </div>
@@ -4734,7 +4735,7 @@ function TableOptions({
         <div className="two">{themesButtonToggle}</div>
       </div>
       <div className="one">
-        <a href="https://github.com/TheDemonOn/AutoJack" target="_blank">
+        <a href="https://github.com/TheDemonOn/AutoJack" target="_blank" rel="noopener">
           <GithubSVG iconTheme={iconTheme}></GithubSVG>
         </a>
       </div>
