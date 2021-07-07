@@ -247,9 +247,9 @@ function Home({
   startFlagSwitch,
   autoFlag,
 }) {
-  useEffect(() => {
-    window.history.replaceState("Home", null, "http://localhost:3000/Home")
-  }, [])
+  // useEffect(() => {
+  //   window.history.replaceState("Home", null, "http://localhost:3000/Home")
+  // }, [])
 
   const [subText, setSubText] = useState(
     <h2 style={textColor}>The Blackjack that plays itself.</h2>
@@ -342,19 +342,19 @@ function ThemeSettings({
   displayCard,
   settingsFlagSwitch0,
 }) {
-  useEffect(() => {
-    if (
-      window.history.state === "Home" ||
-      window.history.state === "StartScreen" ||
-      window.history.state === "Automate"
-    ) {
-      window.history.pushState(
-        "ThemeSettings",
-        null,
-        "http://localhost:3000/ThemeSettings"
-      )
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (
+  //     window.history.state === "Home" ||
+  //     window.history.state === "StartScreen" ||
+  //     window.history.state === "Automate"
+  //   ) {
+  //     window.history.pushState(
+  //       "ThemeSettings",
+  //       null,
+  //       "http://localhost:3000/ThemeSettings"
+  //     )
+  //   }
+  // }, [])
 
   return (
     <div>
@@ -430,13 +430,13 @@ function StartScreen({
   maxBet,
   minBet,
 }) {
-  useEffect(() => {
-    window.history.pushState(
-      "StartScreen",
-      null,
-      "http://localhost:3000/StartScreen"
-    )
-  }, [])
+  // useEffect(() => {
+  //   window.history.pushState(
+  //     "StartScreen",
+  //     null,
+  //     "http://localhost:3000/StartScreen"
+  //   )
+  // }, [])
 
   useEffect(() => {
     theDeckCountValue(8)
@@ -825,13 +825,13 @@ function RoundStart({
   roundsLeft,
   updateRounds,
 }) {
-  useEffect(() => {
-    window.history.pushState(
-      "RoundStart",
-      null,
-      "http://localhost:3000/RoundStart"
-    )
-  }, [])
+  // useEffect(() => {
+  //   window.history.pushState(
+  //     "RoundStart",
+  //     null,
+  //     "http://localhost:3000/RoundStart"
+  //   )
+  // }, [])
 
   const auto = {
     display: "none",
@@ -1282,9 +1282,9 @@ function TableOptions({
   decrementRounds,
   cancelAuto,
 }) {
-  useEffect(() => {
-    window.history.replaceState("Table", null, "http://localhost:3000/Table")
-  }, [])
+  // useEffect(() => {
+  //   window.history.replaceState("Table", null, "http://localhost:3000/Table")
+  // }, [])
 
   useEffect(() => {
     console.log("//////////////////////////////////")
@@ -5630,28 +5630,28 @@ function App() {
 
   // Need to figure out why I can't go forward to roundStart when I can go back
 
-  window.onpopstate = () => {
-    // console.log(window.history.state)
-    if (discardPile.length) {
-    } else {
-      switch (window.history.state) {
-        case "Home":
-          setHomeFlag(1)
-          setSettingsFlag(0)
-          setStartFlag(1)
-          break
-        case "ThemeSettings":
-          console.log("setting flag 1")
-          setSettingsFlag(1)
-          break
-        case "StartScreen":
-          setHomeFlag(0)
-          setSettingsFlag(0)
-          setStartFlag(1)
-          break
-      }
-    }
-  }
+  // window.onpopstate = () => {
+  //   // console.log(window.history.state)
+  //   if (discardPile.length) {
+  //   } else {
+  //     switch (window.history.state) {
+  //       case "Home":
+  //         setHomeFlag(1)
+  //         setSettingsFlag(0)
+  //         setStartFlag(1)
+  //         break
+  //       case "ThemeSettings":
+  //         console.log("setting flag 1")
+  //         setSettingsFlag(1)
+  //         break
+  //       case "StartScreen":
+  //         setHomeFlag(0)
+  //         setSettingsFlag(0)
+  //         setStartFlag(1)
+  //         break
+  //     }
+  //   }
+  // }
 
   return (
     <LoadOrder
