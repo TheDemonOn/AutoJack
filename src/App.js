@@ -868,7 +868,7 @@ function RoundStart({
   }, [])
 
   useEffect(() => {
-    if (roundsLeft > 1) {
+    if (roundsLeft > 0) {
       deal()
     }
   }, [])
@@ -1078,6 +1078,21 @@ function RoundStart({
     }
   }, [])
 
+  // let autoInput = document.getElementById('inputThing')
+
+  let roundSubmit = (e) => {
+    if (e.key === "Enter") {
+      deal()
+    }
+  }
+
+  useEffect(() => {
+    document.getElementById('inputThing').addEventListener("keydown", roundSubmit)
+    return () => {
+      document.getElementById('inputThing').removeEventListener("keydown", roundSubmit)
+    }
+  }, [])
+
   return (
     <div>
       <div className="tableBack">
@@ -1221,8 +1236,6 @@ function RoundStart({
               onBlur={inputFunctionOff}
               style={inputBorderColor}
               type="text"
-              // min="1"
-              // max="3"
               maxLength="2"
               placeholder="1"
               onChange={(e) => updateRounds(e.target.value)}
@@ -3286,7 +3299,7 @@ function TableOptions({
   }, [outcomeEffect])
 
   const [standElement, setStandElement] = useState(
-    <a tabindex="0" className="hoverHover" onClick={stand}>
+    <a tabIndex="0" className="hoverHover" onClick={stand}>
       <StandIcon iconTheme={iconTheme}></StandIcon>
     </a>
   )
@@ -3296,19 +3309,19 @@ function TableOptions({
     if (endPlayerTurn) {
       console.log("END PLAYER TURN")
       setStandElement(
-        <a tabindex="0">
+        <a tabIndex="0">
           <StandIcon iconTheme={iconTheme} opacity={"50%"}></StandIcon>
         </a>
       )
     } else if (bustAnimate) {
       setStandElement(
-        <a tabindex="0">
+        <a tabIndex="0">
           <StandIcon iconTheme={iconTheme} opacity={"50%"}></StandIcon>
         </a>
       )
     } else if (bustAnimate === 0) {
       setStandElement(
-        <a tabindex="0" className="hoverHover" onClick={stand}>
+        <a tabIndex="0" className="hoverHover" onClick={stand}>
           <StandIcon iconTheme={iconTheme}></StandIcon>
         </a>
       )
@@ -3316,7 +3329,7 @@ function TableOptions({
   }, [endPlayerTurn])
 
   const [hitElement, setHitElement] = useState(
-    <a tabindex="0" className="hoverHover" onClick={playerHit}>
+    <a tabIndex="0" className="hoverHover" onClick={playerHit}>
       <HitIcon iconTheme={iconTheme}></HitIcon>
     </a>
   )
@@ -4769,9 +4782,10 @@ function TableOptions({
 }
 
 function App() {
-  const [roundsLeft, setRoundsLeft] = useState(1)
+  const [roundsLeft, setRoundsLeft] = useState(0)
 
   const updateRounds = (rounds) => {
+    console.log(rounds)
     setRoundsLeft(rounds)
   }
 
