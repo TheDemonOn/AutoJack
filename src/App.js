@@ -45,6 +45,7 @@ function LoadOrder({
   yourMoneyValue,
   playerDeal,
   startFlagSwitch,
+  startFlagSwitch1,
   playerHit,
   roundStartFlagSwitch,
   roundStartFlag,
@@ -162,6 +163,7 @@ function LoadOrder({
     return (
       <RoundStart
         playerDeal={playerDeal}
+        startFlagSwitch1={startFlagSwitch1}
         roundStartFlagSwitch={roundStartFlagSwitch}
         playerBet={playerBet}
         playerBetUpdate={playerBetUpdate}
@@ -801,6 +803,8 @@ function StartScreen({
 
 function RoundStart({
   playerDeal,
+  startFlagSwitch,
+  startFlagSwitch1,
   roundStartFlagSwitch,
   playerBet,
   playerBetUpdate,
@@ -1076,6 +1080,13 @@ function RoundStart({
 
   return (
     <div>
+      <div className="tableBack">
+        <Button
+          buttonTheme={buttonTheme}
+          content={"Back"}
+          func={startFlagSwitch1}
+        ></Button>
+      </div>
       <div style={manualVersion}>
         <div className="block">
           <div className="remainingCards">
@@ -2427,7 +2438,7 @@ function TableOptions({
     ) {
       setSplitElement(
         // Normal split element
-        <a className="hoverHover" onClick={splitting}>
+        <a className="hoverHover">
           <SplitIcon iconTheme={iconTheme}></SplitIcon>
         </a>
       )
@@ -4054,7 +4065,7 @@ function TableOptions({
     }
   }, [autoSplitSwitch])
 
-  const [faceUpCard, setFaceUpCard] = useState(dealerCards[0].value)
+  const [faceUpCard, setFaceUpCard] = useState(dealerCards[1].value)
 
   // This executes the auto action in non splits.
   useEffect(() => {
@@ -4228,7 +4239,16 @@ function TableOptions({
     }
   }, [])
 
-  // cancelAuto
+  const [hiddedCard, setHiddedCard] = useState(process.env.PUBLIC_URL + cards[cardThemeNum].back + "#" + new Date().getTime())
+
+  const [dynamicCardTotal, setdynamicCardTotal] = useState(dealerCards[1].value)
+
+  useEffect(() => {
+    if (endPlayerTurn === 1) {
+      setHiddedCard(dealerCardOne)
+      setdynamicCardTotal(dealerCardTotal)
+    }
+  }, [endPlayerTurn])
 
   return (
     <div>
@@ -4250,7 +4270,7 @@ function TableOptions({
           </div>
 
           <div className="dealerTotal">
-            <p style={textColor}>{dealerCardTotal}</p>
+            <p style={textColor}>{dynamicCardTotal}</p>
           </div>
           <div className="playerTotal">
             <p style={textColor}>{cardTotal}</p>
@@ -4275,7 +4295,7 @@ function TableOptions({
                 className="firstCard"
               >
                 <img
-                  src={process.env.PUBLIC_URL + dealerCardOne}
+                  src={process.env.PUBLIC_URL + hiddedCard}
                   onLoad={timeCheck}
                   height="199.6488px"
                   width="136.4688px"
@@ -4749,7 +4769,7 @@ function TableOptions({
 }
 
 function App() {
-  const [roundsLeft, setRoundsLeft] = useState(0)
+  const [roundsLeft, setRoundsLeft] = useState(1)
 
   const updateRounds = (rounds) => {
     setRoundsLeft(rounds)
@@ -5473,6 +5493,9 @@ function App() {
   const startFlagSwitch = () => {
     setStartFlag(0)
   }
+  const startFlagSwitch1 = () => {
+    setStartFlag(1)
+  }
   const [roundStartFlag, setRoundStartFlag] = useState(1)
   const roundStartFlagSwitch = () => {
     setRoundStartFlag(0)
@@ -5656,6 +5679,7 @@ function App() {
   return (
     <LoadOrder
       startFlagSwitch={startFlagSwitch}
+      startFlagSwitch1={startFlagSwitch1}
       startFlag={startFlag}
       theDeckCountValue={theDeckCountValue}
       otherPlayersValue={otherPlayersValue}

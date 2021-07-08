@@ -216,6 +216,7 @@ const cards = {
         alt: 'King of spades.',
       },
     },
+    back: './Cards/CardBacks/back1.png',
   },
   t2: {
     club: {
@@ -434,6 +435,7 @@ const cards = {
         alt: 'King of spades.',
       },
     },
+    back: './Cards/CardBacks/back2.png',
   },
   t3: {
     club: {
@@ -652,6 +654,7 @@ const cards = {
         alt: 'King of spades.',
       },
     },
+    back: './Cards/CardBacks/back3.png',
   },
   t4: {
     club: {
@@ -870,6 +873,7 @@ const cards = {
         alt: 'King of spades.',
       },
     },
+    back: './Cards/CardBacks/back4.png',
   },
 }
 
