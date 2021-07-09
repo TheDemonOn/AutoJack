@@ -4653,20 +4653,20 @@ function App() {
 	// Format: object; This should stay consistent
 	const [buttonTheme, setButtonTheme] = useState({
 		...buttonSettings,
-		...purpleTheme,
+		...goldTheme,
 	})
 
 	const [altButtonTheme, setAltButtonTheme] = useState({
 		...altButtonSettings,
-		...purpleTheme,
+		...goldTheme,
 	})
 
 	// Need to add the change to the function theme change
 	const [altButtonThemeActive, setAltButtonThemeActive] = useState({
 		...altButtonSettings,
-		...purpleTheme,
-		backgroundColor: "#DBD8DF",
-		color: "#392950",
+		...goldTheme,
+		backgroundColor: "#e7bd52",
+		color: "rgba(40, 47, 93, 1)",
 	})
 
 	// Format: string
