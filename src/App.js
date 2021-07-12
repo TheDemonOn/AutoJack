@@ -1,37 +1,37 @@
-import React, { useState, useEffect, useLayoutEffect } from "react"
-import "./App.css"
-import Button from "./MinorComponents/Button.js"
-import GithubSVG from "./MinorComponents/GithubSVG.js"
-import ThemesIcon from "./MinorComponents/ThemesIcon.js"
-import HitIcon from "./MinorComponents/HitIcon.js"
-import StandIcon from "./MinorComponents/StandIcon.js"
-import DoubleIcon from "./MinorComponents/DoubleIcon.js"
-import SplitIcon from "./MinorComponents/SplitIcon.js"
-import TableLow from "./MinorComponents/TableLow.js"
-import TableMid from "./MinorComponents/TableMid.js"
-import TableHigh from "./MinorComponents/TableHigh.js"
-import TableCustom from "./MinorComponents/TableCustom.js"
-import PreviousMoney from "./MinorComponents/PreviousMoney.js"
-import PreviousCardTotals from "./MinorComponents/PreviousCardTotals.js"
-import PreviousBet from "./MinorComponents/PreviousBet.js"
-import AddAnimation from "./MinorComponents/AddAnimation.js"
+import React, { useState, useEffect, useLayoutEffect } from 'react'
+import './App.css'
+import Button from './MinorComponents/Button.js'
+import GithubSVG from './MinorComponents/GithubSVG.js'
+import ThemesIcon from './MinorComponents/ThemesIcon.js'
+import HitIcon from './MinorComponents/HitIcon.js'
+import StandIcon from './MinorComponents/StandIcon.js'
+import DoubleIcon from './MinorComponents/DoubleIcon.js'
+import SplitIcon from './MinorComponents/SplitIcon.js'
+import TableLow from './MinorComponents/TableLow.js'
+import TableMid from './MinorComponents/TableMid.js'
+import TableHigh from './MinorComponents/TableHigh.js'
+import TableCustom from './MinorComponents/TableCustom.js'
+import PreviousMoney from './MinorComponents/PreviousMoney.js'
+import PreviousCardTotals from './MinorComponents/PreviousCardTotals.js'
+import PreviousBet from './MinorComponents/PreviousBet.js'
+import AddAnimation from './MinorComponents/AddAnimation.js'
 
-import Outcome from "./MinorComponents/Outcome.js"
+import Outcome from './MinorComponents/Outcome.js'
 
-import Button_Theme1 from "./Images/Button_Theme1.png"
-import Button_Theme2 from "./Images/Button_Theme2.png"
-import Button_Theme3 from "./Images/Button_Theme3.png"
-import Button_Theme4 from "./Images/Button_Theme4.png"
-import cards from "./MinorComponents/cards.js"
-import chip1 from "./Images/chip1.png"
-import chip5 from "./Images/chip5.png"
-import chip10 from "./Images/chip10.png"
-import chip25 from "./Images/chip25.png"
-import chip50 from "./Images/chip50.png"
-import chip100 from "./Images/chip100.png"
-import chip500 from "./Images/chip500.png"
+import Button_Theme1 from './Images/Button_Theme1.png'
+import Button_Theme2 from './Images/Button_Theme2.png'
+import Button_Theme3 from './Images/Button_Theme3.png'
+import Button_Theme4 from './Images/Button_Theme4.png'
+import cards from './MinorComponents/cards.js'
+import chip1 from './Images/chip1.png'
+import chip5 from './Images/chip5.png'
+import chip10 from './Images/chip10.png'
+import chip25 from './Images/chip25.png'
+import chip50 from './Images/chip50.png'
+import chip100 from './Images/chip100.png'
+import chip500 from './Images/chip500.png'
 
-import { motion } from "framer-motion"
+import { motion } from 'framer-motion'
 
 // Important thing perhaps is don't setState in a useEffect that I intend to use for a calculation in the same cycle
 
@@ -284,12 +284,12 @@ function Home({
 			{subText}
 			<div className="buttonWrapper">
 				<div id="manual">
-					<Button buttonTheme={buttonTheme} content={"Manual"} func={homeFlagSwitch}></Button>
+					<Button buttonTheme={buttonTheme} content={'Manual'} func={homeFlagSwitch}></Button>
 				</div>
 				<div id="automated">
 					<Button
 						buttonTheme={buttonTheme}
-						content={"Automated"}
+						content={'Automated'}
 						func={automateFlagSwitch}
 					></Button>
 				</div>
@@ -386,7 +386,7 @@ function ThemeSettings({
 				</div>
 			</div>
 			<div id="three">
-				<Button buttonTheme={buttonTheme} content={"Back"} func={settingsFlagSwitch0}></Button>
+				<Button buttonTheme={buttonTheme} content={'Back'} func={settingsFlagSwitch0}></Button>
 			</div>
 		</div>
 	)
@@ -422,7 +422,7 @@ function StartScreen({
 
 	const [deckSize, setDeckSize] = useState(8)
 
-	const [tableIconSize, setTableIconSize] = useState("130px")
+	const [tableIconSize, setTableIconSize] = useState('130px')
 
 	const [parameterSection, setParameterSection] = useState(
 		<div className="parameterBox">
@@ -437,67 +437,67 @@ function StartScreen({
 	)
 
 	const goldColor = {
-		color: "#e7bd52",
+		color: '#e7bd52',
 	}
 
 	const purpleColor = {
-		color: "#392950",
+		color: '#392950',
 	}
 
 	const redColor = {
-		color: "#c12f2f",
+		color: '#c12f2f',
 	}
 
 	const greenColor = {
-		color: "#48b74d",
+		color: '#48b74d',
 	}
 
 	const inputFunction0 = () => {
-		document.getElementsByClassName("inputThing")[0].style.border = "2px solid #555"
+		document.getElementsByClassName('inputThing')[0].style.border = '2px solid #555'
 	}
 	const inputFunction1 = () => {
-		document.getElementsByClassName("inputThing")[1].style.border = "2px solid #555"
+		document.getElementsByClassName('inputThing')[1].style.border = '2px solid #555'
 	}
 	const inputFunction2 = () => {
-		document.getElementsByClassName("inputThing")[2].style.border = "2px solid #555"
+		document.getElementsByClassName('inputThing')[2].style.border = '2px solid #555'
 	}
 	const inputFunction3 = () => {
-		document.getElementsByClassName("inputThing")[3].style.border = "2px solid #555"
+		document.getElementsByClassName('inputThing')[3].style.border = '2px solid #555'
 	}
 
 	const inputFunctionOff = () => {
-		for (let i = 0; i < document.getElementsByClassName("inputThing").length; i++) {
+		for (let i = 0; i < document.getElementsByClassName('inputThing').length; i++) {
 			switch (textColor.color) {
 				case goldColor.color:
-					document.getElementsByClassName("inputThing")[i].style.border = "2px solid #e7bd52"
+					document.getElementsByClassName('inputThing')[i].style.border = '2px solid #e7bd52'
 					break
 				case purpleColor.color:
-					document.getElementsByClassName("inputThing")[i].style.border = "2px solid #392950"
+					document.getElementsByClassName('inputThing')[i].style.border = '2px solid #392950'
 					break
 				case redColor.color:
-					document.getElementsByClassName("inputThing")[i].style.border = "2px solid #c12f2f"
+					document.getElementsByClassName('inputThing')[i].style.border = '2px solid #c12f2f'
 					break
 				case greenColor.color:
-					document.getElementsByClassName("inputThing")[i].style.border = "2px solid #48b74d"
+					document.getElementsByClassName('inputThing')[i].style.border = '2px solid #48b74d'
 					break
 			}
 		}
 	}
 
 	useLayoutEffect(() => {
-		for (let i = 0; i < document.getElementsByClassName("inputThing").length; i++) {
+		for (let i = 0; i < document.getElementsByClassName('inputThing').length; i++) {
 			switch (textColor.color) {
 				case goldColor.color:
-					document.getElementsByClassName("inputThing")[i].style.border = "2px solid #e7bd52"
+					document.getElementsByClassName('inputThing')[i].style.border = '2px solid #e7bd52'
 					break
 				case purpleColor.color:
-					document.getElementsByClassName("inputThing")[i].style.border = "2px solid #392950"
+					document.getElementsByClassName('inputThing')[i].style.border = '2px solid #392950'
 					break
 				case redColor.color:
-					document.getElementsByClassName("inputThing")[i].style.border = "2px solid #c12f2f"
+					document.getElementsByClassName('inputThing')[i].style.border = '2px solid #c12f2f'
 					break
 				case greenColor.color:
-					document.getElementsByClassName("inputThing")[i].style.border = "2px solid #48b74d"
+					document.getElementsByClassName('inputThing')[i].style.border = '2px solid #48b74d'
 					break
 			}
 		}
@@ -520,8 +520,8 @@ function StartScreen({
 		theDeckCountValue(8)
 		yourMoneyValue(500)
 		playerBetUpdate(5)
-		betRange("min", 5)
-		betRange("max", 100)
+		betRange('min', 5)
+		betRange('max', 100)
 	}
 
 	const midEnd = () => {
@@ -539,8 +539,8 @@ function StartScreen({
 		theDeckCountValue(6)
 		yourMoneyValue(2000)
 		playerBetUpdate(20)
-		betRange("min", 20)
-		betRange("max", 500)
+		betRange('min', 20)
+		betRange('max', 500)
 	}
 
 	const highEnd = () => {
@@ -564,15 +564,15 @@ function StartScreen({
 		theDeckCountValue(4)
 		yourMoneyValue(10000)
 		playerBetUpdate(100)
-		betRange("min", 100)
-		betRange("max", 10000)
+		betRange('min', 100)
+		betRange('max', 10000)
 	}
 
 	const [deckValue, setDeckValue] = useState()
 
 	useEffect(() => {
 		if (minBet < 1) {
-			betRange("min", 0)
+			betRange('min', 0)
 		}
 	}, [minBet])
 
@@ -581,8 +581,8 @@ function StartScreen({
 		theDeckCountValue(1)
 		yourMoneyValue(100)
 		playerBetUpdate(5)
-		betRange("min", 5)
-		betRange("max", 100)
+		betRange('min', 5)
+		betRange('max', 100)
 
 		setParameterSection(
 			<div className="parameterBox">
@@ -615,7 +615,7 @@ function StartScreen({
 							placeholder="5"
 							onFocus={inputFunction1}
 							onBlur={inputFunctionOff}
-							onChange={(e) => betRange("min", e.target.value)}
+							onChange={(e) => betRange('min', e.target.value)}
 						></input>
 					</div>
 					<div>
@@ -627,7 +627,7 @@ function StartScreen({
 							placeholder="100"
 							onFocus={inputFunction2}
 							onBlur={inputFunctionOff}
-							onChange={(e) => betRange("max", e.target.value)}
+							onChange={(e) => betRange('max', e.target.value)}
 						></input>
 					</div>
 					<div>
@@ -650,7 +650,7 @@ function StartScreen({
 	useEffect(() => {
 		// If the custom min is set higher than the max, update the max to be the min
 		if (minBet > maxBet) {
-			betRange("max", minBet)
+			betRange('max', minBet)
 		}
 	}, [minBet])
 
@@ -669,29 +669,29 @@ function StartScreen({
 	useLayoutEffect(() => {
 		console.log(windowFlag)
 		if (window.innerWidth <= 750) {
-			setTableIconSize("90px")
+			setTableIconSize('90px')
 		} else {
-			setTableIconSize("130px")
+			setTableIconSize('130px')
 		}
 	}, [windowFlag])
 
 	const updateSize = () => {
 		setWindowFlag((prevCount) => prevCount + 1)
-		window.removeEventListener("resize", updateSize)
-		window.setTimeout(window.addEventListener("resize", updateSize), 1000)
+		window.removeEventListener('resize', updateSize)
+		window.setTimeout(window.addEventListener('resize', updateSize), 1000)
 	}
 
 	useEffect(() => {
-		window.addEventListener("resize", updateSize)
+		window.addEventListener('resize', updateSize)
 		return () => {
-			window.removeEventListener("resize", updateSize)
+			window.removeEventListener('resize', updateSize)
 		}
 	}, [])
 
 	return (
 		<div>
 			<div className="tableBack">
-				<Button buttonTheme={buttonTheme} content={"Back"} func={startAndUpdateDeck}></Button>
+				<Button buttonTheme={buttonTheme} content={'Back'} func={startAndUpdateDeck}></Button>
 			</div>
 			<div className="secondTitle">
 				<h6 style={textColor}>Autojack</h6>
@@ -718,7 +718,7 @@ function StartScreen({
 			{parameterSection}
 
 			<div className="tablePlay">
-				<Button buttonTheme={buttonTheme} content={"Play"} func={startFlagSwitch}></Button>
+				<Button buttonTheme={buttonTheme} content={'Play'} func={startFlagSwitch}></Button>
 			</div>
 			<a
 				className="one"
@@ -773,7 +773,7 @@ function RoundStart({
 	// }, [])
 
 	const auto = {
-		display: "none",
+		display: 'none',
 	}
 
 	const [automatedVersion, setAutomatedVersion] = useState(auto)
@@ -862,64 +862,64 @@ function RoundStart({
 
 	const one = () => {
 		if (activeState === altButtonThemeActive) {
-			playerBetModify("add", 1)
+			playerBetModify('add', 1)
 			rangeCheckMax(1)
 		} else {
-			playerBetModify("subtract", 1)
+			playerBetModify('subtract', 1)
 			rangeCheckMin(1)
 		}
 	}
 	const five = () => {
 		if (activeState === altButtonThemeActive) {
-			playerBetModify("add", 5)
+			playerBetModify('add', 5)
 			rangeCheckMax(5)
 		} else {
-			playerBetModify("subtract", 5)
+			playerBetModify('subtract', 5)
 			rangeCheckMin(5)
 		}
 	}
 	const ten = () => {
 		if (activeState === altButtonThemeActive) {
-			playerBetModify("add", 10)
+			playerBetModify('add', 10)
 			rangeCheckMax(10)
 		} else {
-			playerBetModify("subtract", 10)
+			playerBetModify('subtract', 10)
 			rangeCheckMin(10)
 		}
 	}
 	const twentyFive = () => {
 		if (activeState === altButtonThemeActive) {
-			playerBetModify("add", 25)
+			playerBetModify('add', 25)
 			rangeCheckMax(25)
 		} else {
-			playerBetModify("subtract", 25)
+			playerBetModify('subtract', 25)
 			rangeCheckMin(25)
 		}
 	}
 	const fifty = () => {
 		if (activeState === altButtonThemeActive) {
-			playerBetModify("add", 50)
+			playerBetModify('add', 50)
 			rangeCheckMax(50)
 		} else {
-			playerBetModify("subtract", 50)
+			playerBetModify('subtract', 50)
 			rangeCheckMin(50)
 		}
 	}
 	const oneHundred = () => {
 		if (activeState === altButtonThemeActive) {
-			playerBetModify("add", 100)
+			playerBetModify('add', 100)
 			rangeCheckMax(100)
 		} else {
-			playerBetModify("subtract", 100)
+			playerBetModify('subtract', 100)
 			rangeCheckMin(100)
 		}
 	}
 	const fiveHundred = () => {
 		if (activeState === altButtonThemeActive) {
-			playerBetModify("add", 500)
+			playerBetModify('add', 500)
 			rangeCheckMax(500)
 		} else {
-			playerBetModify("subtract", 500)
+			playerBetModify('subtract', 500)
 			rangeCheckMin(500)
 		}
 	}
@@ -929,23 +929,23 @@ function RoundStart({
 	// Sets card back
 	useEffect(() => {
 		switch (cardThemeNum) {
-			case "t1":
-				setCardBack("./Cards/CardBacks/back1.png")
+			case 't1':
+				setCardBack('./Cards/CardBacks/back1.png')
 				break
-			case "t2":
-				setCardBack("./Cards/CardBacks/back2.png")
+			case 't2':
+				setCardBack('./Cards/CardBacks/back2.png')
 				break
-			case "t3":
-				setCardBack("./Cards/CardBacks/back3.png")
+			case 't3':
+				setCardBack('./Cards/CardBacks/back3.png')
 				break
-			case "t4":
-				setCardBack("./Cards/CardBacks/back4.png")
+			case 't4':
+				setCardBack('./Cards/CardBacks/back4.png')
 				break
 		}
 	}, [])
 
 	const [inputBorderColor, setInputBorderColor] = useState({
-		border: "2px solid rgb(0, 255, 0)",
+		border: '2px solid rgb(0, 255, 0)',
 	})
 
 	// const purpleTheme = {
@@ -960,38 +960,38 @@ function RoundStart({
 	// })
 
 	const goldColor = {
-		color: "#e7bd52",
+		color: '#e7bd52',
 	}
 
 	const purpleColor = {
-		color: "#392950",
+		color: '#392950',
 	}
 
 	const redColor = {
-		color: "#c12f2f",
+		color: '#c12f2f',
 	}
 
 	const greenColor = {
-		color: "#48b74d",
+		color: '#48b74d',
 	}
 
 	const inputFunction = () => {
-		document.getElementById("inputThing").style.border = "2px solid #555"
+		document.getElementById('inputThing').style.border = '2px solid #555'
 	}
 
 	const inputFunctionOff = () => {
 		switch (textColor.color) {
 			case goldColor.color:
-				document.getElementById("inputThing").style.border = "2px solid #e7bd52"
+				document.getElementById('inputThing').style.border = '2px solid #e7bd52'
 				break
 			case purpleColor.color:
-				document.getElementById("inputThing").style.border = "2px solid #392950"
+				document.getElementById('inputThing').style.border = '2px solid #392950'
 				break
 			case redColor.color:
-				document.getElementById("inputThing").style.border = "2px solid #c12f2f"
+				document.getElementById('inputThing').style.border = '2px solid #c12f2f'
 				break
 			case greenColor.color:
-				document.getElementById("inputThing").style.border = "2px solid #48b74d"
+				document.getElementById('inputThing').style.border = '2px solid #48b74d'
 				break
 		}
 	}
@@ -999,16 +999,16 @@ function RoundStart({
 	useLayoutEffect(() => {
 		switch (textColor.color) {
 			case goldColor.color:
-				document.getElementById("inputThing").style.border = "2px solid #e7bd52"
+				document.getElementById('inputThing').style.border = '2px solid #e7bd52'
 				break
 			case purpleColor.color:
-				document.getElementById("inputThing").style.border = "2px solid #392950"
+				document.getElementById('inputThing').style.border = '2px solid #392950'
 				break
 			case redColor.color:
-				document.getElementById("inputThing").style.border = "2px solid #c12f2f"
+				document.getElementById('inputThing').style.border = '2px solid #c12f2f'
 				break
 			case greenColor.color:
-				document.getElementById("inputThing").style.border = "2px solid #48b74d"
+				document.getElementById('inputThing').style.border = '2px solid #48b74d'
 				break
 		}
 	}, [])
@@ -1016,22 +1016,22 @@ function RoundStart({
 	// let autoInput = document.getElementById('inputThing')
 
 	let roundSubmit = (e) => {
-		if (e.key === "Enter") {
+		if (e.key === 'Enter') {
 			deal()
 		}
 	}
 
 	useEffect(() => {
-		document.getElementById("inputThing").addEventListener("keydown", roundSubmit)
+		document.getElementById('inputThing').addEventListener('keydown', roundSubmit)
 		return () => {
-			document.getElementById("inputThing").removeEventListener("keydown", roundSubmit)
+			document.getElementById('inputThing').removeEventListener('keydown', roundSubmit)
 		}
 	}, [])
 
 	return (
 		<div>
 			<div className="tableBack">
-				<Button buttonTheme={buttonTheme} content={"Back"} func={startFlagSwitch1}></Button>
+				<Button buttonTheme={buttonTheme} content={'Back'} func={startFlagSwitch1}></Button>
 			</div>
 			<div style={manualVersion}>
 				<div className="block">
@@ -1094,7 +1094,7 @@ function RoundStart({
 								buttonTheme={activeStateOpposite}
 								func={switchActive}
 								ID="minus"
-								content={"−"}
+								content={'−'}
 							></Button>
 
 							<div className="bet">
@@ -1109,14 +1109,14 @@ function RoundStart({
 								buttonTheme={activeState}
 								func={switchActiveBack}
 								ID="plus"
-								content={"+"}
+								content={'+'}
 							></Button>
 
 							<Button
 								buttonTheme={buttonTheme}
 								func={deal}
-								content={"Deal"}
-								ID={"mobileDeal"}
+								content={'Deal'}
+								ID={'mobileDeal'}
 							></Button>
 						</div>
 					</div>
@@ -1139,8 +1139,8 @@ function RoundStart({
 						<Button
 							buttonTheme={buttonTheme}
 							func={deal}
-							content={"Deal"}
-							ID={"mobileDeal"}
+							content={'Deal'}
+							ID={'mobileDeal'}
 						></Button>
 					</div>
 				</div>
@@ -1156,6 +1156,17 @@ function RoundStart({
 					</a>
 				</div>
 			</div>
+			<a
+				className="one"
+				href="https://github.com/TheDemonOn/AutoJack"
+				target="_blank"
+				rel="noopener"
+			>
+				<GithubSVG iconTheme={iconTheme}></GithubSVG>
+			</a>
+			<a className="two hoverHover" onClick={settingsFlagSwitch}>
+				<ThemesIcon iconTheme={iconTheme}></ThemesIcon>
+			</a>
 		</div>
 	)
 }
@@ -1207,14 +1218,14 @@ function TableOptions({
 	// }, [])
 
 	useEffect(() => {
-		console.log("//////////////////////////////////")
+		console.log('//////////////////////////////////')
 	}, [])
 
 	useEffect(() => {
 		if (yourCards2[0]) {
 			yourCards2.length = 0
 			setYourCards2([])
-			console.log("CLEAED YOURCARDS2")
+			console.log('CLEAED YOURCARDS2')
 		}
 	}, [])
 
@@ -1224,13 +1235,13 @@ function TableOptions({
 
 	const [localDealerCards, setLocalDealerCards] = useState(dealerCards)
 
-	const [roundResultKey, setRoundResultKey] = useState("")
+	const [roundResultKey, setRoundResultKey] = useState('')
 
-	const [roundResultKey2, setRoundResultKey2] = useState("")
+	const [roundResultKey2, setRoundResultKey2] = useState('')
 
-	const [handResult1, setHandResult1] = useState("")
+	const [handResult1, setHandResult1] = useState('')
 
-	const [handResult2, setHandResult2] = useState("")
+	const [handResult2, setHandResult2] = useState('')
 
 	const [bust, setBust] = useState(0)
 
@@ -1328,7 +1339,7 @@ function TableOptions({
 
 	const [doubleSplit, setDoubleSplit] = useState(0)
 
-	if (cutPosition === "none") {
+	if (cutPosition === 'none') {
 		// If the position is not set then set it to a random point between 70% and 85% of the total deck unless it is a small deck like
 		// 1 or 2 decks in which case it will be 65% to 45%
 		// console.log(deck.length)
@@ -1366,11 +1377,11 @@ function TableOptions({
 
 		if (secondHand) {
 			// Hand 2
-			console.log("PlayerBet2 is: " + playerBet2)
+			console.log('PlayerBet2 is: ' + playerBet2)
 			setPlayerBet2(playerBet2 * 2)
 		} else {
 			// Hand 1
-			console.log("PlayerBet is: " + playerBet)
+			console.log('PlayerBet is: ' + playerBet)
 			playerBetUpdate(playerBet * 2)
 		}
 
@@ -1467,7 +1478,7 @@ function TableOptions({
 	const dealerHit = () => {
 		if (yourCards2.length === 0 && bust) {
 		} else {
-			console.log("Dealer Hitting")
+			console.log('Dealer Hitting')
 			if (localDealerCards.map((x) => x.value).reduce((x, y) => x + y) < 17) {
 				let thisDeck = deck
 				let cardIndex = Math.floor(Math.random() * thisDeck.length)
@@ -1551,7 +1562,7 @@ function TableOptions({
 
 	// Evaluates dealerCardTotal and draws additional cards if necessary with Aces
 	function dealerCardTotalEvaluation() {
-		console.log("Evaluating dealer cards")
+		console.log('Evaluating dealer cards')
 		if (localDealerCards.map((x) => x.value).filter((x) => x === 11)[0] > 0) {
 			// Checking for Aces in dealerCards
 			let aceCards = localDealerCards.filter((x) => x.value2 === 1)
@@ -1559,12 +1570,12 @@ function TableOptions({
 			if (localDealerCards.map((x) => x.value).reduce((x, y) => x + y) <= 21) {
 				// Normal draw calculation with Ace being 11 if not busting, no additional card check needed
 				console.log(
-					"Total is:",
+					'Total is:',
 					localDealerCards.map((x) => x.value).reduce((x, y) => x + y)
 				)
 				setDealerCardTotal(localDealerCards.map((x) => x.value).reduce((x, y) => x + y))
 				endTurnFlagSwitch() // The draw is done and conditions met; end turn
-				console.log("End: Aces, but reduced not needed")
+				console.log('End: Aces, but reduced not needed')
 			} else if (
 				localDealerCards.map((x) => x.value).reduce((x, y) => x + y) -
 					aceCards.length * 11 +
@@ -1610,21 +1621,21 @@ function TableOptions({
 						aceCards.length * 11 +
 						aceCards.length
 				)
-				console.log("Aces are reduced and the total is at 17 or higher")
+				console.log('Aces are reduced and the total is at 17 or higher')
 				endTurnFlagSwitch()
 			}
 		} else {
 			// Normal draw calculation without Aces
 			console.log(
-				"Total is",
+				'Total is',
 				localDealerCards.map((x) => x.value).reduce((x, y) => x + y)
 			)
 			if (localDealerCards.map((x) => x.value).reduce((x, y) => x + y) >= 17) {
 				setDealerCardTotal(localDealerCards.map((x) => x.value).reduce((x, y) => x + y))
-				console.log("End: No Aces")
+				console.log('End: No Aces')
 				endTurnFlagSwitch()
 			} else {
-				console.log("Should never get to the end here")
+				console.log('Should never get to the end here')
 			}
 		}
 	}
@@ -1641,19 +1652,19 @@ function TableOptions({
 
 		// The deck is set to the proper values, but the discard is not set to 0
 
-		console.log("Shuffle check")
+		console.log('Shuffle check')
 
 		let together = deck.length + discardPile.length
 		let bothLost = dealerHitLostCards.length + doubleLostCards.length
 		if (cutPosition - discardPile.length <= 0) {
-			console.log("Your Cards: " + yourCards.length)
-			console.log("Dealer cards: " + localDealerCards.length)
+			console.log('Your Cards: ' + yourCards.length)
+			console.log('Dealer cards: ' + localDealerCards.length)
 
 			discardPile.push(...dealerHitLostCards)
 			discardPile.push(...doubleLostCards)
 			let placeHolderDeck = [...deck, ...discardPile]
 			// let localDiscardPile = discardPile
-			console.log("Deck Shuffling")
+			console.log('Deck Shuffling')
 
 			if (deck.length <= 104) {
 				shoeCount(
@@ -1680,9 +1691,9 @@ function TableOptions({
 
 	//
 	const [splitCard1Display, setSplitCard1Display] = useState({
-		display: "none",
+		display: 'none',
 	})
-	const [splitCard1Flag, setSplitCard1Flag] = useState("//:0")
+	const [splitCard1Flag, setSplitCard1Flag] = useState('//:0')
 	const [splitCard1Alt, setSplitCard1Alt] = useState()
 	useEffect(() => {
 		if (yourCards2[0]) {
@@ -1695,20 +1706,20 @@ function TableOptions({
 	useEffect(() => {
 		setSplitCard1(
 			splitCard1Flag ||
-				cards[cardThemeNum][yourCards2[0].suit][yourCards2[0].card].src + "#" + new Date().getTime()
+				cards[cardThemeNum][yourCards2[0].suit][yourCards2[0].card].src + '#' + new Date().getTime()
 		)
-		if (splitCard1Flag !== "//:0") {
-			console.log("SPLITCARD TRIGGERED")
-			setSplitCard1Display({ display: "block" })
+		if (splitCard1Flag !== '//:0') {
+			console.log('SPLITCARD TRIGGERED')
+			setSplitCard1Display({ display: 'block' })
 			setSplitCard1Alt(cards[cardThemeNum][yourCards2[0].suit][yourCards2[0].card].alt)
 		}
 	}, [splitCard1Flag])
 
 	//
 	const [splitCard2Display, setSplitCard2Display] = useState({
-		display: "none",
+		display: 'none',
 	})
-	const [splitCard2Flag, setSplitCard2Flag] = useState("//:0")
+	const [splitCard2Flag, setSplitCard2Flag] = useState('//:0')
 	const [splitCard2Alt, setSplitCard2Alt] = useState()
 	useEffect(() => {
 		if (yourCards2[1]) {
@@ -1721,10 +1732,10 @@ function TableOptions({
 	useEffect(() => {
 		setSplitCard2(
 			splitCard2Flag ||
-				cards[cardThemeNum][yourCards2[1].suit][yourCards2[1].card].src + "#" + new Date().getTime()
+				cards[cardThemeNum][yourCards2[1].suit][yourCards2[1].card].src + '#' + new Date().getTime()
 		)
-		if (splitCard2Flag !== "//:0") {
-			setSplitCard2Display({ display: "block" })
+		if (splitCard2Flag !== '//:0') {
+			setSplitCard2Display({ display: 'block' })
 			setSplitCard2Alt(cards[cardThemeNum][yourCards2[1].suit][yourCards2[1].card].alt)
 		}
 	}, [splitCard2Flag])
@@ -1736,7 +1747,7 @@ function TableOptions({
 	let stand = () => {
 		if (yourCards2.length === 0) {
 			// If split is not triggered
-			console.log("THERE WAS NO SPLIT")
+			console.log('THERE WAS NO SPLIT')
 			dealerHit()
 			dealerCardTotalEvaluation()
 			deckShuffleFunction()
@@ -1973,25 +1984,25 @@ function TableOptions({
 				// This swaps the hands
 				setYourCards2(cards1)
 				setYourCards(cards2)
-				setSplitCard2("//:0")
+				setSplitCard2('//:0')
 				setSplitCard2Display({
-					display: "none",
+					display: 'none',
 				})
-				setPlayerThirdCardFlag("//:0")
-				setThirdDisplay({ display: "none" })
-				setPlayerFourthCardFlag("//:0")
-				setFourthDisplay({ display: "none" })
-				setPlayerFifthCardFlag("//:0")
-				setFifthDisplay({ display: "none" })
-				setPlayerSixthCardFlag("//:0")
-				setSixthDisplay({ display: "none" })
-				setPlayerSeventhCardFlag("//:0")
-				setSeventhDisplay({ display: "none" })
+				setPlayerThirdCardFlag('//:0')
+				setThirdDisplay({ display: 'none' })
+				setPlayerFourthCardFlag('//:0')
+				setFourthDisplay({ display: 'none' })
+				setPlayerFifthCardFlag('//:0')
+				setFifthDisplay({ display: 'none' })
+				setPlayerSixthCardFlag('//:0')
+				setSixthDisplay({ display: 'none' })
+				setPlayerSeventhCardFlag('//:0')
+				setSeventhDisplay({ display: 'none' })
 				setSplitCard1(
 					cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
 						yourCards[yourCards.length - 1].card
 					].src +
-						"#" +
+						'#' +
 						new Date().getTime()
 				)
 				setSplitCard1Alt(
@@ -2027,7 +2038,7 @@ function TableOptions({
 	}
 
 	let stand2 = () => {
-		console.log("SPLIT STAND")
+		console.log('SPLIT STAND')
 		dealerHit()
 		dealerCardTotalEvaluation()
 		deckShuffleFunction()
@@ -2044,7 +2055,7 @@ function TableOptions({
 	// sets yourCards to totalCards
 	useEffect(() => {
 		console.log(
-			"Was two Aces drawn initially?: " + yourCards[0].value === 11 &&
+			'Was two Aces drawn initially?: ' + yourCards[0].value === 11 &&
 				yourCards[1].value === 11 &&
 				yourCards.length === 2
 		)
@@ -2055,7 +2066,7 @@ function TableOptions({
 				// Blackjack check
 				stand()
 			} else if (dealerCards[0].value + dealerCards[1].value === 21) {
-				console.log("DEALER BLACKJACK")
+				console.log('DEALER BLACKJACK')
 				stand()
 			} else {
 				if (yourCards.map((x) => x.value).filter((x) => x === 11)[0] > 0) {
@@ -2101,16 +2112,16 @@ function TableOptions({
 	// Bust starts at 0
 	useEffect(() => {
 		if (bust === 1 && yourCards2.length === 0) {
-			console.log("Busted, no split")
-			setRoundResultKey("bust")
+			console.log('Busted, no split')
+			setRoundResultKey('bust')
 			stand()
 		}
 	}, [bust])
 
 	useEffect(() => {
-		if (typeof playerBet === "string") {
+		if (typeof playerBet === 'string') {
 			playerBetUpdate(parseInt(playerBet, 10))
-		} else if (typeof playerBet2 === "string") {
+		} else if (typeof playerBet2 === 'string') {
 			setPlayerBet2(parseInt(playerBet2, 10))
 		}
 	}, [playerBet, playerBet2])
@@ -2131,17 +2142,17 @@ function TableOptions({
 		}
 
 		setTimeout(() => {
-			console.log("EndplayerTurn: " + endPlayerTurn)
+			console.log('EndplayerTurn: ' + endPlayerTurn)
 			if ((endPlayerTurn === 1 && yourCards2.length === 0) || endPlayerTurn === 2) {
-				console.log("cardTotal:", cardTotal)
-				console.log("cardTotal2:", cardTotal2)
-				console.log("dealerCardTotal:", dealerCardTotal)
+				console.log('cardTotal:', cardTotal)
+				console.log('cardTotal2:', cardTotal2)
+				console.log('dealerCardTotal:', dealerCardTotal)
 				if (cardTotal > 21 && cardTotal2 === 0) {
 					//
-					console.log("This should be a bust.")
+					console.log('This should be a bust.')
 					return
 				} else {
-					console.log("Calculating final round result")
+					console.log('Calculating final round result')
 					if (yourCards2.length === 0) {
 						// If turn has ended and it has not split
 						if (dealerCardTotal === cardTotal) {
@@ -2153,80 +2164,80 @@ function TableOptions({
 							// parseInt()
 
 							yourMoneyValue((m) => m + parseInt(playerBet, 10))
-							setRoundResultKey("push")
+							setRoundResultKey('push')
 						}
 						if (dealerCardTotal < cardTotal) {
 							if (cardTotal > 21) {
 								return
 							} else if (yourCards[0].value + yourCards[1].value === 21) {
 								yourMoneyValue((m) => m + playerBet + Math.round(playerBet * 1.5))
-								setRoundResultKey("blackjack")
+								setRoundResultKey('blackjack')
 							} else {
 								yourMoneyValue((m) => m + playerBet * 2)
-								setRoundResultKey("won")
+								setRoundResultKey('won')
 							}
 						} else if (dealerCardTotal > cardTotal) {
 							if (dealerCards[0].value + dealerCards[1].value === 21) {
-								setRoundResultKey("DealerBlackjack")
+								setRoundResultKey('DealerBlackjack')
 							} else if (dealerCardTotal < 22) {
-								setRoundResultKey("lost")
+								setRoundResultKey('lost')
 							} else if (yourCards[0].value + yourCards[1].value === 21) {
 								yourMoneyValue((m) => m + playerBet + Math.round(playerBet * 1.5))
-								setRoundResultKey("blackjack")
+								setRoundResultKey('blackjack')
 							} else {
 								yourMoneyValue((m) => m + playerBet * 2)
-								setRoundResultKey("dealerBust")
+								setRoundResultKey('dealerBust')
 							}
 						}
 					} else {
 						// This will evaluate both the first and second hand sequentially at once
 						// First hand
 						if (cardTotal > 21) {
-							setRoundResultKey("bust")
+							setRoundResultKey('bust')
 						} else if (dealerCardTotal < cardTotal) {
 							if (cardTotal > 21) {
 								// busted
-								setRoundResultKey("bust")
+								setRoundResultKey('bust')
 							} else {
 								yourMoneyValue((m) => m + playerBet2 * 2)
-								setRoundResultKey("won")
+								setRoundResultKey('won')
 								setHandOneWin(1)
 							}
 						} else if (dealerCardTotal > cardTotal) {
 							if (dealerCardTotal < 22) {
-								setRoundResultKey("lost")
+								setRoundResultKey('lost')
 							} else {
 								yourMoneyValue((m) => m + playerBet2 * 2)
-								setRoundResultKey("dealerBust")
+								setRoundResultKey('dealerBust')
 								setHandOneWin(1)
 							}
 						} else {
 							yourMoneyValue((m) => m + parseInt(playerBet2, 10))
-							setRoundResultKey("push")
+							setRoundResultKey('push')
 							setHandOnePush(1)
 						}
 						// Second hand
 						if (cardTotal2 > 21) {
-							setRoundResultKey2("bust")
+							setRoundResultKey2('bust')
 						} else if (dealerCardTotal < cardTotal2) {
 							if (cardTotal2 > 21) {
-								setRoundResultKey2("bust")
+								setRoundResultKey2('bust')
 							} else {
 								yourMoneyValue((m) => m + playerBet * 2)
-								setRoundResultKey2("won")
+								setRoundResultKey2('won')
 								setHandTwoWin(1)
 							}
 						} else if (dealerCardTotal > cardTotal2) {
 							if (dealerCardTotal < 22) {
-								setRoundResultKey2("lost")
+								setRoundResultKey2('lost')
 							} else {
 								yourMoneyValue((m) => m + playerBet * 2)
-								setRoundResultKey2("dealerBust")
+								setRoundResultKey2('dealerBust')
 								setHandTwoWin(1)
 							}
 						} else {
 							yourMoneyValue((m) => m + parseInt(playerBet, 10))
-							setRoundResultKey2("push")
+							setRoundResultKey2('push')
 							setHandTwoPush(1)
 						}
 					}
@@ -2236,7 +2247,7 @@ function TableOptions({
 	}, [endPlayerTurn])
 
 	useEffect(() => {
-		console.log("Current money is:" + yourMoney)
+		console.log('Current money is:' + yourMoney)
 	}, [yourMoney])
 
 	// Checks for busting on second hand and ends turn
@@ -2250,10 +2261,10 @@ function TableOptions({
 			if (bust && cardTotal2 === 0) {
 				if (roundResultKey2) {
 				} else {
-					console.log("Bust 2")
+					console.log('Bust 2')
 					setBustAnimate((v) => v + 1)
 					let go = () => {
-						setRoundResultKey2("bust")
+						setRoundResultKey2('bust')
 						stand()
 						setBustAnimate(0)
 					}
@@ -2262,10 +2273,10 @@ function TableOptions({
 			} else if (bust && cardTotal2) {
 				if (roundResultKey) {
 				} else {
-					console.log("Bust 1")
+					console.log('Bust 1')
 					setBustAnimate((v) => v + 1)
 					let gogo = () => {
-						setRoundResultKey("bust")
+						setRoundResultKey('bust')
 						stand2()
 						setBustAnimate(0)
 					}
@@ -2282,13 +2293,13 @@ function TableOptions({
 		if (endPlayerTurn) {
 			setSplitElement(
 				<a>
-					<SplitIcon iconTheme={iconTheme} opacity={"50%"}></SplitIcon>
+					<SplitIcon iconTheme={iconTheme} opacity={'50%'}></SplitIcon>
 				</a>
 			)
 		} else if (yourCards2.length) {
 			setSplitElement(
 				<a>
-					<SplitIcon iconTheme={iconTheme} opacity={"50%"}></SplitIcon>
+					<SplitIcon iconTheme={iconTheme} opacity={'50%'}></SplitIcon>
 				</a>
 			)
 			setThemesButtonToggle(
@@ -2311,7 +2322,7 @@ function TableOptions({
 			setSplitElement(
 				// This will be the lowered opacity, or greyed out version of the split icon
 				<a>
-					<SplitIcon iconTheme={iconTheme} opacity={"50%"}></SplitIcon>
+					<SplitIcon iconTheme={iconTheme} opacity={'50%'}></SplitIcon>
 				</a>
 			)
 		}
@@ -2328,7 +2339,7 @@ function TableOptions({
 		if (endPlayerTurn) {
 			setDoubleDownElement(
 				<a>
-					<DoubleIcon iconTheme={iconTheme} opacity={"50%"}></DoubleIcon>
+					<DoubleIcon iconTheme={iconTheme} opacity={'50%'}></DoubleIcon>
 				</a>
 			)
 		} else if (playerBet <= yourMoney) {
@@ -2340,7 +2351,7 @@ function TableOptions({
 		} else if (bustAnimate) {
 			setDoubleDownElement(
 				<a>
-					<DoubleIcon iconTheme={iconTheme} opacity={"50%"}></DoubleIcon>
+					<DoubleIcon iconTheme={iconTheme} opacity={'50%'}></DoubleIcon>
 				</a>
 			)
 		} else if (bustAnimate === 0) {
@@ -2353,7 +2364,7 @@ function TableOptions({
 			setDoubleDownElement(
 				// Unusable version
 				<a>
-					<DoubleIcon iconTheme={iconTheme} opacity={"50%"}></DoubleIcon>
+					<DoubleIcon iconTheme={iconTheme} opacity={'50%'}></DoubleIcon>
 				</a>
 			)
 		}
@@ -2362,7 +2373,7 @@ function TableOptions({
 			setDoubleDownElement(
 				// Unusable version
 				<a>
-					<DoubleIcon iconTheme={iconTheme} opacity={"50%"}></DoubleIcon>
+					<DoubleIcon iconTheme={iconTheme} opacity={'50%'}></DoubleIcon>
 				</a>
 			)
 		}
@@ -2385,8 +2396,8 @@ function TableOptions({
 	}, [cutPosition, discardPile])
 	//
 
-	const [thirdDisplay, setThirdDisplay] = useState({ display: "none" })
-	const [playerThirdCardFlag, setPlayerThirdCardFlag] = useState("//:0")
+	const [thirdDisplay, setThirdDisplay] = useState({ display: 'none' })
+	const [playerThirdCardFlag, setPlayerThirdCardFlag] = useState('//:0')
 	const [playerThirdAlt, setPlayerThirdAlt] = useState()
 	useEffect(() => {
 		if (yourCards[2]) {
@@ -2401,7 +2412,7 @@ function TableOptions({
 					setPlayerThirdCardFlag(undefined)
 			}
 		} else {
-			setPlayerThirdCardFlag("//:0")
+			setPlayerThirdCardFlag('//:0')
 		}
 	}, [yourCards])
 
@@ -2410,20 +2421,20 @@ function TableOptions({
 	useEffect(() => {
 		setPlayerThird(
 			playerThirdCardFlag ||
-				cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src + "#" + new Date().getTime()
+				cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].src + '#' + new Date().getTime()
 		)
-		if (playerThirdCardFlag !== "//:0") {
-			setThirdDisplay({ display: "block" })
+		if (playerThirdCardFlag !== '//:0') {
+			setThirdDisplay({ display: 'block' })
 			setPlayerThirdAlt(cards[cardThemeNum][yourCards[2].suit][yourCards[2].card].alt)
 		} else {
-			setThirdDisplay({ display: "none" })
+			setThirdDisplay({ display: 'none' })
 		}
 	}, [playerThirdCardFlag]) // This will update with yourCards or yourCards2 to turn display: none when split swaps
 
 	//
 
-	const [fourthDisplay, setFourthDisplay] = useState({ display: "none" })
-	const [playerFourthCardFlag, setPlayerFourthCardFlag] = useState("//:0")
+	const [fourthDisplay, setFourthDisplay] = useState({ display: 'none' })
+	const [playerFourthCardFlag, setPlayerFourthCardFlag] = useState('//:0')
 	const [playerFourthAlt, setPlayerFourthAlt] = useState()
 	useEffect(() => {
 		if (yourCards[3]) {
@@ -2438,7 +2449,7 @@ function TableOptions({
 					setPlayerFourthCardFlag(undefined)
 			}
 		} else {
-			setPlayerFourthCardFlag("//:0")
+			setPlayerFourthCardFlag('//:0')
 		}
 	}, [yourCards])
 
@@ -2447,19 +2458,19 @@ function TableOptions({
 	useEffect(() => {
 		setPlayerFourth(
 			playerFourthCardFlag ||
-				cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].src + "#" + new Date().getTime()
+				cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].src + '#' + new Date().getTime()
 		)
-		if (playerFourthCardFlag !== "//:0") {
-			setFourthDisplay({ display: "block" })
+		if (playerFourthCardFlag !== '//:0') {
+			setFourthDisplay({ display: 'block' })
 			setPlayerFourthAlt(cards[cardThemeNum][yourCards[3].suit][yourCards[3].card].alt)
 		} else {
-			setFourthDisplay({ display: "none" })
+			setFourthDisplay({ display: 'none' })
 		}
 	}, [playerFourthCardFlag])
 
 	//
-	const [fifthDisplay, setFifthDisplay] = useState({ display: "none" })
-	const [playerFifthCardFlag, setPlayerFifthCardFlag] = useState("//:0")
+	const [fifthDisplay, setFifthDisplay] = useState({ display: 'none' })
+	const [playerFifthCardFlag, setPlayerFifthCardFlag] = useState('//:0')
 	const [playerFifthAlt, setPlayerFifthAlt] = useState()
 	useEffect(() => {
 		if (yourCards[4]) {
@@ -2474,7 +2485,7 @@ function TableOptions({
 					setPlayerFifthCardFlag(undefined)
 			}
 		} else {
-			setPlayerFifthCardFlag("//:0")
+			setPlayerFifthCardFlag('//:0')
 		}
 	}, [yourCards])
 
@@ -2483,19 +2494,19 @@ function TableOptions({
 	useEffect(() => {
 		setPlayerFifth(
 			playerFifthCardFlag ||
-				cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src + "#" + new Date().getTime()
+				cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].src + '#' + new Date().getTime()
 		)
-		if (playerFifthCardFlag !== "//:0") {
-			setFifthDisplay({ display: "block" })
+		if (playerFifthCardFlag !== '//:0') {
+			setFifthDisplay({ display: 'block' })
 			setPlayerFifthAlt(cards[cardThemeNum][yourCards[4].suit][yourCards[4].card].alt)
 		} else {
-			setFifthDisplay({ display: "none" })
+			setFifthDisplay({ display: 'none' })
 		}
 	}, [playerFifthCardFlag])
 
 	//
-	const [sixthDisplay, setSixthDisplay] = useState({ display: "none" })
-	const [playerSixthCardFlag, setPlayerSixthCardFlag] = useState("//:0")
+	const [sixthDisplay, setSixthDisplay] = useState({ display: 'none' })
+	const [playerSixthCardFlag, setPlayerSixthCardFlag] = useState('//:0')
 	const [playerSixthAlt, setPlayerSixthAlt] = useState()
 	useEffect(() => {
 		if (yourCards[5]) {
@@ -2510,7 +2521,7 @@ function TableOptions({
 					setPlayerSixthCardFlag(undefined)
 			}
 		} else {
-			setPlayerSixthCardFlag("//:0")
+			setPlayerSixthCardFlag('//:0')
 		}
 	}, [yourCards])
 
@@ -2519,19 +2530,19 @@ function TableOptions({
 	useEffect(() => {
 		setPlayerSixth(
 			playerSixthCardFlag ||
-				cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src + "#" + new Date().getTime()
+				cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].src + '#' + new Date().getTime()
 		)
-		if (playerSixthCardFlag !== "//:0") {
-			setSixthDisplay({ display: "block" })
+		if (playerSixthCardFlag !== '//:0') {
+			setSixthDisplay({ display: 'block' })
 			setPlayerSixthAlt(cards[cardThemeNum][yourCards[5].suit][yourCards[5].card].alt)
 		} else {
-			setSixthDisplay({ display: "none" })
+			setSixthDisplay({ display: 'none' })
 		}
 	}, [playerSixthCardFlag])
 
 	//
-	const [seventhDisplay, setSeventhDisplay] = useState({ display: "none" })
-	const [playerSeventhCardFlag, setPlayerSeventhCardFlag] = useState("//:0")
+	const [seventhDisplay, setSeventhDisplay] = useState({ display: 'none' })
+	const [playerSeventhCardFlag, setPlayerSeventhCardFlag] = useState('//:0')
 	const [playerSeventhAlt, setPlayerSeventhAlt] = useState()
 	useEffect(() => {
 		if (yourCards[6]) {
@@ -2546,7 +2557,7 @@ function TableOptions({
 					setPlayerSeventhCardFlag(undefined)
 			}
 		} else {
-			setPlayerSeventhCardFlag("//:0")
+			setPlayerSeventhCardFlag('//:0')
 		}
 	}, [yourCards])
 
@@ -2555,13 +2566,13 @@ function TableOptions({
 	useEffect(() => {
 		setPlayerSeventh(
 			playerSeventhCardFlag ||
-				cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src + "#" + new Date().getTime()
+				cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].src + '#' + new Date().getTime()
 		)
-		if (playerSeventhCardFlag !== "//:0") {
-			setSeventhDisplay({ display: "block" })
+		if (playerSeventhCardFlag !== '//:0') {
+			setSeventhDisplay({ display: 'block' })
 			setPlayerSeventhAlt(cards[cardThemeNum][yourCards[6].suit][yourCards[6].card].alt)
 		} else {
-			setSeventhDisplay({ display: "none" })
+			setSeventhDisplay({ display: 'none' })
 		}
 	}, [playerSeventhCardFlag])
 
@@ -2569,9 +2580,9 @@ function TableOptions({
 	//
 	//
 	const [thirdDealerDisplay, setThirdDealerDisplay] = useState({
-		display: "none",
+		display: 'none',
 	})
-	const [dealerThirdCardFlag, setDealerThirdCardFlag] = useState("//:0")
+	const [dealerThirdCardFlag, setDealerThirdCardFlag] = useState('//:0')
 	const [dealerThirdAlt, setDealerThirdAlt] = useState()
 	useEffect(() => {
 		if (localDealerCards[2] || dealerCards[2]) {
@@ -2585,20 +2596,20 @@ function TableOptions({
 		setDealerThird(
 			dealerThirdCardFlag ||
 				cards[cardThemeNum][localDealerCards[2].suit][localDealerCards[2].card].src +
-					"#" +
+					'#' +
 					new Date().getTime()
 		)
-		if (dealerThirdCardFlag !== "//:0") {
-			setThirdDealerDisplay({ display: "block" })
+		if (dealerThirdCardFlag !== '//:0') {
+			setThirdDealerDisplay({ display: 'block' })
 			setDealerThirdAlt(cards[cardThemeNum][localDealerCards[2].suit][localDealerCards[2].card].alt)
 		}
 	}, [dealerThirdCardFlag])
 
 	//
 	const [fourthDealerDisplay, setFourthDealerDisplay] = useState({
-		display: "none",
+		display: 'none',
 	})
-	const [dealerFourthCardFlag, setDealerFourthCardFlag] = useState("//:0")
+	const [dealerFourthCardFlag, setDealerFourthCardFlag] = useState('//:0')
 	const [dealerFourthAlt, setDealerFourthAlt] = useState()
 	useEffect(() => {
 		if (dealerCards[3]) {
@@ -2612,20 +2623,20 @@ function TableOptions({
 		setDealerFourth(
 			dealerFourthCardFlag ||
 				cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].src +
-					"#" +
+					'#' +
 					new Date().getTime()
 		)
-		if (dealerFourthCardFlag !== "//:0") {
-			setFourthDealerDisplay({ display: "block" })
+		if (dealerFourthCardFlag !== '//:0') {
+			setFourthDealerDisplay({ display: 'block' })
 			setDealerFourthAlt(cards[cardThemeNum][dealerCards[3].suit][dealerCards[3].card].alt)
 		}
 	}, [dealerFourthCardFlag])
 
 	//
 	const [fifthDealerDisplay, setFifthDealerDisplay] = useState({
-		display: "none",
+		display: 'none',
 	})
-	const [dealerFifthCardFlag, setDealerFifthCardFlag] = useState("//:0")
+	const [dealerFifthCardFlag, setDealerFifthCardFlag] = useState('//:0')
 	const [dealerFifthAlt, setDealerFifthAlt] = useState()
 	useEffect(() => {
 		if (dealerCards[4]) {
@@ -2642,11 +2653,11 @@ function TableOptions({
 			setDealerFifth(
 				dealerFifthCardFlag ||
 					cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].src +
-						"#" +
+						'#' +
 						new Date().getTime()
 			)
-			if (dealerFifthCardFlag !== "//:0") {
-				setFifthDealerDisplay({ display: "block" })
+			if (dealerFifthCardFlag !== '//:0') {
+				setFifthDealerDisplay({ display: 'block' })
 				setDealerFifthAlt(cards[cardThemeNum][dealerCards[4].suit][dealerCards[4].card].alt)
 			}
 		}
@@ -2654,9 +2665,9 @@ function TableOptions({
 
 	//
 	const [sixthDealerDisplay, setSixthDealerDisplay] = useState({
-		display: "none",
+		display: 'none',
 	})
-	const [dealerSixthCardFlag, setDealerSixthCardFlag] = useState("//:0")
+	const [dealerSixthCardFlag, setDealerSixthCardFlag] = useState('//:0')
 	const [dealerSixthAlt, setDealerSixthAlt] = useState()
 	useEffect(() => {
 		if (dealerCards[5]) {
@@ -2670,20 +2681,20 @@ function TableOptions({
 		setDealerSixth(
 			dealerSixthCardFlag ||
 				cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].src +
-					"#" +
+					'#' +
 					new Date().getTime()
 		)
-		if (dealerSixthCardFlag !== "//:0") {
-			setSixthDealerDisplay({ display: "block" })
+		if (dealerSixthCardFlag !== '//:0') {
+			setSixthDealerDisplay({ display: 'block' })
 			setDealerSixthAlt(cards[cardThemeNum][dealerCards[5].suit][dealerCards[5].card].alt)
 		}
 	}, [dealerSixthCardFlag])
 
 	//
 	const [seventhDealerDisplay, setSeventhDealerDisplay] = useState({
-		display: "none",
+		display: 'none',
 	})
-	const [dealerSeventhCardFlag, setDealerSeventhCardFlag] = useState("//:0")
+	const [dealerSeventhCardFlag, setDealerSeventhCardFlag] = useState('//:0')
 	const [dealerSeventhAlt, setDealerSeventhAlt] = useState()
 	useEffect(() => {
 		if (dealerCards[6]) {
@@ -2697,11 +2708,11 @@ function TableOptions({
 		setDealerSeventh(
 			dealerSeventhCardFlag ||
 				cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].src +
-					"#" +
+					'#' +
 					new Date().getTime()
 		)
-		if (dealerSeventhCardFlag !== "//:0") {
-			setSeventhDealerDisplay({ display: "block" })
+		if (dealerSeventhCardFlag !== '//:0') {
+			setSeventhDealerDisplay({ display: 'block' })
 			setDealerSeventhAlt(cards[cardThemeNum][dealerCards[6].suit][dealerCards[6].card].alt)
 		}
 	}, [dealerSeventhCardFlag])
@@ -2711,28 +2722,28 @@ function TableOptions({
 	const [dealerCardOne, setDealerCardOne] = useState(
 		process.env.PUBLIC_URL +
 			cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].src +
-			"#" +
+			'#' +
 			new Date().getTime()
 	)
 
 	const [dealerCardTwo, setDealerCardTwo] = useState(
 		process.env.PUBLIC_URL +
 			cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].src +
-			"#" +
+			'#' +
 			new Date().getTime()
 	)
 
 	const [playerCardOne, setPlayerCardOne] = useState(
 		process.env.PUBLIC_URL +
 			cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
-			"#" +
+			'#' +
 			new Date().getTime()
 	)
 
 	const [playerCardTwo, setPlayerCardTwo] = useState(
 		process.env.PUBLIC_URL +
 			cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
-			"#" +
+			'#' +
 			new Date().getTime()
 	)
 
@@ -2741,25 +2752,25 @@ function TableOptions({
 		setDealerCardOne(
 			process.env.PUBLIC_URL +
 				cards[cardThemeNum][dealerCards[0].suit][dealerCards[0].card].src +
-				"#" +
+				'#' +
 				new Date().getTime()
 		)
 		setDealerCardTwo(
 			process.env.PUBLIC_URL +
 				cards[cardThemeNum][dealerCards[1].suit][dealerCards[1].card].src +
-				"#" +
+				'#' +
 				new Date().getTime()
 		)
 		setPlayerCardOne(
 			process.env.PUBLIC_URL +
 				cards[cardThemeNum][yourCards[0].suit][yourCards[0].card].src +
-				"#" +
+				'#' +
 				new Date().getTime()
 		)
 		setPlayerCardTwo(
 			process.env.PUBLIC_URL +
 				cards[cardThemeNum][yourCards[1].suit][yourCards[1].card].src +
-				"#" +
+				'#' +
 				new Date().getTime()
 		)
 	}, [yourCards2, yourCards])
@@ -2768,10 +2779,10 @@ function TableOptions({
 
 	const [delayScaling, setDelayScaling] = useState()
 
-	let z = document.getElementsByClassName("block")
+	let z = document.getElementsByClassName('block')
 
 	const backgroundBlur = () => {
-		z[0].style.filter = "blur(4px) grayscale(85%)"
+		z[0].style.filter = 'blur(4px) grayscale(85%)'
 	}
 
 	const roundEndAuto = (dealerNum) => {
@@ -2783,7 +2794,7 @@ function TableOptions({
 
 	const [outcomeContent, setOutcomeContent] = useState()
 
-	const [outcomeEffect, setOutcomeEffect] = useState("")
+	const [outcomeEffect, setOutcomeEffect] = useState('')
 
 	const blur = () => {
 		setTimeout(backgroundBlur, 1000)
@@ -2808,11 +2819,11 @@ function TableOptions({
 	const splitHandle = () => {
 		// When splitHandle Occurs endPlayerTurn needs to have triggered for both of the roundKeys to be created
 		// The roundResultKeys are using old state on the first pass
-		console.log("Split Handle Starting")
-		console.log("Round ResultKey:" + roundResultKey)
-		console.log("Round ResultKey2: " + roundResultKey2)
+		console.log('Split Handle Starting')
+		console.log('Round ResultKey:' + roundResultKey)
+		console.log('Round ResultKey2: ' + roundResultKey2)
 		switch (roundResultKey) {
-			case "push":
+			case 'push':
 				setAnimationComponent(
 					<div className="addAnimation">
 						<AddAnimation playerBet={playerBet} textColor={textColor}></AddAnimation>
@@ -2832,46 +2843,46 @@ function TableOptions({
 		// This executes twice sometimes
 		const switchState = () => {
 			// when this executes the round will end
-			console.log("resultKey2 Resolving End")
+			console.log('resultKey2 Resolving End')
 			// So i can update it manually only if both are positive change; win or push
 			switch (roundResultKey2) {
-				case "won":
+				case 'won':
 					setTimeout(function () {
-						secondOutcome("positive")
+						secondOutcome('positive')
 					}, 1500)
 					animateAdd(playerBet * 2)
 					setYourMoneyUpdater(yourMoney)
 					blur()
 					roundEndAuto2()
 					break
-				case "lost":
+				case 'lost':
 					setTimeout(function () {
-						secondOutcome("negative")
+						secondOutcome('negative')
 					}, 1500)
 					setYourMoneyUpdater(yourMoney)
 					blur()
 					roundEndAuto2()
 					break
-				case "push":
+				case 'push':
 					setTimeout(function () {
-						secondOutcome("neutral")
+						secondOutcome('neutral')
 					}, 1500)
 					animateAdd(playerBet)
 					setYourMoneyUpdater(yourMoney)
 					blur()
 					roundEndAuto2()
 					break
-				case "bust":
+				case 'bust':
 					setTimeout(function () {
-						secondOutcome("negative", "You bust.")
+						secondOutcome('negative', 'You bust.')
 					}, 1500)
 					setYourMoneyUpdater(yourMoney)
 					blur()
 					roundEndAuto2()
 					break
-				case "dealerBust":
+				case 'dealerBust':
 					setTimeout(function () {
-						secondOutcome("positive", "Dealer bust.")
+						secondOutcome('positive', 'Dealer bust.')
 					}, 1500)
 					// For double dealerBust yourMoney is inaccurate// Not anymore
 					animateAdd(playerBet * 2)
@@ -2879,9 +2890,9 @@ function TableOptions({
 					blur()
 					roundEndAuto2()
 					break
-				case "DealerBlackjack":
+				case 'DealerBlackjack':
 					setTimeout(function () {
-						secondOutcome("negative", "Dealer Blackjack.")
+						secondOutcome('negative', 'Dealer Blackjack.')
 					}, 1500)
 					setYourMoneyUpdater(yourMoney)
 					blur()
@@ -2890,7 +2901,7 @@ function TableOptions({
 		}
 
 		// disable blur
-		z[0].style.filter = ""
+		z[0].style.filter = ''
 		// remove outcomeComponent
 		setOutcomeComponent()
 		// swap hands
@@ -2898,7 +2909,7 @@ function TableOptions({
 			cards[cardThemeNum][yourCards[yourCards.length - 1].suit][
 				yourCards[yourCards.length - 1].card
 			].src +
-				"#" +
+				'#' +
 				new Date().getTime()
 		)
 		setSplitCard1Alt(
@@ -2906,9 +2917,9 @@ function TableOptions({
 				yourCards[yourCards.length - 1].card
 			].alt
 		)
-		setSplitCard2("//:0")
+		setSplitCard2('//:0')
 		setSplitCard2Display({
-			display: "none",
+			display: 'none',
 		})
 		// Here I hope the rest of the triggers for displaying the cards to occur actually display them; DID NOT
 		// I don't want to just set it to look like the yourCards2 cards, I want to actually swap them so that the cardTotal is proper
@@ -2937,73 +2948,73 @@ function TableOptions({
 	// Are both roundResultKeys being triggered t the same time?
 	useEffect(() => {
 		// This is essential  triggers every time
-		console.log("Round ResultKey:" + roundResultKey)
-		console.log("Round ResultKey2: " + roundResultKey2)
+		console.log('Round ResultKey:' + roundResultKey)
+		console.log('Round ResultKey2: ' + roundResultKey2)
 
 		setTimeout(() => {
 			if (yourCards2.length === 0) {
 				// There is no split
 				switch (roundResultKey) {
-					case "won":
-						setOutcomeEffect("positive")
+					case 'won':
+						setOutcomeEffect('positive')
 						blur()
 						roundEndAuto(dealerCards.length)
 						animateAdd(playerBet * 2)
 						break
-					case "lost":
-						setOutcomeEffect("negative")
+					case 'lost':
+						setOutcomeEffect('negative')
 						blur()
 						roundEndAuto(dealerCards.length)
 						break
-					case "push":
-						setOutcomeEffect("neutral")
+					case 'push':
+						setOutcomeEffect('neutral')
 						blur()
 						roundEndAuto(dealerCards.length)
 						animateAdd(playerBet)
 						break
-					case "blackjack":
-						setOutcomeContent("Blackjack.")
-						setOutcomeEffect("positive")
+					case 'blackjack':
+						setOutcomeContent('Blackjack.')
+						setOutcomeEffect('positive')
 						blur()
 						roundEndAuto(dealerCards.length)
 						animateAdd(playerBet + Math.round(playerBet * 1.5))
 						break
-					case "bust":
-						setOutcomeContent("You bust.")
-						setOutcomeEffect("negative")
+					case 'bust':
+						setOutcomeContent('You bust.')
+						setOutcomeEffect('negative')
 						blur()
 						roundEndAuto(dealerCards.length)
 						break
-					case "dealerBust":
-						setOutcomeContent("Dealer bust.")
-						setOutcomeEffect("positive")
+					case 'dealerBust':
+						setOutcomeContent('Dealer bust.')
+						setOutcomeEffect('positive')
 						blur()
 						roundEndAuto(dealerCards.length)
 						animateAdd(playerBet * 2)
 						break
-					case "DealerBlackjack":
-						setOutcomeContent("Dealer Blackjack.")
-						setOutcomeEffect("negative")
+					case 'DealerBlackjack':
+						setOutcomeContent('Dealer Blackjack.')
+						setOutcomeEffect('negative')
 						blur()
 						roundEndAuto(dealerCards.length)
 				}
 				// This checks to see if the splitCards exist and that the first roundResultKey was created then swapped into roundResultKey2.
 				// It is swapped because it uses the same system that evaluates key 1
-			} else if (yourCards2.length && roundResultKey2 !== "" && roundResultKey !== "") {
-				console.log("SPLIT SWITCH 1")
-				console.log("Round ResultKey:" + roundResultKey)
-				console.log("Round ResultKey2: " + roundResultKey2)
+			} else if (yourCards2.length && roundResultKey2 !== '' && roundResultKey !== '') {
+				console.log('SPLIT SWITCH 1')
+				console.log('Round ResultKey:' + roundResultKey)
+				console.log('Round ResultKey2: ' + roundResultKey2)
 				console.log(yourMoney)
 				switch (roundResultKey) {
-					case "won":
+					case 'won':
 						switch (roundResultKey2) {
-							case "won":
+							case 'won':
 								setYourMoneyUpdater(yourMoney - playerBet * 2)
 								break
-							case "push":
+							case 'push':
 								setYourMoneyUpdater(yourMoney - playerBet)
 								break
-							case "dealerBust":
+							case 'dealerBust':
 								setYourMoneyUpdater(yourMoney - playerBet * 2)
 								break
 							default:
@@ -3012,24 +3023,24 @@ function TableOptions({
 								break
 						}
 						animateAdd(playerBet2 * 2)
-						setOutcomeEffect("positive")
+						setOutcomeEffect('positive')
 						blur()
 						break
-					case "lost":
-						setOutcomeEffect("negative")
+					case 'lost':
+						setOutcomeEffect('negative')
 						blur()
 						break
-					case "push":
+					case 'push':
 						switch (roundResultKey2) {
-							case "won":
+							case 'won':
 								setYourMoneyUpdater(yourMoney - playerBet * 2)
 								animateAdd(playerBet * 2)
 								break
-							case "push":
+							case 'push':
 								setYourMoneyUpdater(yourMoney - playerBet)
 								animateAdd(playerBet)
 								break
-							case "dealerBust":
+							case 'dealerBust':
 								setYourMoneyUpdater(yourMoney - playerBet * 2)
 								animateAdd(playerBet * 2)
 								break
@@ -3039,26 +3050,26 @@ function TableOptions({
 								break
 						}
 						animateAdd(playerBet2)
-						setOutcomeEffect("neutral")
+						setOutcomeEffect('neutral')
 						blur()
 						break
-					case "bust":
-						setOutcomeContent("You bust.")
-						setOutcomeEffect("negative")
+					case 'bust':
+						setOutcomeContent('You bust.')
+						setOutcomeEffect('negative')
 						blur()
 						break
-					case "dealerBust":
+					case 'dealerBust':
 						switch (roundResultKey2) {
-							case "won":
+							case 'won':
 								setYourMoneyUpdater(yourMoney - playerBet * 2)
 								break
-							case "push":
+							case 'push':
 								setYourMoneyUpdater(yourMoney - playerBet)
 								break
-							case "blackjack":
+							case 'blackjack':
 								setYourMoneyUpdater(yourMoney - playerBet * 2)
 								break
-							case "dealerBust":
+							case 'dealerBust':
 								setYourMoneyUpdater(yourMoney - playerBet * 2)
 								break
 							default:
@@ -3067,13 +3078,13 @@ function TableOptions({
 								break
 						}
 						animateAdd(playerBet2 * 2)
-						setOutcomeContent("Dealer bust.")
-						setOutcomeEffect("positive")
+						setOutcomeContent('Dealer bust.')
+						setOutcomeEffect('positive')
 						blur()
 						break
-					case "DealerBlackjack":
-						setOutcomeContent("Dealer Blackjack.")
-						setOutcomeEffect("negative")
+					case 'DealerBlackjack':
+						setOutcomeContent('Dealer Blackjack.')
+						setOutcomeEffect('negative')
 						blur()
 				}
 				// Here put a setTimeout that handles resetting the blur and the outcomeComponent that triggers when the time is about the same as a
@@ -3103,7 +3114,7 @@ function TableOptions({
 	// How long it takes for the component to display
 	// The issue with this i am predicting is what if the outcomeEffect from roundResultKey2 is the same as 1, would this not trigger then?
 	useEffect(() => {
-		if (outcomeEffect !== "") {
+		if (outcomeEffect !== '') {
 			setTimeout(outcomeContainer, 1500)
 		}
 	}, [outcomeEffect])
@@ -3117,16 +3128,16 @@ function TableOptions({
 	// Sets stand element
 	useEffect(() => {
 		if (endPlayerTurn) {
-			console.log("END PLAYER TURN")
+			console.log('END PLAYER TURN')
 			setStandElement(
 				<a tabIndex="0">
-					<StandIcon iconTheme={iconTheme} opacity={"50%"}></StandIcon>
+					<StandIcon iconTheme={iconTheme} opacity={'50%'}></StandIcon>
 				</a>
 			)
 		} else if (bustAnimate) {
 			setStandElement(
 				<a tabIndex="0">
-					<StandIcon iconTheme={iconTheme} opacity={"50%"}></StandIcon>
+					<StandIcon iconTheme={iconTheme} opacity={'50%'}></StandIcon>
 				</a>
 			)
 		} else if (bustAnimate === 0) {
@@ -3149,13 +3160,13 @@ function TableOptions({
 		if (endPlayerTurn) {
 			setHitElement(
 				<a>
-					<HitIcon iconTheme={iconTheme} opacity={"50%"}></HitIcon>
+					<HitIcon iconTheme={iconTheme} opacity={'50%'}></HitIcon>
 				</a>
 			)
 		} else if (bustAnimate) {
 			setHitElement(
 				<a>
-					<HitIcon iconTheme={iconTheme} opacity={"50%"}></HitIcon>
+					<HitIcon iconTheme={iconTheme} opacity={'50%'}></HitIcon>
 				</a>
 			)
 		} else if (bustAnimate === 0) {
@@ -3187,17 +3198,17 @@ function TableOptions({
 
 	useEffect(() => {
 		switch (cardThemeNum) {
-			case "t1":
-				setCardBack("./Cards/CardBacks/back1.png")
+			case 't1':
+				setCardBack('./Cards/CardBacks/back1.png')
 				break
-			case "t2":
-				setCardBack("./Cards/CardBacks/back2.png")
+			case 't2':
+				setCardBack('./Cards/CardBacks/back2.png')
 				break
-			case "t3":
-				setCardBack("./Cards/CardBacks/back3.png")
+			case 't3':
+				setCardBack('./Cards/CardBacks/back3.png')
 				break
-			case "t4":
-				setCardBack("./Cards/CardBacks/back4.png")
+			case 't4':
+				setCardBack('./Cards/CardBacks/back4.png')
 				break
 		}
 	}, [])
@@ -3222,17 +3233,17 @@ function TableOptions({
 
 	useEffect(() => {
 		// checks for a change in value and that the previous value exists
-		console.log("PrevMoney: " + prevMoney) // This was the money a cycle ago
-		console.log("YourMoney: " + yourMoney) // This is the money after both have evaluated
-		console.log("Displayed: " + yourMoneyUpdater) // This is what is displayed
+		console.log('PrevMoney: ' + prevMoney) // This was the money a cycle ago
+		console.log('YourMoney: ' + yourMoney) // This is the money after both have evaluated
+		console.log('Displayed: ' + yourMoneyUpdater) // This is what is displayed
 
 		let thing = yourMoneyUpdater - prevMoney
 		if (yourMoneyUpdater - prevMoney && prevMoney) {
 			if (yourMoneyUpdater - prevMoney > 0) {
-				console.log("Increase of")
+				console.log('Increase of')
 				console.log(thing)
 			} else {
-				console.log("Decrease of")
+				console.log('Decrease of')
 				console.log(thing)
 			}
 		}
@@ -3309,11 +3320,11 @@ function TableOptions({
 
 	const [transitionSetting, setTransitionSetting] = useState({
 		duration: 0.4,
-		ease: "easeOut",
+		ease: 'easeOut',
 	})
 	const [transitionSettingAlt, setTransitionSettingAlt] = useState({
 		duration: 0.5,
-		ease: "easeOut",
+		ease: 'easeOut',
 	})
 
 	// Animation logic // These should all be player based //
@@ -3358,7 +3369,7 @@ function TableOptions({
 
 	const [hand2Card1Transition, setHand2Card1Transition] = useState({
 		duration: 0.5,
-		ease: "easeOut",
+		ease: 'easeOut',
 	})
 	const [hand2Card1Initial, setHand2Card1Initial] = useState({
 		translateY: 35,
@@ -3373,7 +3384,7 @@ function TableOptions({
 	})
 	const [hand2Card2Transition, setHand2Card2Transition] = useState({
 		duration: 0.5,
-		ease: "easeOut",
+		ease: 'easeOut',
 	})
 	const [hand2Card2Initial, setHand2Card2Initial] = useState({
 		translateY: -310,
@@ -3425,7 +3436,7 @@ function TableOptions({
 
 	useEffect(() => {
 		// This entire system may be redundant
-		if (thirdDealerDisplay.display === "block") {
+		if (thirdDealerDisplay.display === 'block') {
 			// This runs when the dealer starts drawing cards after stand
 			setAdditional(0)
 			addPlus()
@@ -3544,28 +3555,28 @@ function TableOptions({
 	}
 
 	const timer3 = () => {
-		if (playerThird !== "//:0") {
+		if (playerThird !== '//:0') {
 			setPlayerTimer(3)
 		}
 	}
 
 	const timer4 = () => {
-		if (playerFourth !== "//:0") {
+		if (playerFourth !== '//:0') {
 			setPlayerTimer(4)
 		}
 	}
 	const timer5 = () => {
-		if (playerFifth !== "//:0") {
+		if (playerFifth !== '//:0') {
 			setPlayerTimer(5)
 		}
 	}
 	const timer6 = () => {
-		if (playerSixth !== "//:0") {
+		if (playerSixth !== '//:0') {
 			setPlayerTimer(6)
 		}
 	}
 	const timer7 = () => {
-		if (playerSeventh !== "//:0") {
+		if (playerSeventh !== '//:0') {
 			setPlayerTimer(7)
 		}
 	}
@@ -3612,7 +3623,7 @@ function TableOptions({
 	// }, [dealerThree])
 
 	const auto = {
-		display: "none",
+		display: 'none',
 	}
 
 	const [manualOrAutomated, setManualOrAutomated] = useState()
@@ -3643,18 +3654,18 @@ function TableOptions({
 				(yourCards.filter((x) => x.value2 === 1).length == true ||
 					yourCards2.filter((x) => x.value2 === 1).length == true)
 			) {
-				console.log("Card Total stayed the same")
+				console.log('Card Total stayed the same')
 				setCardTotalChangerChecker((x) => x + 1)
 			} else {
-				console.log("Card Total Changed")
+				console.log('Card Total Changed')
 			}
 		} else {
 			// split
 			if (prevCardTotals[0] === cardTotal && prevCardTotals[1] === cardTotal2) {
-				console.log("Card Totals stayed the same")
+				console.log('Card Totals stayed the same')
 				setCardTotalChangerChecker((x) => x + 1)
 			} else {
-				console.log("Card Totals Changed")
+				console.log('Card Totals Changed')
 			}
 		}
 	}, [yourCards, yourCards2])
@@ -3671,15 +3682,15 @@ function TableOptions({
 	useEffect(() => {
 		// THIS WAS BREAKING BECAUSE HAND 2 USES ITS OWN SEPARATE FUNCTIONS
 		// Split has occurred // Also we can double, just not after hitting in a hand
-		console.log("cards2.length: " + yourCards2.length)
+		console.log('cards2.length: ' + yourCards2.length)
 		// console.log(autoSplitSwitch) // is 0
-		console.log("dealerTotal: " + dealerCardTotal)
-		console.log("EndTurn: " + endPlayerTurn)
-		console.log("autoSwitch: " + autoSplitSwitch)
-		console.log("SecondHand?: " + secondHand)
+		console.log('dealerTotal: ' + dealerCardTotal)
+		console.log('EndTurn: ' + endPlayerTurn)
+		console.log('autoSwitch: ' + autoSplitSwitch)
+		console.log('SecondHand?: ' + secondHand)
 		setAutoSplitSwitch(0)
 		if (yourCards2.length > 1 && autoSplitSwitch && dealerCardTotal < 21 && endPlayerTurn === 0) {
-			console.log("SPLIT FUNCTION SHOULD BE FIRING")
+			console.log('SPLIT FUNCTION SHOULD BE FIRING')
 			setTimeout(() => {
 				if (
 					(yourCards[0].value === 11 || yourCards[1].value === 11) &&
@@ -3876,20 +3887,20 @@ function TableOptions({
 
 	// This executes the auto action in non splits.
 	useEffect(() => {
-		console.log("Endturn: " + endPlayerTurn)
+		console.log('Endturn: ' + endPlayerTurn)
 		if (endPlayerTurn > 0) {
-			console.log("If this fires does it actually fix anything?")
+			console.log('If this fires does it actually fix anything?')
 		} else {
 			if (dealerCards[0].value2 === 1 && dealerCards[1].value2 === 1) {
-				console.log("THIS SHOULD TELL IF IT BROKE OR NOT: I think this does nothing")
+				console.log('THIS SHOULD TELL IF IT BROKE OR NOT: I think this does nothing')
 			}
 			console.log(
-				"Is the dealerCardTotal less than 21 or a product of two Aces: " + dealerCardTotal < 21 ||
+				'Is the dealerCardTotal less than 21 or a product of two Aces: ' + dealerCardTotal < 21 ||
 					(dealerCards[0].value2 === 1 && dealerCards[1].value2 === 1)
 			)
 			if (yourCards2[0] && endPlayerTurn === 0) {
 				// Split has occurred // Also we can double, just not after hitting in a hand
-				console.log("Taking a Split Action")
+				console.log('Taking a Split Action')
 				setAutoSplitSwitch((t) => t + 1)
 			} else if (
 				yourCards.length > 1 &&
@@ -3912,7 +3923,7 @@ function TableOptions({
 						) {
 							// No split
 							// Pair
-							console.log("PAIR HAND")
+							console.log('PAIR HAND')
 							switch (yourCards[0].value) {
 								case 2:
 								case 3:
@@ -3945,7 +3956,7 @@ function TableOptions({
 							yourCards.map((x) => x.value).reduce((x, y) => x + y) <= 21
 						) {
 							// Soft Hand and Aces not reduced
-							console.log("SOFT HAND")
+							console.log('SOFT HAND')
 							switch (cardTotal) {
 								case 13:
 								case 14:
@@ -3975,8 +3986,8 @@ function TableOptions({
 							}
 						} else {
 							// Hard Hands
-							console.log("HARD HAND")
-							console.log("CardTotal: " + cardTotal)
+							console.log('HARD HAND')
+							console.log('CardTotal: ' + cardTotal)
 							switch (cardTotal) {
 								case 5:
 								case 6:
@@ -4014,7 +4025,7 @@ function TableOptions({
 	}, [cardTotal, cardTotalChangerChecker])
 
 	const actionIfAuto = {
-		display: "none",
+		display: 'none',
 	}
 
 	const [autoActions, setAutoActions] = useState()
@@ -4028,7 +4039,7 @@ function TableOptions({
 	}, [])
 
 	const [hiddedCard, setHiddedCard] = useState(
-		process.env.PUBLIC_URL + cards[cardThemeNum].back + "#" + new Date().getTime()
+		process.env.PUBLIC_URL + cards[cardThemeNum].back + '#' + new Date().getTime()
 	)
 
 	const [dynamicCardTotal, setdynamicCardTotal] = useState(dealerCards[1].value)
@@ -4496,7 +4507,7 @@ function TableOptions({
 					</div>
 
 					<div style={manualAction} className="playerActions">
-						<Button buttonTheme={buttonTheme} content={"Cancel"} func={cancelAuto}></Button>
+						<Button buttonTheme={buttonTheme} content={'Cancel'} func={cancelAuto}></Button>
 					</div>
 
 					<div className="moneyWrapperTable">
@@ -4557,7 +4568,7 @@ function App() {
 	}
 
 	// This is the current/default bodyTheme
-	const [bodyTheme, setBodyTheme] = useState("bodyTheme1")
+	const [bodyTheme, setBodyTheme] = useState('bodyTheme1')
 
 	// Sets the body to the default of bodyTheme2
 	useEffect(() => {
@@ -4570,48 +4581,48 @@ function App() {
 	}
 
 	const goldTheme = {
-		borderColor: "#e7bd52",
-		backgroundColor: "rgba(40, 47, 93, .5)",
-		color: "#e7bd52",
+		borderColor: '#e7bd52',
+		backgroundColor: 'rgba(40, 47, 93, .5)',
+		color: '#e7bd52',
 	}
 
 	const goldColor = {
-		color: "#e7bd52",
+		color: '#e7bd52',
 	}
-	const goldColorString = "#e7bd52"
+	const goldColorString = '#e7bd52'
 
 	const purpleTheme = {
-		borderColor: "#392950",
-		backgroundColor: "#392950",
-		color: "white",
+		borderColor: '#392950',
+		backgroundColor: '#392950',
+		color: 'white',
 	}
 
 	const purpleColor = {
-		color: "#392950",
+		color: '#392950',
 	}
-	const purpleColorString = "#392950"
+	const purpleColorString = '#392950'
 
 	const redTheme = {
-		borderColor: "#c12f2f",
-		backgroundColor: "rgba(244, 244, 244, .2)",
-		color: "#c12f2f",
+		borderColor: '#c12f2f',
+		backgroundColor: 'rgba(244, 244, 244, .2)',
+		color: '#c12f2f',
 	}
 
 	const redColor = {
-		color: "#c12f2f",
+		color: '#c12f2f',
 	}
-	const redColorString = "#c12f2f"
+	const redColorString = '#c12f2f'
 
 	const greenTheme = {
-		borderColor: "#48b74d",
-		backgroundColor: "rgba(42, 31, 73, .5)",
-		color: "#48b74d",
+		borderColor: '#48b74d',
+		backgroundColor: 'rgba(42, 31, 73, .5)',
+		color: '#48b74d',
 	}
 
 	const greenColor = {
-		color: "#48b74d",
+		color: '#48b74d',
 	}
-	const greenColorString = "#48b74d"
+	const greenColorString = '#48b74d'
 
 	// This is just inserted into buttonTheme
 	// const [themeColor, setThemeColor] = useState(purpleTheme)
@@ -4621,33 +4632,33 @@ function App() {
 
 	// The hover state for the buttons will probably have to go into here
 	const buttonSettings = {
-		padding: "0 1em",
-		textAlign: "center",
-		fontSize: "4em",
-		fontFamily: "whitman, arial",
-		fontStyle: "normal",
-		fontWeight: "600",
-		lineHeight: "1.3",
+		padding: '0 1em',
+		textAlign: 'center',
+		fontSize: '4em',
+		fontFamily: 'whitman, arial',
+		fontStyle: 'normal',
+		fontWeight: '600',
+		lineHeight: '1.3',
 		// padding: "0 30px",
-		textDecoration: "none",
-		borderStyle: "solid",
-		borderRadius: "10px",
-		outline: "none",
+		textDecoration: 'none',
+		borderStyle: 'solid',
+		borderRadius: '10px',
+		outline: 'none',
 	}
 
 	const altButtonSettings = {
-		padding: "0 0.5em",
-		textAlign: "center",
-		fontSize: "3.5em",
-		fontFamily: "upgrade, sans-serif",
-		fontStyle: "normal",
-		fontWeight: "600",
-		lineHeight: "1",
+		padding: '0 0.5em',
+		textAlign: 'center',
+		fontSize: '3.5em',
+		fontFamily: 'upgrade, sans-serif',
+		fontStyle: 'normal',
+		fontWeight: '600',
+		lineHeight: '1',
 		// padding: "0 30px",
-		textDecoration: "none",
-		borderStyle: "solid",
-		borderRadius: "10px",
-		outline: "none",
+		textDecoration: 'none',
+		borderStyle: 'solid',
+		borderRadius: '10px',
+		outline: 'none',
 	}
 
 	// Format: object; This should stay consistent
@@ -4665,14 +4676,14 @@ function App() {
 	const [altButtonThemeActive, setAltButtonThemeActive] = useState({
 		...altButtonSettings,
 		...goldTheme,
-		backgroundColor: "#e7bd52",
-		color: "rgba(40, 47, 93, 1)",
+		backgroundColor: '#e7bd52',
+		color: 'rgba(40, 47, 93, 1)',
 	})
 
 	// Format: string
 	const [iconTheme, setIconTheme] = useState(goldColorString)
 
-	const [cardThemeNum, setCardThemeNum] = useState("t1")
+	const [cardThemeNum, setCardThemeNum] = useState('t1')
 
 	const [displayCard, setDisplayCard] = useState(cards[cardThemeNum].spade.ace.src)
 
@@ -4689,14 +4700,14 @@ function App() {
 		setAltButtonThemeActive({
 			...altButtonSettings,
 			...goldTheme,
-			backgroundColor: "#e7bd52",
-			color: "rgba(40, 47, 93, 1)",
+			backgroundColor: '#e7bd52',
+			color: 'rgba(40, 47, 93, 1)',
 		})
 		setTextColor(goldColor)
 		setIconTheme(goldColorString)
-		bodyChange("bodyTheme1")
-		setBodyTheme("bodyTheme1")
-		setCardThemeNum("t1")
+		bodyChange('bodyTheme1')
+		setBodyTheme('bodyTheme1')
+		setCardThemeNum('t1')
 	}
 
 	const t2ThemeChange = () => {
@@ -4712,14 +4723,14 @@ function App() {
 		setAltButtonThemeActive({
 			...altButtonSettings,
 			...purpleTheme,
-			backgroundColor: "#DBD8DF",
-			color: "#392950",
+			backgroundColor: '#DBD8DF',
+			color: '#392950',
 		})
 		setTextColor(purpleColor)
 		setIconTheme(purpleColorString)
-		bodyChange("bodyTheme2")
-		setBodyTheme("bodyTheme2")
-		setCardThemeNum("t2")
+		bodyChange('bodyTheme2')
+		setBodyTheme('bodyTheme2')
+		setCardThemeNum('t2')
 	}
 
 	const t3ThemeChange = () => {
@@ -4735,14 +4746,14 @@ function App() {
 		setAltButtonThemeActive({
 			...altButtonSettings,
 			...redTheme,
-			backgroundColor: "#c12f2f",
-			color: "#fff",
+			backgroundColor: '#c12f2f',
+			color: '#fff',
 		})
 		setTextColor(redColor)
 		setIconTheme(redColorString)
-		bodyChange("bodyTheme3")
-		setBodyTheme("bodyTheme3")
-		setCardThemeNum("t3")
+		bodyChange('bodyTheme3')
+		setBodyTheme('bodyTheme3')
+		setCardThemeNum('t3')
 	}
 
 	const t4ThemeChange = () => {
@@ -4758,26 +4769,26 @@ function App() {
 		setAltButtonThemeActive({
 			...altButtonSettings,
 			...greenTheme,
-			borderColor: "rgba(42, 31, 73, 1)",
-			backgroundColor: "#48b74d",
-			color: "rgba(42, 31, 73, 1)",
+			borderColor: 'rgba(42, 31, 73, 1)',
+			backgroundColor: '#48b74d',
+			color: 'rgba(42, 31, 73, 1)',
 		})
 		setTextColor(greenColor)
 		setIconTheme(greenColorString)
-		bodyChange("bodyTheme4")
-		setBodyTheme("bodyTheme4")
-		setCardThemeNum("t4")
+		bodyChange('bodyTheme4')
+		setBodyTheme('bodyTheme4')
+		setCardThemeNum('t4')
 	}
 
-	const [storedTheme, setStoredTheme] = useState(localStorage.getItem("theme") || "")
+	const [storedTheme, setStoredTheme] = useState(localStorage.getItem('theme') || '')
 
 	useEffect(() => {
-		localStorage.setItem("theme", bodyTheme)
+		localStorage.setItem('theme', bodyTheme)
 	}, [bodyTheme])
 
 	useEffect(() => {
 		switch (storedTheme) {
-			case "bodyTheme1":
+			case 'bodyTheme1':
 				setDisplayCard(cards.t1.spade.ace.src)
 				setButtonTheme({
 					...buttonSettings,
@@ -4790,17 +4801,17 @@ function App() {
 				setAltButtonThemeActive({
 					...altButtonSettings,
 					...goldTheme,
-					backgroundColor: "#e7bd52",
-					color: "rgba(40, 47, 93, 1)",
+					backgroundColor: '#e7bd52',
+					color: 'rgba(40, 47, 93, 1)',
 				})
 				setTextColor(goldColor)
 				setIconTheme(goldColorString)
-				bodyChange("bodyTheme1")
-				setBodyTheme("bodyTheme1")
-				setCardThemeNum("t1")
+				bodyChange('bodyTheme1')
+				setBodyTheme('bodyTheme1')
+				setCardThemeNum('t1')
 				break
 
-			case "bodyTheme2":
+			case 'bodyTheme2':
 				setDisplayCard(cards.t2.spade.ace.src)
 				setButtonTheme({
 					...buttonSettings,
@@ -4813,17 +4824,17 @@ function App() {
 				setAltButtonThemeActive({
 					...altButtonSettings,
 					...purpleTheme,
-					backgroundColor: "#DBD8DF",
-					color: "#392950",
+					backgroundColor: '#DBD8DF',
+					color: '#392950',
 				})
 				setTextColor(purpleColor)
 				setIconTheme(purpleColorString)
-				bodyChange("bodyTheme2")
-				setBodyTheme("bodyTheme2")
-				setCardThemeNum("t2")
+				bodyChange('bodyTheme2')
+				setBodyTheme('bodyTheme2')
+				setCardThemeNum('t2')
 				break
 
-			case "bodyTheme3":
+			case 'bodyTheme3':
 				setDisplayCard(cards.t3.spade.ace.src)
 				setButtonTheme({
 					...buttonSettings,
@@ -4836,17 +4847,17 @@ function App() {
 				setAltButtonThemeActive({
 					...altButtonSettings,
 					...redTheme,
-					backgroundColor: "#c12f2f",
-					color: "#fff",
+					backgroundColor: '#c12f2f',
+					color: '#fff',
 				})
 				setTextColor(redColor)
 				setIconTheme(redColorString)
-				bodyChange("bodyTheme3")
-				setBodyTheme("bodyTheme3")
-				setCardThemeNum("t3")
+				bodyChange('bodyTheme3')
+				setBodyTheme('bodyTheme3')
+				setCardThemeNum('t3')
 				break
 
-			case "bodyTheme4":
+			case 'bodyTheme4':
 				setDisplayCard(cards.t4.spade.ace.src)
 				setButtonTheme({
 					...buttonSettings,
@@ -4859,15 +4870,15 @@ function App() {
 				setAltButtonThemeActive({
 					...altButtonSettings,
 					...greenTheme,
-					borderColor: "rgba(42, 31, 73, 1)",
-					backgroundColor: "#48b74d",
-					color: "rgba(42, 31, 73, 1)",
+					borderColor: 'rgba(42, 31, 73, 1)',
+					backgroundColor: '#48b74d',
+					color: 'rgba(42, 31, 73, 1)',
 				})
 				setTextColor(greenColor)
 				setIconTheme(greenColorString)
-				bodyChange("bodyTheme4")
-				setBodyTheme("bodyTheme4")
-				setCardThemeNum("t4")
+				bodyChange('bodyTheme4')
+				setBodyTheme('bodyTheme4')
+				setCardThemeNum('t4')
 				break
 		}
 	}, [])
@@ -4901,318 +4912,318 @@ function App() {
 		{
 			value: 11,
 			value2: 1,
-			name: "Ace of Clubs",
-			suit: "club",
-			card: "ace",
+			name: 'Ace of Clubs',
+			suit: 'club',
+			card: 'ace',
 		},
 		{
 			value: 2,
-			name: "Two of Clubs",
-			suit: "club",
-			card: "two",
+			name: 'Two of Clubs',
+			suit: 'club',
+			card: 'two',
 		},
 		{
 			value: 3,
-			name: "Three of Clubs",
-			suit: "club",
-			card: "three",
+			name: 'Three of Clubs',
+			suit: 'club',
+			card: 'three',
 		},
 		{
 			value: 4,
-			name: "Four of Clubs",
-			suit: "club",
-			card: "four",
+			name: 'Four of Clubs',
+			suit: 'club',
+			card: 'four',
 		},
 		{
 			value: 5,
-			name: "Five of Clubs",
-			suit: "club",
-			card: "five",
+			name: 'Five of Clubs',
+			suit: 'club',
+			card: 'five',
 		},
 		{
 			value: 6,
-			name: "Six of Clubs",
-			suit: "club",
-			card: "six",
+			name: 'Six of Clubs',
+			suit: 'club',
+			card: 'six',
 		},
 		{
 			value: 7,
-			name: "Seven of Clubs",
-			suit: "club",
-			card: "seven",
+			name: 'Seven of Clubs',
+			suit: 'club',
+			card: 'seven',
 		},
 		{
 			value: 8,
-			name: "Eight of Clubs",
-			suit: "club",
-			card: "eight",
+			name: 'Eight of Clubs',
+			suit: 'club',
+			card: 'eight',
 		},
 		{
 			value: 9,
-			name: "Nine of Clubs",
-			suit: "club",
-			card: "nine",
+			name: 'Nine of Clubs',
+			suit: 'club',
+			card: 'nine',
 		},
 		{
 			value: 10,
-			name: "Ten of Clubs",
-			suit: "club",
-			card: "ten",
+			name: 'Ten of Clubs',
+			suit: 'club',
+			card: 'ten',
 		},
 		{
 			value: 10,
-			name: "Jack of Clubs",
-			suit: "club",
-			card: "jack",
+			name: 'Jack of Clubs',
+			suit: 'club',
+			card: 'jack',
 		},
 		{
 			value: 10,
-			name: "Queen of Clubs",
-			suit: "club",
-			card: "queen",
+			name: 'Queen of Clubs',
+			suit: 'club',
+			card: 'queen',
 		},
 		{
 			value: 10,
-			name: "King of Clubs",
-			suit: "club",
-			card: "king",
+			name: 'King of Clubs',
+			suit: 'club',
+			card: 'king',
 		},
 		{
 			value: 11,
 			value2: 1,
-			name: "Ace of Diamonds",
-			suit: "diamond",
-			card: "ace",
+			name: 'Ace of Diamonds',
+			suit: 'diamond',
+			card: 'ace',
 		},
 		{
 			value: 2,
-			name: "Two of Diamonds",
-			suit: "diamond",
-			card: "two",
+			name: 'Two of Diamonds',
+			suit: 'diamond',
+			card: 'two',
 		},
 		{
 			value: 3,
-			name: "Three of Diamonds",
-			suit: "diamond",
-			card: "three",
+			name: 'Three of Diamonds',
+			suit: 'diamond',
+			card: 'three',
 		},
 		{
 			value: 4,
-			name: "Four of Diamonds",
-			suit: "diamond",
-			card: "four",
+			name: 'Four of Diamonds',
+			suit: 'diamond',
+			card: 'four',
 		},
 		{
 			value: 5,
-			name: "Five of Diamonds",
-			suit: "diamond",
-			card: "five",
+			name: 'Five of Diamonds',
+			suit: 'diamond',
+			card: 'five',
 		},
 		{
 			value: 6,
-			name: "Six of Diamonds",
-			suit: "diamond",
-			card: "six",
+			name: 'Six of Diamonds',
+			suit: 'diamond',
+			card: 'six',
 		},
 		{
 			value: 7,
-			name: "Seven of Diamonds",
-			suit: "diamond",
-			card: "seven",
+			name: 'Seven of Diamonds',
+			suit: 'diamond',
+			card: 'seven',
 		},
 		{
 			value: 8,
-			name: "Eight of Diamonds",
-			suit: "diamond",
-			card: "eight",
+			name: 'Eight of Diamonds',
+			suit: 'diamond',
+			card: 'eight',
 		},
 		{
 			value: 9,
-			name: "Nine of Diamonds",
-			suit: "diamond",
-			card: "nine",
+			name: 'Nine of Diamonds',
+			suit: 'diamond',
+			card: 'nine',
 		},
 		{
 			value: 10,
-			name: "Ten of Diamonds",
-			suit: "diamond",
-			card: "ten",
+			name: 'Ten of Diamonds',
+			suit: 'diamond',
+			card: 'ten',
 		},
 		{
 			value: 10,
-			name: "Jack of Diamonds",
-			suit: "diamond",
-			card: "jack",
+			name: 'Jack of Diamonds',
+			suit: 'diamond',
+			card: 'jack',
 		},
 		{
 			value: 10,
-			name: "Queen of Diamonds",
-			suit: "diamond",
-			card: "queen",
+			name: 'Queen of Diamonds',
+			suit: 'diamond',
+			card: 'queen',
 		},
 		{
 			value: 10,
-			name: "King of Diamonds",
-			suit: "diamond",
-			card: "king",
+			name: 'King of Diamonds',
+			suit: 'diamond',
+			card: 'king',
 		},
 		{
 			value: 11,
 			value2: 1,
-			name: "Ace of Hearts",
-			suit: "heart",
-			card: "ace",
+			name: 'Ace of Hearts',
+			suit: 'heart',
+			card: 'ace',
 		},
 		{
 			value: 2,
-			name: "Two of Hearts",
-			suit: "heart",
-			card: "two",
+			name: 'Two of Hearts',
+			suit: 'heart',
+			card: 'two',
 		},
 		{
 			value: 3,
-			name: "Three of Hearts",
-			suit: "heart",
-			card: "three",
+			name: 'Three of Hearts',
+			suit: 'heart',
+			card: 'three',
 		},
 		{
 			value: 4,
-			name: "Four of Hearts",
-			suit: "heart",
-			card: "four",
+			name: 'Four of Hearts',
+			suit: 'heart',
+			card: 'four',
 		},
 		{
 			value: 5,
-			name: "Five of Hearts",
-			suit: "heart",
-			card: "five",
+			name: 'Five of Hearts',
+			suit: 'heart',
+			card: 'five',
 		},
 		{
 			value: 6,
-			name: "Six of Hearts",
-			suit: "heart",
-			card: "six",
+			name: 'Six of Hearts',
+			suit: 'heart',
+			card: 'six',
 		},
 		{
 			value: 7,
-			name: "Seven of Hearts",
-			suit: "heart",
-			card: "seven",
+			name: 'Seven of Hearts',
+			suit: 'heart',
+			card: 'seven',
 		},
 		{
 			value: 8,
-			name: "Eight of Hearts",
-			suit: "heart",
-			card: "eight",
+			name: 'Eight of Hearts',
+			suit: 'heart',
+			card: 'eight',
 		},
 		{
 			value: 9,
-			name: "Nine of Hearts",
-			suit: "heart",
-			card: "nine",
+			name: 'Nine of Hearts',
+			suit: 'heart',
+			card: 'nine',
 		},
 		{
 			value: 10,
-			name: "Ten of Hearts",
-			suit: "heart",
-			card: "ten",
+			name: 'Ten of Hearts',
+			suit: 'heart',
+			card: 'ten',
 		},
 		{
 			value: 10,
-			name: "Jack of Hearts",
-			suit: "heart",
-			card: "jack",
+			name: 'Jack of Hearts',
+			suit: 'heart',
+			card: 'jack',
 		},
 		{
 			value: 10,
-			name: "Queen of Hearts",
-			suit: "heart",
-			card: "queen",
+			name: 'Queen of Hearts',
+			suit: 'heart',
+			card: 'queen',
 		},
 		{
 			value: 10,
-			name: "King of Hearts",
-			suit: "heart",
-			card: "king",
+			name: 'King of Hearts',
+			suit: 'heart',
+			card: 'king',
 		},
 		{
 			value: 11,
 			value2: 1,
-			name: "Ace of Spades",
-			suit: "spade",
-			card: "ace",
+			name: 'Ace of Spades',
+			suit: 'spade',
+			card: 'ace',
 		},
 		{
 			value: 2,
-			name: "Two of Spades",
-			suit: "spade",
-			card: "two",
+			name: 'Two of Spades',
+			suit: 'spade',
+			card: 'two',
 		},
 		{
 			value: 3,
-			name: "Three of Spades",
-			suit: "spade",
-			card: "three",
+			name: 'Three of Spades',
+			suit: 'spade',
+			card: 'three',
 		},
 		{
 			value: 4,
-			name: "Four of Spades",
-			suit: "spade",
-			card: "four",
+			name: 'Four of Spades',
+			suit: 'spade',
+			card: 'four',
 		},
 		{
 			value: 5,
-			name: "Five of Spades",
-			suit: "spade",
-			card: "five",
+			name: 'Five of Spades',
+			suit: 'spade',
+			card: 'five',
 		},
 		{
 			value: 6,
-			name: "Six of Spades",
-			suit: "spade",
-			card: "six",
+			name: 'Six of Spades',
+			suit: 'spade',
+			card: 'six',
 		},
 		{
 			value: 7,
-			name: "Seven of Spades",
-			suit: "spade",
-			card: "seven",
+			name: 'Seven of Spades',
+			suit: 'spade',
+			card: 'seven',
 		},
 		{
 			value: 8,
-			name: "Eight of Spades",
-			suit: "spade",
-			card: "eight",
+			name: 'Eight of Spades',
+			suit: 'spade',
+			card: 'eight',
 		},
 		{
 			value: 9,
-			name: "Nine of Spades",
-			suit: "spade",
-			card: "nine",
+			name: 'Nine of Spades',
+			suit: 'spade',
+			card: 'nine',
 		},
 		{
 			value: 10,
-			name: "Ten of Spades",
-			suit: "spade",
-			card: "ten",
+			name: 'Ten of Spades',
+			suit: 'spade',
+			card: 'ten',
 		},
 		{
 			value: 10,
-			name: "Jack of Spades",
-			suit: "spade",
-			card: "jack",
+			name: 'Jack of Spades',
+			suit: 'spade',
+			card: 'jack',
 		},
 		{
 			value: 10,
-			name: "Queen of Spades",
-			suit: "spade",
-			card: "queen",
+			name: 'Queen of Spades',
+			suit: 'spade',
+			card: 'queen',
 		},
 		{
 			value: 10,
-			name: "King of Spades",
-			suit: "spade",
-			card: "king",
+			name: 'King of Spades',
+			suit: 'spade',
+			card: 'king',
 		},
 	])
 
@@ -5244,7 +5255,7 @@ function App() {
 		console.log(deck)
 	}, [deckCount])
 
-	const [cutPosition, setCutPosition] = useState("none")
+	const [cutPosition, setCutPosition] = useState('none')
 	const shoeCount = (amount) => {
 		setCutPosition(amount)
 	}
@@ -5336,9 +5347,9 @@ function App() {
 	}
 
 	function playerBetModify(action, value) {
-		if (action === "add") {
+		if (action === 'add') {
 			setPlayerBet((prevBet) => prevBet + value)
-		} else if (action === "subtract") {
+		} else if (action === 'subtract') {
 			setPlayerBet((prevBet) => prevBet - value)
 		}
 	}
@@ -5348,9 +5359,9 @@ function App() {
 	const [minBet, setMinBet] = useState(5)
 
 	function betRange(range, value) {
-		if (range === "max") {
+		if (range === 'max') {
 			setMaxBet(value)
-		} else if (range === "min") {
+		} else if (range === 'min') {
 			setMinBet(value)
 		}
 	}
